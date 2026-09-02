@@ -1,0 +1,77 @@
+@import 'tailwindcss';
+
+/* ------------------------------------------------------------------
+   Design tokens — Shaadi Invites
+   Every colour/font below becomes a Tailwind utility automatically,
+   e.g. --color-wine-800  ->  bg-wine-800 / text-wine-800 / border-wine-800
+------------------------------------------------------------------- */
+@theme {
+  --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+
+  /* Deep maroon / wine — navbar, footer, primary buttons */
+  --color-wine-50: #fdf3f5;
+  --color-wine-100: #fbe4e9;
+  --color-wine-200: #f4c5d1;
+  --color-wine-300: #e694a9;
+  --color-wine-400: #c94065;
+  --color-wine-500: #ab1a41;
+  --color-wine-600: #951134;
+  --color-wine-700: #7d0c28;
+  --color-wine-800: #6c0a22;
+  --color-wine-900: #55071a;
+
+  /* Gold / brass accents */
+  --color-gold-100: #fbf1da;
+  --color-gold-200: #f5e2b3;
+  --color-gold-300: #e9ca83;
+  --color-gold-400: #d9a94a;
+  --color-gold-500: #c28c2c;
+  --color-gold-600: #a3711f;
+
+  /* Warm cream page backgrounds */
+  --color-cream-50: #fffcf6;
+  --color-cream-100: #fdf6ea;
+  --color-cream-200: #faedd8;
+  --color-cream-300: #f2dcbb;
+
+  /* Body copy */
+  --color-ink: #4a2b2b;
+  --color-ink-soft: #7a5a58;
+
+  /* Marigold / floral illustration palette */
+  --color-marigold-400: #f7b733;
+  --color-marigold-500: #f08c1f;
+  --color-marigold-600: #dd6a12;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white font-sans text-ink antialiased;
+  }
+
+  /* Cream-on-maroon select/date controls keep the native arrow subtle */
+  select {
+    appearance: none;
+  }
+}
+
+@layer utilities {
+  /* Page gutter used by every section so all content lines up */
+  .shell {
+    @apply mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Hide the scrollbar on the weddings carousel while keeping it scrollable */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
