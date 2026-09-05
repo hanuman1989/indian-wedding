@@ -2,9 +2,10 @@
 import { useState } from 'react'
 import { ChevronDown, Globe } from '@/components/Icons'
 import { Logo, Mandala, PaisleyBand } from './Ornaments'
-
+import LoginButtonSection from '@/components/login/LoginButtonSection'
+import Link from 'next/link'
 const links = [
-  { label: 'Home', href: '#top' },
+  { label: 'Home', href: '/' },
   { label: 'Browse Weddings', href: '#weddings' },
   { label: 'How It Works', href: '#how-it-works' },
   { label: 'Host Wedding', href: '#host' },
@@ -19,18 +20,20 @@ export default function Navbar() {
     <header id="top" className="relative z-30">
       <PaisleyBand />
 
-      <nav className="relative overflow-hidden bg-wine-700">
+      <nav className="relative overflow-visible bg-wine-700">
         {/* faint mandala watermarks behind the bar */}
-        <Mandala className="pointer-events-none absolute -left-8 -top-6 h-28 w-28 text-gold-300/10" />
-        <Mandala className="pointer-events-none absolute -right-8 -top-6 h-28 w-28 text-gold-300/10" />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+          <Mandala className="absolute -left-8 -top-6 h-28 w-28 text-gold-300/10" />
+          <Mandala className="absolute -right-8 -top-6 h-28 w-28 text-gold-300/10" />
+        </div>
 
-        <div className="shell flex h-[74px] items-center justify-between gap-4">
+        <div className="relative shell flex h-[74px] items-center justify-between gap-4">
           <Logo />
 
           <ul className="hidden items-center gap-7 lg:flex">
             {links.map((link, i) => (
               <li key={link.label}>
-                <a
+                <Link
                   href={link.href}
                   className={`relative block py-1 text-[13.5px] font-medium transition-colors ${
                     i === 0
@@ -42,33 +45,21 @@ export default function Navbar() {
                   {i === 0 && (
                     <span className="absolute -bottom-0.5 left-0 h-[2px] w-full rounded-full bg-gold-400" />
                   )}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
 
           <div className="flex items-center gap-3">
-            <button
-              type="button"
-              aria-label="Change language"
-              className="hidden text-cream-100/85 transition-colors hover:text-gold-300 sm:block"
-            >
-              <Globe className="h-[22px] w-[22px]" />
-            </button>
 
-            <button
-              type="button"
-              className="hidden rounded-md border border-gold-300/70 px-5 py-2 text-[13px] font-medium text-cream-50 transition-colors hover:bg-gold-400/15 sm:block"
-            >
-              Login
-            </button>
+            <LoginButtonSection />
 
-            <button
-              type="button"
+            <Link
+              href="registration"
               className="rounded-md border border-gold-300/40 bg-wine-500 px-5 py-2 text-[13px] font-medium text-cream-50 shadow-sm transition-colors hover:bg-wine-400"
             >
               Sign Up
-            </button>
+            </Link>
 
             {/* mobile menu toggle */}
             <button
@@ -95,13 +86,13 @@ export default function Navbar() {
           <ul className="shell grid gap-1 border-t border-gold-300/20 pb-4 pt-2 lg:hidden">
             {links.map((link) => (
               <li key={link.label}>
-                <a
+                <Link
                   href={link.href}
                   onClick={() => setOpen(false)}
                   className="block rounded-md px-2 py-2 text-sm text-cream-100/90 hover:bg-gold-400/10 hover:text-gold-300"
                 >
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

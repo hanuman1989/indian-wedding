@@ -52,6 +52,62 @@ export const ArrowRight = (p) => (
   </S>
 )
 
+export const Check = (p) => (
+  <S {...p}>
+    <path d="m5 12.5 4.3 4.3L19 7.2" />
+  </S>
+)
+
+export const Upload = (p) => (
+  <S {...p}>
+    <path d="M12 16V4M7.5 8.5 12 4l4.5 4.5M5 15.5v3.7c0 .7.6 1.3 1.3 1.3h11.4c.7 0 1.3-.6 1.3-1.3v-3.7" />
+  </S>
+)
+
+export const Grip = (p) => (
+  <S {...p}>
+    <circle cx="8.5" cy="6.5" r=".7" fill="currentColor" />
+    <circle cx="15.5" cy="6.5" r=".7" fill="currentColor" />
+    <circle cx="8.5" cy="12" r=".7" fill="currentColor" />
+    <circle cx="15.5" cy="12" r=".7" fill="currentColor" />
+    <circle cx="8.5" cy="17.5" r=".7" fill="currentColor" />
+    <circle cx="15.5" cy="17.5" r=".7" fill="currentColor" />
+  </S>
+)
+
+export const X = (p) => (
+  <S {...p}>
+    <path d="m6 6 12 12M18 6 6 18" />
+  </S>
+)
+
+export const Plus = (p) => (
+  <S {...p}>
+    <path d="M12 5v14M5 12h14" />
+  </S>
+)
+
+export const Pencil = (p) => (
+  <S {...p}>
+    <path d="m4.5 19.5 3.8-.8L19 8l-3-3L5.3 15.7l-.8 3.8Z" />
+    <path d="m14.5 6.5 3 3" />
+  </S>
+)
+
+export const Trash = (p) => (
+  <S {...p}>
+    <path d="M4.5 7h15M9.5 3.8h5M7 7l.8 13h8.4L17 7M10 10.5v6M14 10.5v6" />
+  </S>
+)
+
+export const Photo = (p) => (
+  <S {...p}>
+    <rect x="3.5" y="4.5" width="17" height="15" rx="2" />
+    <circle cx="8.5" cy="9" r="1.5" />
+    <path d="m5 17 4.5-4.5 3.2 3.2 2.1-2.1L19 17" />
+  </S>
+)
+
 export const ChevronLeft = (p) => (
   <S {...p}>
     <path d="m14.5 5-7 7 7 7" />
@@ -250,6 +306,34 @@ export const BookHeart = (p) => (
   </S>
 )
 
+export const Mail = (p) => (
+  <S {...p}>
+    <rect x="3.2" y="5.6" width="17.6" height="12.8" rx="2.2" />
+    <path d="m4 7 8 6 8-6" />
+  </S>
+)
+
+export const Phone = (p) => (
+  <S {...p}>
+    <path d="M7.2 3.8 4.9 5.1c-1 3.2.4 7.3 3.4 10.3s7.1 4.4 10.3 3.4l1.3-2.3-4-2.4-1.7 1.7c-1.6-.7-3.2-2.3-3.9-3.9l1.7-1.7-2.4-4Z" />
+  </S>
+)
+
+export const Eye = (p) => (
+  <S {...p}>
+    <path d="M2.4 12S5.6 5.6 12 5.6 21.6 12 21.6 12 18.4 18.4 12 18.4 2.4 12 2.4 12Z" />
+    <circle cx="12" cy="12" r="2.8" />
+  </S>
+)
+
+export const EyeOff = (p) => (
+  <S {...p}>
+    <path d="M3.6 3.6l16.8 16.8" />
+    <path d="M9.9 5.1A9.6 9.6 0 0 1 12 4.8c6.4 0 9.6 6.4 9.6 6.4a15 15 0 0 1-3 3.9M6.6 6.7C3.9 8.4 2.4 11.2 2.4 11.2S5.6 17.6 12 17.6c1.2 0 2.3-.2 3.3-.6" />
+    <path d="M9.9 10.9a2.8 2.8 0 0 0 3.9 3.9" />
+  </S>
+)
+
 /* ------------------------------ Feature strip --------------------------- */
 
 export const Mandap = (p) => (
@@ -311,4 +395,14 @@ export const Whatsapp = (p) => (
     <path d="M12 2.4A9.5 9.5 0 0 0 3.8 16.6L2.4 21.6l5.2-1.4A9.5 9.5 0 1 0 12 2.4Zm0 1.8a7.7 7.7 0 0 1 6.5 11.8l-.3.5.8 2.8-2.9-.8-.5.3A7.7 7.7 0 1 1 12 4.2Z" />
     <path d="M9.3 7.9c-.2-.5-.4-.5-.7-.5h-.5a1 1 0 0 0-.7.4c-.3.3-.9 1-.9 2.2s.9 2.4 1 2.6c.1.2 1.7 2.8 4.3 3.8 2.1.8 2.5.7 3 .6.5 0 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.4-.3l-1.6-.8c-.2-.1-.4-.1-.6.1l-.7.9c-.1.2-.3.2-.5.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.1-1.4-1.3-1.6-.1-.2 0-.4.1-.5l.4-.5c.1-.2.2-.3.2-.5s0-.3-.1-.5l-.9-2.2Z" />
   </F>
+)
+
+// Multi-color brand mark, kept as its own SVG since it doesn't fit the single-color S/F wrappers
+export const Google = ({ className = 'h-5 w-5', ...rest }) => (
+  <svg viewBox="0 0 48 48" className={className} aria-hidden="true" {...rest}>
+    <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l5.7-5.7C34.6 6.1 29.6 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.3-.1-2.7-.4-3.5Z" />
+    <path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.8 1.1 8 3l5.7-5.7C34.6 6.1 29.6 4 24 4c-7.5 0-14 4.2-17.7 10.7Z" />
+    <path fill="#4CAF50" d="M24 44c5.2 0 10-2 13.5-5.2l-6.2-5.2C29.3 35.4 26.8 36 24 36c-5.2 0-9.6-3.1-11.3-7.6l-6.5 5C9.9 39.7 16.4 44 24 44Z" />
+    <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.2 5.6l6.2 5.2C40.9 36 44 30.7 44 24c0-1.3-.1-2.7-.4-3.5Z" />
+  </svg>
 )

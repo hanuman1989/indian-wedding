@@ -4,6 +4,8 @@ import { useSidebar } from "@/context/SidebarContext";
 import AppHeader from "@/layout/AppHeader";
 import AppSidebar from "@/layout/AppSidebar";
 import Backdrop from "@/layout/Backdrop";
+import Loader from "@/components/common/Loader";
+import { useProtectedRoute } from "@/hooks/useProtectedRoute";
 import React from "react";
 
 export default function AdminLayout({
@@ -11,6 +13,7 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const { isAuthorized } = useProtectedRoute('admin');
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
 
   // Dynamic class for main content margin based on sidebar state
@@ -19,6 +22,10 @@ export default function AdminLayout({
     : isExpanded || isHovered
     ? "lg:ml-[290px]"
     : "lg:ml-[90px]";
+
+  if (!isAuthorized) {
+    return <Loader />;
+  }
 
   return (
     <div className="min-h-screen xl:flex">
