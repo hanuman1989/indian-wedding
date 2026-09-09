@@ -10,9 +10,7 @@ const stats = [
 
 export default function StatsBar() {
   return (
-    <section className="relative mt-10 overflow-hidden bg-wine-700">
-      <Mandala className="pointer-events-none absolute -left-10 top-1/2 h-32 w-32 -translate-y-1/2 text-gold-300/10" />
-      <Mandala className="pointer-events-none absolute -right-10 top-1/2 h-32 w-32 -translate-y-1/2 text-gold-300/10" />
+    <section className="barstats relative mt-10 overflow-hidden bg-wine-700">
 
       <div className="shell">
         <ul className="grid grid-cols-2 divide-gold-300/25 py-4 lg:grid-cols-4 lg:divide-x">

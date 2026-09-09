@@ -9,20 +9,10 @@ const HERO_IMAGE = null
 
 export default function Hero() {
   return (
-    <section className="relative isolate overflow-hidden">
+    <section className="herobanner relative isolate">
       {/* backdrop */}
       <div className="absolute inset-0 -z-10">
-        {HERO_IMAGE ? (
-          <img
-            src={HERO_IMAGE}
-            alt=""
-            className="h-full w-full object-cover object-center"
-          />
-        ) : (
-          <HeroScene className="h-full w-full" />
-        )}
-        {/* warm scrim so the headline stays readable over the art */}
-        <div className="absolute inset-0 bg-gradient-to-r from-cream-100/95 via-cream-100/70 to-transparent" />
+        <img src="images/banner.webp" alt="banner" />
       </div>
 
       <div className="shell relative flex min-h-[380px] items-center py-12 sm:min-h-[420px] lg:min-h-[460px]">

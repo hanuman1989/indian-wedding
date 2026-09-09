@@ -18,7 +18,7 @@ export default function Navbar() {
 
   return (
     <header id="top" className="relative z-30">
-      <PaisleyBand />
+      <img src="images/topbar.webp" alt="topbar" />
 
       <nav className="relative overflow-visible bg-wine-700">
         {/* faint mandala watermarks behind the bar */}
