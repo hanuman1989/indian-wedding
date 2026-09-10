@@ -101,7 +101,7 @@ export default function LoginButtonSection() {
           <button onClick={openModal} type="button" className="hidden rounded-md border border-gold-300/70 px-5 py-2 text-[13px] font-medium text-cream-50 transition-colors hover:bg-gold-400/15 sm:block">
             Login
           </button>
-          <Modal isOpen={isOpen} onClose={handleCloseModal} size="3xl" noPadding>
+          <Modal isOpen={isOpen} onClose={handleCloseModal} size="3xl" noPadding >
             <LoginForm onClose={handleCloseModal} socialLoginError={socialLoginError} />
           </Modal>
         </>

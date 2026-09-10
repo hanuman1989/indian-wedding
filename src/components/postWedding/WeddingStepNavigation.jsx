@@ -1,6 +1,6 @@
 import { ArrowRight } from '@/components/Icons';
 
-export default function WeddingStepNavigation({ isSaving, isSubmitting, onNext, onPrevious, onSubmit, step }) {
+export default function WeddingStepNavigation({ isPublished, isSaving, isSubmitting, onNext, onPrevious, onSubmit, step }) {
   const isFirstStep = step === 1;
   const isFinalStep = step === 5;
   const isPending = isSaving || isSubmitting;
@@ -20,7 +20,7 @@ export default function WeddingStepNavigation({ isSaving, isSubmitting, onNext, 
 
       {isFinalStep ? (
         <button type="button" onClick={onSubmit} disabled={isPending} className="inline-flex min-h-10 items-center gap-2 rounded-md bg-wine-700 px-5 text-sm font-semibold text-cream-50 shadow-sm transition-colors hover:bg-wine-600 focus:outline-none focus:ring-2 focus:ring-wine-300 disabled:cursor-not-allowed disabled:opacity-60">
-          {isSubmitting ? 'Publishing...' : 'Submit Wedding'}
+          {isSubmitting ? (isPublished ? 'Updating...' : 'Publishing...') : (isPublished ? 'Update Wedding' : 'Submit Wedding')}
           <ArrowRight className="h-4 w-4" />
         </button>
       ) : (
