@@ -2,40 +2,69 @@ export const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export const phonePattern = /^\+\d{7,}$/;
 
 export const languageOptions = [
-  'Hindi',
-  'English',
-  'Punjabi',
-  'Gujarati',
-  'Marathi',
-  'Bengali',
-  'Tamil',
-  'Telugu',
-  'Kannada',
-  'Malayalam',
-  'Other',
+  'Hindi', 'English', 'Punjabi', 'Gujarati', 'Marathi', 'Bengali',
+  'Tamil', 'Telugu', 'Kannada', 'Malayalam', 'Other',
 ];
 
-export function createWeddingEvent(day) {
+export const eventTimes = [
+  ...Array.from({ length: 48 }, (_, index) => {
+    const hour24 = Math.floor(index / 2);
+    const hour = hour24 % 12 || 12;
+    const minutes = index % 2 ? '30' : '00';
+    return {
+      text: `${hour}:${minutes} ${hour24 < 12 ? 'AM' : 'PM'}${index === 0 ? ' (midnight)' : index === 24 ? ' (noon)' : ''}`,
+      value: `${String(hour24).padStart(2, '0')}:${minutes}`,
+    };
+  }),
+];
+
+export function createWeddingEvent() {
   return {
-    day,
-    eventName: '',
-    eventDate: '',
-    startTime: '',
-    endTime: '',
-    venueName: '',
-    venueAddress: '',
+    id: null,
+    wedding_day_id: null,
+    title: '',
     description: '',
+    is_music_or_dancing: false,
+    dress_code: '',
   };
 }
 
-export function ensureWeddingEvents(weddingDays, events = []) {
-  const totalDays = Math.max(1, Number(weddingDays) || 1);
+export function createWeddingDay() {
+  return {
+    id: null,
+    wedding_id: null,
+    wedding_day_date: '',
+    wedding_day_time: '',
+    address_line_1: '',
+    address_line_2: '',
+    city: '',
+    state: '',
+    post_code: '',
+    landmark_near: '',
+    latitude: null,
+    longitude: null,
+    wedding_day_events: [],
+  };
+}
 
-  return Array.from({ length: totalDays }, (_, index) => ({
-    ...createWeddingEvent(index + 1),
-    ...(events[index] || {}),
-    day: index + 1,
-  }));
+export function ensureWeddingDays(numberOfDays, days = []) {
+  const totalDays = Math.max(1, Number(numberOfDays) || 1);
+
+  return Array.from({ length: totalDays }, (_, index) => {
+    const source = days[index] || {};
+    return {
+      ...createWeddingDay(),
+      ...source,
+      wedding_day_events: (source.wedding_day_events || []).map((event) => ({
+        ...createWeddingEvent(),
+        ...event,
+      })),
+    };
+  });
+}
+
+export function ensureWeddingEvents(numberOfDays, days = []) {
+  return ensureWeddingDays(numberOfDays, days);
 }
 
 export function getInitialWeddingForm(user = {}) {
@@ -49,25 +78,14 @@ export function getInitialWeddingForm(user = {}) {
     lastName: user.last_name || user.lastName || remainingNames.join(' '),
     email: user.email || '',
     phone: user.phone || '',
-    bride: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-    },
-    groom: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-    },
-    story: '',
-    youtubeUrl: '',
+    bride: { firstName: '', lastName: '', email: '', phone: '', fathersName: '', mothersName: '' },
+    groom: { firstName: '', lastName: '', email: '', phone: '', fathersName: '', mothersName: '' },
+    description: '',
+    videoUrl: '',
     weddingDays: '1',
     foodType: '',
-    languages: [],
-    events: [createWeddingEvent(1)],
-    photos: [],
+    wedding_days: [createWeddingDay()],
+    images: [],
   };
 }
 
@@ -77,112 +95,80 @@ function unwrapContact(source) {
   return contact.data ? unwrapContact(contact.data) : contact;
 }
 
-function normalizeContact(source = {}, prefix = '') {
+function normalizePartnerContact(source = {}, prefix = '') {
   const contact = unwrapContact(source);
   const fullName = contact.name || contact.full_name || contact[`${prefix}_name`] || '';
   const [firstName = '', ...remainingNames] = fullName.trim().split(/\s+/).filter(Boolean);
 
   return {
-    firstName: contact.firstName || contact.first_name || contact[`${prefix}_first_name`] || contact[`${prefix}FirstName`] || firstName,
-    lastName: contact.lastName || contact.last_name || contact[`${prefix}_last_name`] || contact[`${prefix}LastName`] || remainingNames.join(' '),
-    email: contact.email || contact[`${prefix}_email`] || contact[`${prefix}Email`] || '',
-    phone: contact.phone || contact.phone_number || contact[`${prefix}_phone`] || contact[`${prefix}Phone`] || '',
+    firstName: contact.firstName || contact.first_name || contact[`${prefix}_first_name`] || firstName,
+    lastName: contact.lastName || contact.last_name || contact[`${prefix}_last_name`] || remainingNames.join(' '),
+    email: contact.email || contact[`${prefix}_email`] || '',
+    phone: contact.phone || contact.phone_number || contact[`${prefix}_phone`] || '',
+    fathersName: contact.fathersName || contact.fathers_name || '',
+    mothersName: contact.mothersName || contact.mothers_name || '',
   };
 }
 
-function getPartnerContact(wedding, partner) {
-  return unwrapContact(wedding[partner]
-    || wedding[`${partner}_details`]
-    || wedding[`${partner}Details`]
-    || wedding[`${partner}_detail`]
-    || wedding[`${partner}Detail`]
-    || wedding[`${partner}_data`]
-    || wedding[`${partner}Data`]
-    || wedding.partners?.[partner]
-    || wedding.partner_details?.[partner]
-    || wedding.partnerDetails?.[partner]
-    || wedding);
-}
-
-function normalizeEvent(event, index) {
+function normalizeWeddingDay(day = {}) {
   return {
-    day: event.day || index + 1,
-    eventName: event.eventName || event.event_name || '',
-    eventDate: event.eventDate || event.event_date || event.date || '',
-    startTime: event.startTime || event.start_time || '',
-    endTime: event.endTime || event.end_time || '',
-    venueName: event.venueName || event.venue_name || '',
-    venueAddress: event.venueAddress || event.venue_address || '',
-    description: event.description || '',
+    ...createWeddingDay(),
+    ...day,
+    wedding_day_events: (day.wedding_day_events || []).map((event) => ({
+      ...createWeddingEvent(),
+      ...event,
+    })),
   };
 }
 
 function normalizePhoto(photo, index) {
   return {
-    id: photo.id || photo.photo_id || photo.uuid || `photo-${index}`,
+    id: photo.id || `photo-${index}`,
     url: photo.url || photo.image_url || photo.path || photo.photo || '',
     order: photo.order || photo.display_order || index + 1,
   };
 }
 
-function normalizeLanguages(languages) {
-  if (Array.isArray(languages)) return languages;
-  if (typeof languages === 'string') {
-    return languages.split(',').map((language) => language.trim()).filter(Boolean);
-  }
-  return [];
-}
-
-export function getWeddingFromResponse(response) {
-  return response?.wedding || response?.data?.wedding || response?.data || response;
-}
 
 export function normalizeWeddingForm(response, user = {}) {
-  const wedding = getWeddingFromResponse(response) || {};
+  const wedding = response || {};
   const initial = getInitialWeddingForm(user);
-  const storedEvents = wedding.events || wedding.wedding_events || [];
-  const weddingDays = String(wedding.weddingDays || wedding.wedding_days || storedEvents.length || initial.weddingDays);
+  const storedDays = wedding.wedding_days || [];
+  const numberOfDays = wedding.number_of_days || wedding.weddingDays || storedDays.length || initial.weddingDays;
 
   return {
     ...initial,
     creatorType: wedding.creator_type || initial.creatorType,
-    creatorTypeOther: wedding.creatorTypeOther || wedding.creator_type_other || initial.creatorTypeOther,
-    firstName: wedding.firstName || wedding.first_name || initial.firstName,
-    lastName: wedding.lastName || wedding.last_name || initial.lastName,
+    creatorTypeOther: wedding.creator_type_other || initial.creatorTypeOther,
+    firstName: wedding.first_name || initial.firstName,
+    lastName: wedding.last_name || initial.lastName,
     email: wedding.email || initial.email,
     phone: wedding.phone || initial.phone,
-    bride: normalizeContact(getPartnerContact(wedding, 'bride'), 'bride'),
-    groom: normalizeContact(getPartnerContact(wedding, 'groom'), 'groom'),
-    story: wedding.story || '',
-    youtubeUrl: wedding.youtubeUrl || wedding.youtube_url || '',
-    weddingDays,
-    foodType: wedding.foodType || wedding.food_type || '',
-    languages: normalizeLanguages(wedding.languages || wedding.main_languages),
-    events: ensureWeddingEvents(weddingDays, storedEvents.map(normalizeEvent)),
-    photos: (wedding.photos || wedding.wedding_photos || []).map(normalizePhoto).sort((first, second) => first.order - second.order),
+    bride: normalizePartnerContact(wedding.bride, 'bride'),
+    groom: normalizePartnerContact(wedding.groom, 'groom'),
+    description: wedding.description || '',
+    videoUrl: wedding.video_url || '',
+    weddingDays: String(numberOfDays),
+    foodType: wedding.food_observance || wedding.food_type || '',
+    wedding_days: ensureWeddingDays(numberOfDays, storedDays.map(normalizeWeddingDay)),
+    images: (wedding.images || []).map(normalizePhoto).sort((a, b) => a.order - b.order),
   };
 }
 
 function addRequiredError(errors, value, field, message) {
-  if (!value?.trim()) errors[field] = message;
+  if (!value?.toString().trim()) errors[field] = message;
 }
 
-function validateContact(errors, contact, prefix, label) {
+function validateContact(errors, contact = {}, prefix, label) {
   addRequiredError(errors, contact.firstName, `${prefix}.firstName`, `Enter ${label.toLowerCase()} first name.`);
   addRequiredError(errors, contact.lastName, `${prefix}.lastName`, `Enter ${label.toLowerCase()} last name.`);
-
-  if (!emailPattern.test(contact.email?.trim() || '')) {
-    errors[`${prefix}.email`] = `Enter a valid ${label.toLowerCase()} email address.`;
-  }
-  if (!phonePattern.test(contact.phone || '')) {
-    errors[`${prefix}.phone`] = `Enter a valid ${label.toLowerCase()} phone number with country code.`;
-  }
+  if (!emailPattern.test(contact.email?.trim() || '')) errors[`${prefix}.email`] = `Enter a valid ${label.toLowerCase()} email address.`;
+  if (!phonePattern.test(contact.phone || '')) errors[`${prefix}.phone`] = "Phone number must start with '+' and contain at least 7 digits.";
 }
 
 function isYouTubeUrl(value) {
   try {
-    const url = new URL(value);
-    return /(^|\.)youtube\.com$|(^|\.)youtu\.be$/.test(url.hostname);
+    return /(^|\.)youtube\.com$|(^|\.)youtu\.be$/.test(new URL(value).hostname);
   } catch {
     return false;
   }
@@ -192,12 +178,8 @@ export function validateWeddingStep(step, form) {
   const errors = {};
 
   if (step === 1) {
-    if (!['bride', 'groom', 'other'].includes(form.creatorType)) {
-      errors.creatorType = 'Choose your role in the wedding.';
-    }
-    if (form.creatorType === 'other') {
-      addRequiredError(errors, form.creatorTypeOther, 'creatorTypeOther', 'Please specify your role in the wedding.');
-    }
+    if (!['bride', 'groom', 'other'].includes(form.creatorType)) errors.creatorType = 'Choose your role in the wedding.';
+    if (form.creatorType === 'other') addRequiredError(errors, form.creatorTypeOther, 'creatorTypeOther', 'Please specify your role in the wedding.');
     addRequiredError(errors, form.firstName, 'firstName', 'Enter your first name.');
     addRequiredError(errors, form.lastName, 'lastName', 'Enter your last name.');
     if (!emailPattern.test(form.email?.trim() || '')) errors.email = 'Enter a valid email address.';
@@ -210,37 +192,33 @@ export function validateWeddingStep(step, form) {
   }
 
   if (step === 3) {
-    if (!form.story.trim()) errors.story = 'Tell us a little about your story.';
-    if (form.story.length > 2000) errors.story = 'Your story must be 2,000 characters or fewer.';
-    if (form.youtubeUrl.trim() && !isYouTubeUrl(form.youtubeUrl.trim())) {
-      errors.youtubeUrl = 'Enter a valid YouTube link.';
-    }
+    if (!form.description.trim()) errors.description = 'Tell us a little about your story.';
+    if (form.description.length > 2000) errors.description = 'Your story must be 2,000 characters or fewer.';
+    if (form.videoUrl.trim() && !isYouTubeUrl(form.videoUrl.trim())) errors.videoUrl = 'Enter a valid YouTube link.';
   }
 
   if (step === 4) {
     if (!form.weddingDays) errors.weddingDays = 'Select the number of wedding days.';
     if (!form.foodType) errors.foodType = 'Select the food offering.';
-    if (!form.languages.length) errors.languages = 'Choose at least one wedding language.';
 
-    form.events.forEach((event, index) => {
-      const prefix = `events.${index}`;
-      addRequiredError(errors, event.eventName, `${prefix}.eventName`, `Enter the Day ${event.day} event name.`);
-      addRequiredError(errors, event.eventDate, `${prefix}.eventDate`, `Choose the Day ${event.day} event date.`);
-      addRequiredError(errors, event.startTime, `${prefix}.startTime`, `Choose the Day ${event.day} start time.`);
-      addRequiredError(errors, event.endTime, `${prefix}.endTime`, `Choose the Day ${event.day} end time.`);
-      addRequiredError(errors, event.venueName, `${prefix}.venueName`, `Enter the Day ${event.day} venue name.`);
-      addRequiredError(errors, event.venueAddress, `${prefix}.venueAddress`, `Enter the Day ${event.day} venue address.`);
+    (form.wedding_days || []).forEach((day, index) => {
+      const prefix = `wedding_days.${index}`;
+      addRequiredError(errors, day.wedding_day_date, `${prefix}.wedding_day_date`, `Choose the Day ${index + 1} date.`);
+      addRequiredError(errors, day.wedding_day_time, `${prefix}.wedding_day_time`, `Choose the Day ${index + 1} time.`);
+      addRequiredError(errors, day.address_line_1, `${prefix}.address_line_1`, `Enter the Day ${index + 1} address.`);
+      addRequiredError(errors, day.city, `${prefix}.city`, `Enter the Day ${index + 1} city.`);
+      addRequiredError(errors, day.state, `${prefix}.state`, `Enter the Day ${index + 1} state.`);
 
-      if (event.startTime && event.endTime && event.endTime <= event.startTime) {
-        errors[`${prefix}.endTime`] = 'End time must be later than start time.';
-      }
+      day.wedding_day_events.forEach((event, eventIndex) => {
+        const eventPrefix = `${prefix}.wedding_day_events.${eventIndex}`;
+        addRequiredError(errors, event.title, `${eventPrefix}.title`, `Enter the Day ${index + 1} event title.`);
+        addRequiredError(errors, event.description, `${eventPrefix}.description`, `Enter the Day ${index + 1} event description.`);
+        addRequiredError(errors, event.dress_code, `${eventPrefix}.dress_code`, `Enter the Day ${index + 1} event dress code.`);
+      });
     });
   }
 
-  if (step === 5 && !form.photos.length) {
-    errors.photos = 'Add at least one wedding photo before publishing.';
-  }
-
+  if (step === 5 && !form.images.length) errors.images = 'Add at least one wedding photo before publishing.';
   return errors;
 }
 
@@ -254,55 +232,52 @@ export function getStepPayload(step, form) {
     last_name: contact.lastName.trim(),
     email: contact.email.trim(),
     phone: contact.phone,
+    fathers_name: contact.fathersName.trim(),
+    mothers_name: contact.mothersName.trim(),
   });
 
-  if (step === 1) {
-    return {
-      creator_type: form.creatorType,
-      creator_type_other: form.creatorType === 'other' ? form.creatorTypeOther.trim() : null,
-      first_name: form.firstName.trim(),
-      last_name: form.lastName.trim(),
-      email: form.email.trim(),
-      phone: form.phone,
-      status: 'draft',
-    };
-  }
+  if (step === 1) return {
+    creator_type: form.creatorType,
+    creator_type_other: form.creatorType === 'other' ? form.creatorTypeOther.trim() : null,
+    first_name: form.firstName.trim(),
+    last_name: form.lastName.trim(),
+    email: form.email.trim(),
+    phone: form.phone,
+    status: 'draft',
+  };
 
   if (step === 2) {
-    if (form.creatorType === 'bride') {
-      return { groom: contactPayload(form.groom) };
-    }
-
-    if (form.creatorType === 'groom') {
-      return { bride: contactPayload(form.bride) };
-    }
-
-    return {
-      bride: contactPayload(form.bride),
-      groom: contactPayload(form.groom),
-    };
+    if (form.creatorType === 'bride') return { groom: contactPayload(form.groom) };
+    if (form.creatorType === 'groom') return { bride: contactPayload(form.bride) };
+    return { bride: contactPayload(form.bride), groom: contactPayload(form.groom) };
   }
 
-  if (step === 3) {
-    return {
-      story: form.story.trim(),
-      youtube_url: form.youtubeUrl.trim() || null,
-    };
-  }
+  if (step === 3) return { description: form.description.trim(), video_url: form.videoUrl.trim() || null };
 
   return {
-    wedding_days: Number(form.weddingDays),
-    food_type: form.foodType,
-    languages: form.languages,
-    events: form.events.map((event) => ({
-      day: event.day,
-      event_name: event.eventName.trim(),
-      event_date: event.eventDate,
-      start_time: event.startTime,
-      end_time: event.endTime,
-      venue_name: event.venueName.trim(),
-      venue_address: event.venueAddress.trim(),
-      description: event.description.trim() || null,
+    number_of_days: Number(form.weddingDays),
+    food_observance: form.foodType,
+    wedding_days: (form.wedding_days || []).map((day) => ({
+      id: day.id,
+      wedding_id: day.wedding_id,
+      wedding_day_date: day.wedding_day_date,
+      wedding_day_time: day.wedding_day_time,
+      address_line_1: day.address_line_1.trim(),
+      address_line_2: day.address_line_2.trim(),
+      city: day.city.trim(),
+      state: day.state.trim(),
+      post_code: day.post_code.trim(),
+      landmark_near: String(day.landmark_near).trim(),
+      latitude: day.latitude,
+      longitude: day.longitude,
+      wedding_day_events: day.wedding_day_events.map((event) => ({
+        id: event.id,
+        wedding_day_id: event.wedding_day_id,
+        title: event.title.trim(),
+        description: event.description.trim(),
+        is_music_or_dancing: event.is_music_or_dancing,
+        dress_code: event.dress_code.trim(),
+      })),
     })),
   };
 }

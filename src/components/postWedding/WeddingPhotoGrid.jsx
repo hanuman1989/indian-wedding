@@ -1,19 +1,32 @@
+import { useState } from 'react';
 import { Grip, Trash } from '@/components/Icons';
 
 /* API image URLs and browser blob previews cannot use next/image without a dedicated loader. */
 /* eslint-disable @next/next/no-img-element */
 export default function WeddingPhotoGrid({ deletingPhotoId, onDelete, onMove, onReorder, photos }) {
+  const [draggedPhotoId, setDraggedPhotoId] = useState(null);
+
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {photos.map((photo, index) => (
         <article
           key={photo.id}
           draggable
-          onDragStart={(event) => event.dataTransfer.setData('text/plain', String(photo.id))}
-          onDragOver={(event) => event.preventDefault()}
+          onDragStart={(event) => {
+            const photoId = String(photo.id);
+            setDraggedPhotoId(photoId);
+            event.dataTransfer.effectAllowed = 'move';
+            event.dataTransfer.setData('text/plain', photoId);
+          }}
+          onDragEnd={() => setDraggedPhotoId(null)}
+          onDragOver={(event) => {
+            event.preventDefault();
+            event.dataTransfer.dropEffect = 'move';
+          }}
           onDrop={(event) => {
             event.preventDefault();
-            const sourceId = event.dataTransfer.getData('text/plain');
+            const sourceId = event.dataTransfer.getData('text/plain') || draggedPhotoId;
+            setDraggedPhotoId(null);
             if (sourceId && sourceId !== String(photo.id)) onReorder(sourceId, photo.id);
           }}
           className="group relative overflow-hidden border border-gold-200 bg-white shadow-sm"

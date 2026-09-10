@@ -56,7 +56,7 @@
 
   /* Cream-on-maroon select/date controls keep the native arrow subtle */
   select {
-    appearance: none;
+    /* appearance: none; */
   }
 }
 

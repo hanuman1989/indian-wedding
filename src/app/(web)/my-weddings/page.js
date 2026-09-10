@@ -12,7 +12,7 @@ import SuccessMessage from '@/components/common/SuccessMessage';
 import { Modal } from '@/components/ui/modal';
 import { Plus } from '@/components/Icons';
 import { useProtectedRoute } from '@/hooks/useProtectedRoute';
-import weddingAPI from '@/lib/apis/wedding';
+import APIs from '@/lib/apis';
 
 function getWeddingList(response) {
   const data = response?.weddings || response?.data?.weddings || response?.data || response;
@@ -46,20 +46,17 @@ function normalizeWedding(wedding) {
   return {
     ...wedding,
     id: wedding.id || wedding.uuid,
-    couple: wedding.couple || `${brideName} & ${groomName}`,
+    couple: `${brideName} & ${groomName}`,
     createdAt: formatDate(wedding.created_at || wedding.createdAt),
     dates: wedding.dates || wedding.wedding_dates || firstEvent.event_date || firstEvent.date || 'Dates to be confirmed',
     duration: `${days} ${days === 1 ? 'Day' : 'Days'}`,
     venue: wedding.venue_name || wedding.venueName || firstEvent.venue_name || firstEvent.venueName || 'Venue to be confirmed',
-    location: wedding.venue_address || wedding.venueAddress || firstEvent.venue_address || firstEvent.venueAddress || 'Location to be confirmed',
-    languages: Array.isArray(wedding.languages || wedding.main_languages)
-      ? (wedding.languages || wedding.main_languages).join(', ')
-      : wedding.languages || wedding.main_languages || 'Languages to be confirmed',
+    location: wedding.locations || 'Location to be confirmed',
     photoCount: wedding.photo_count || wedding.photos_count || (wedding.photos || wedding.wedding_photos || []).length,
-    image: photo.url || photo.image_url || photo.path || '',
+    cover_image: photo.cover_image || '',
     tagline: wedding.tagline || wedding.story || wedding.type || 'A beautiful wedding celebration',
-    listStatus: ['live', 'draft', 'ended'].includes(status) ? status : 'draft',
-    statusLabel: status === 'published' ? 'Live' : undefined,
+    listStatus: ['live', 'draft', 'ended', 'published', 'submitted'].includes(status) ? status : 'draft',
+    statusLabel: status ,
     currentStep: wedding.current_step || wedding.currentStep || 1,
   };
 }
@@ -85,9 +82,10 @@ export default function MyWeddingsPage() {
       setErrorMessage('');
 
       try {
-        const response = await weddingAPI.getMyWeddings();
-        if (isActive) setWeddings(getWeddingList(response).map(normalizeWedding));
-      } catch {
+        const response = await APIs.frontend.weddings.getMyWeddings();
+        console.log(response, 'getMyWeddings response---')
+        if (isActive) setWeddings(response.data || []);
+      } catch (error) {
         if (isActive) setErrorMessage('Unable to load your weddings. Please try again.');
       } finally {
         if (isActive) setIsLoadingWeddings(false);
@@ -117,7 +115,7 @@ export default function MyWeddingsPage() {
     setErrorMessage('');
 
     try {
-      await weddingAPI.deleteWedding(weddingToDelete.id);
+      await APIs.frontend.weddings.deleteWedding(weddingToDelete.id);
       setWeddings((currentWeddings) => currentWeddings.filter((wedding) => wedding.id !== weddingToDelete.id));
       setWeddingToDelete(null);
       setSuccessMessage('Wedding deleted successfully.');

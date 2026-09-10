@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import {
   ArrowRight,
   Calendar,
@@ -10,6 +11,7 @@ import {
   Photo,
   Trash,
   Users,
+  Ticket
 } from '@/components/Icons';
 
 const statusStyles = {
@@ -31,59 +33,54 @@ function Metadata({ children, Icon, label }) {
 }
 
 function RegisteredWeddingCard({ deletingWeddingId, onDelete, onEdit, wedding }) {
-  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const status = wedding.listStatus || 'live';
   const statusLabel = wedding.statusLabel || status.charAt(0).toUpperCase() + status.slice(1);
 
   return (
     <article className="overflow-hidden border border-gold-200/90 bg-white/80 shadow-[0_6px_18px_rgba(108,10,34,0.05)]">
-      <div className="grid min-w-0 md:grid-cols-[190px_minmax(0,1fr)]">
+      <div className="grid min-w-0 md:grid-cols-[250px_minmax(0,1fr)]">
         <div className="relative min-h-44 overflow-hidden bg-gold-100/60 md:min-h-full">
           <Image
-            src={wedding.image || '/images/bg.png'}
-            alt={`Wedding decor for ${wedding.couple}`}
+            src={wedding.cover_image || '/images/bg.png'}
+            alt={`Wedding decor for ${wedding.couple_name}`}
             fill
-            sizes="(min-width: 768px) 190px, 100vw"
+            unoptimized
+            sizes="(min-width: 768px) 250px, 100vw"
             className="object-cover"
             style={{ objectPosition: wedding.imagePosition || '75% 70%' }}
           />
           <span className={`absolute left-3 top-3 rounded-sm px-2.5 py-1 text-xs font-semibold shadow-sm ${statusStyles[status]}`}>
             {statusLabel}
           </span>
-          <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-sm bg-black/55 px-2 py-1 text-xs font-medium text-white">
-            <Photo className="h-3.5 w-3.5" />
-            {wedding.photoCount || 0} Photos
-          </span>
         </div>
 
         <div className="min-w-0 p-5">
           <div className="flex flex-wrap items-start justify-between gap-2">
             <div className="min-w-0">
-              <h2 className="font-display text-2xl font-bold leading-tight text-wine-700">{wedding.couple}</h2>
-              <p className="mt-1 text-sm italic text-ink-soft">{wedding.tagline || wedding.type}</p>
+              <h2 className="font-display text-2xl font-bold leading-tight text-wine-700">{wedding.couple_name}</h2>
+              <p className="mt-1 text-sm italic text-ink-soft">
+                A beautiful wedding celebration
+              </p>
             </div>
-            <p className="shrink-0 text-xs text-ink-soft">Created on {wedding.createdAt}</p>
+            <p className="shrink-0 text-xs text-ink-soft">Created on {wedding.created_at}</p>
           </div>
 
           <dl className="mt-5 grid gap-3 sm:grid-cols-3">
             <Metadata Icon={Calendar} label="Wedding dates">
-              {wedding.dates}
-              <span className="block text-[11px] font-normal text-ink-soft">{wedding.duration}</span>
+              {wedding.number_of_days > 1 ? `Wedding dates` : `Wedding date`}
+              <span className="block text-[11px] font-normal text-ink-soft">{wedding.wedding_dates || 'Dates to be confirmed'}</span>
             </Metadata>
             <Metadata Icon={MapPin} label="Venue">
-              {wedding.venue || wedding.location}
-              <span className="block text-[11px] font-normal text-ink-soft">{wedding.location}</span>
+              Venue
+              <span className="block text-[11px] font-normal text-ink-soft">{wedding.locations}</span>
             </Metadata>
-            <Metadata Icon={Users} label="Languages">
-              {wedding.languages || 'Hindi, English'}
+            <Metadata Icon={Ticket} label="Food Observance">
+            Food Observance
+            <span className="block text-[11px] font-normal text-ink-soft">
+              {wedding.food_observance || 'Not decided yet'}
+              </span>
             </Metadata>
           </dl>
-
-          {isDetailsOpen && (
-            <div className="mt-4 border-t border-gold-200/70 pt-4 text-sm leading-6 text-ink-soft">
-              <span className="font-medium text-ink">Wedding style:</span> {wedding.type}. The celebration runs for {wedding.duration.toLowerCase()}.
-            </div>
-          )}
 
           <div className="mt-5 flex flex-wrap items-center justify-end gap-2 border-t border-gold-200/70 pt-4">
             <button type="button" onClick={() => onEdit(wedding)} className="inline-flex min-h-9 items-center gap-1.5 rounded-md border border-wine-300 px-3 text-xs font-semibold text-wine-700 transition-colors hover:border-wine-500 hover:bg-wine-50">
@@ -94,15 +91,13 @@ function RegisteredWeddingCard({ deletingWeddingId, onDelete, onEdit, wedding })
               <Trash className="h-3.5 w-3.5" />
               {deletingWeddingId === wedding.id ? 'Deleting...' : 'Delete'}
             </button>
-            <button
-              type="button"
-              onClick={() => setIsDetailsOpen((current) => !current)}
-              aria-expanded={isDetailsOpen}
+            <Link
+              href={`/wedding-detail/${wedding.id}`}
               className="inline-flex min-h-9 items-center gap-1.5 rounded-md bg-wine-700 px-3.5 text-xs font-semibold text-cream-50 transition-colors hover:bg-wine-600"
             >
-              {isDetailsOpen ? 'Hide Details' : 'View Details'}
-              <ArrowRight className={`h-3.5 w-3.5 transition-transform ${isDetailsOpen ? 'rotate-90' : ''}`} />
-            </button>
+              View Details
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
         </div>
       </div>

@@ -10,13 +10,13 @@ import SuccessMessage from '@/components/common/SuccessMessage';
 import { Modal } from '@/components/ui/modal';
 import { useProtectedRoute } from '@/hooks/useProtectedRoute';
 import { useUserAuth } from '@/hooks/useUserAuth';
-import weddingAPI from '@/lib/apis/wedding';
+import APIs from '@/lib/apis';
 import CoupleStory from './CoupleStory';
 import {
+  createWeddingEvent,
   ensureWeddingEvents,
   getInitialWeddingForm,
   getStepPayload,
-  getWeddingFromResponse,
   normalizeWeddingForm,
   validateEntireWedding,
   validateWeddingStep,
@@ -62,8 +62,7 @@ function getApiFieldErrors(error) {
     youtubeUrl: apiErrors.youtube_url,
     weddingDays: apiErrors.wedding_days,
     foodType: apiErrors.food_type,
-    languages: apiErrors.languages,
-    photos: apiErrors.photos,
+    images: apiErrors.images,
   };
 
   return Object.fromEntries(
@@ -89,11 +88,9 @@ function getSavedStep(wedding) {
 }
 
 function getPhotoResponse(response, files, startingOrder) {
-  const responsePhotos = response?.photos || response?.photo || response?.data?.photos || response?.data?.photo || [];
-
-  if (Array.isArray(responsePhotos) && responsePhotos.length) {
-    return responsePhotos.map((photo, index) => ({
-      id: photo.id || photo.photo_id || photo.uuid || `uploaded-${Date.now()}-${index}`,
+  if (Array.isArray(response) && response.length) {
+    return response.map((photo, index) => ({
+      id: photo.id || `uploaded-${Date.now()}-${index}`,
       url: photo.url || photo.image_url || photo.path || '',
       order: photo.order || photo.display_order || startingOrder + index,
     }));
@@ -111,6 +108,7 @@ function getStepComponent(step, props) {
   if (step === 2) return <PartnerDetails {...props} />;
   if (step === 3) return <CoupleStory {...props} />;
   if (step === 4) return <WeddingDetails {...props} />;
+  if (step === 5) return <WeddingPhotos {...props} />;
   return <WeddingPhotos {...props} />;
 }
 
@@ -120,6 +118,7 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
   const { user } = useUserAuth();
   const [form, setForm] = useState(() => getInitialWeddingForm());
   const [weddingId, setWeddingId] = useState(initialWeddingId);
+  const [weddingStatus, setWeddingStatus] = useState('draft');
   const [currentStep, setCurrentStep] = useState(() => getRouteStep(initialStep));
   const [highestAvailableStep, setHighestAvailableStep] = useState(firstStep);
   const [errors, setErrors] = useState({});
@@ -146,6 +145,7 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
     }
 
     setWeddingId(null);
+    setWeddingStatus('draft');
     setHighestAvailableStep(firstStep);
     setIsLoadingWedding(false);
   }, [initialWeddingId]);
@@ -166,19 +166,19 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
 
     const loadWedding = async () => {
       try {
-        const response = await weddingAPI.getWedding(initialWeddingId);
+        const response = await APIs.frontend.weddings.getWedding(initialWeddingId);
         if (!isActive) return;
 
-        const wedding = getWeddingFromResponse(response);
-        const nextForm = normalizeWeddingForm(response, user || {});
+        const wedding = response.data;
+        const nextForm = normalizeWeddingForm(response.data, user || {});
         const availableStep = getAvailableStep(nextForm, getSavedStep(wedding));
         const requestedStep = getRouteStep(initialStep);
         const resolvedStep = Math.min(requestedStep, availableStep);
 
         setForm(nextForm);
+        setWeddingStatus(wedding.status || 'draft');
         setHighestAvailableStep(availableStep);
         setCurrentStep(resolvedStep);
-
         if (requestedStep !== resolvedStep) {
           router.replace(`/post-weddings/${initialWeddingId}/step/${resolvedStep}`);
         }
@@ -202,11 +202,11 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
     return () => {
       isActive = false;
     };
-  }, [initialWeddingId, isAuthorized, router, user]);
+  }, [initialStep, initialWeddingId, isAuthorized, router, user]);
 
   useEffect(() => {
-    photosRef.current = form.photos;
-  }, [form.photos]);
+    photosRef.current = form.images;
+  }, [form.images]);
 
   useEffect(() => () => {
     photosRef.current.forEach((photo) => {
@@ -237,24 +237,37 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
   const updateEvent = (index, field, value) => {
     setForm((currentForm) => ({
       ...currentForm,
-      events: currentForm.events.map((event, eventIndex) => eventIndex === index ? { ...event, [field]: value } : event),
+      wedding_days: currentForm.wedding_days.map((day, dayIndex) => {
+        if (dayIndex !== index) return day;
+
+        const eventPath = field.match(/^wedding_day_events\.(\d+)\.(.+)$/);
+        if (!eventPath) return { ...day, [field]: value };
+
+        const [, eventIndex, eventField] = eventPath;
+        const events = day.wedding_day_events?.length ? day.wedding_day_events : [createWeddingEvent()];
+        return {
+          ...day,
+          wedding_day_events: events.map((event, currentEventIndex) => (
+            currentEventIndex === Number(eventIndex) ? { ...event, [eventField]: value } : event
+          )),
+        };
+      }),
     }));
-    setErrors((currentErrors) => ({ ...currentErrors, [`events.${index}.${field}`]: undefined }));
+    setErrors((currentErrors) => ({ ...currentErrors, [`wedding_days.${index}.${field}`]: undefined }));
     setFormError('');
   };
 
-  const updateWeddingDays = (weddingDays) => {
+  const updateWeddingDays = (number_of_days) => {
     setForm((currentForm) => ({
       ...currentForm,
-      weddingDays,
-      events: ensureWeddingEvents(weddingDays, currentForm.events),
+      weddingDays: number_of_days,
+      wedding_days: ensureWeddingEvents(number_of_days, currentForm.wedding_days),
     }));
     setErrors((currentErrors) => ({ ...currentErrors, weddingDays: undefined }));
   };
 
   const goToStep = (step) => {
     if (step > highestAvailableStep || isSaving || isSubmitting) return;
-
     setErrors({});
     setFormError('');
     setSuccessMessage('');
@@ -270,7 +283,6 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
     setErrors(validationErrors);
     setFormError('');
     setSuccessMessage('');
-
     if (Object.keys(validationErrors).length > 0) return;
 
     setIsSaving(true);
@@ -280,22 +292,30 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
       let response;
 
       if (currentStep === firstStep && !weddingId) {
-        response = await weddingAPI.createWedding(getStepPayload(currentStep, form));
-        nextWeddingId = getWeddingFromResponse(response)?.id;
+        response = await APIs.frontend.weddings.createWedding(getStepPayload(currentStep, form));
+        nextWeddingId = response.data?.id;
 
         if (!nextWeddingId) {
           throw { message: 'The new wedding draft did not return an ID. Please try again.' };
         }
-
         setWeddingId(nextWeddingId);
       } else if (currentStep === firstStep) {
-        response = await weddingAPI.updateWeddingStepOne(weddingId, getStepPayload(currentStep, form));
+        const payload = getStepPayload(currentStep, form);
+        if(weddingId){
+           response = await APIs.frontend.weddings.updateWedding(weddingId, getStepPayload(currentStep, form));
+        }else{
+          response = await APIs.frontend.weddings.createWedding(payload);
+        }
       } else if (currentStep === 2) {
-        response = await weddingAPI.updatePartnerDetails(weddingId, getStepPayload(currentStep, form));
+        response = await APIs.frontend.weddings.updatePartnerDetails(weddingId, getStepPayload(currentStep, form));
       } else if (currentStep === 3) {
-        response = await weddingAPI.updateStory(weddingId, getStepPayload(currentStep, form));
+        response = await APIs.frontend.weddings.updateStory(weddingId, getStepPayload(currentStep, form));
+      } else if (currentStep === 4) {
+        response = await APIs.frontend.weddings.updateWeddingDays(weddingId, getStepPayload(currentStep, form));
+      }else if (currentStep === 5) {
+        response = await APIs.frontend.weddings.uploadWeddingPhotos(weddingId, getStepPayload(currentStep, form));
       } else {
-        response = await weddingAPI.updateWeddingDetails(weddingId, getStepPayload(currentStep, form));
+        response = await APIs.frontend.weddings.updateWeddingDetails(weddingId, getStepPayload(currentStep, form));
       }
 
       const nextStep = Math.min(currentStep + 1, finalStep);
@@ -315,16 +335,16 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
     if (!weddingId) return;
 
     try {
-      await weddingAPI.reorderWeddingPhotos(weddingId, nextPhotos.map((photo, index) => ({ id: photo.id, order: index + 1 })));
+      await APIs.frontend.weddings.updatePhotoOrder(weddingId, nextPhotos.map((photo) => photo.id));
     } catch {
-      setForm((currentForm) => ({ ...currentForm, photos: previousPhotos }));
+      setForm((currentForm) => ({ ...currentForm, images: previousPhotos }));
       setFormError('Unable to save the photo order. Please try again.');
     }
   };
 
   const reorderPhotos = (sourceId, destinationId) => {
     setForm((currentForm) => {
-      const previousPhotos = currentForm.photos;
+      const previousPhotos = currentForm.images;
       const sourceIndex = previousPhotos.findIndex((photo) => String(photo.id) === String(sourceId));
       const destinationIndex = previousPhotos.findIndex((photo) => String(photo.id) === String(destinationId));
       if (sourceIndex < 0 || destinationIndex < 0) return currentForm;
@@ -335,29 +355,29 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
       const orderedPhotos = nextPhotos.map((photo, index) => ({ ...photo, order: index + 1 }));
       void persistPhotoOrder(orderedPhotos, previousPhotos);
 
-      return { ...currentForm, photos: orderedPhotos };
+      return { ...currentForm, images: orderedPhotos };
     });
   };
 
   const movePhoto = (index, direction) => {
     const nextIndex = index + direction;
-    if (nextIndex < 0 || nextIndex >= form.photos.length) return;
-    reorderPhotos(form.photos[index].id, form.photos[nextIndex].id);
+    if (nextIndex < 0 || nextIndex >= form.images.length) return;
+    reorderPhotos(form.images[index].id, form.images[nextIndex].id);
   };
 
   const addPhotos = async (files) => {
     if (!weddingId || isUploading) return;
 
-    setErrors((currentErrors) => ({ ...currentErrors, photos: undefined }));
+    setErrors((currentErrors) => ({ ...currentErrors, images: undefined }));
     setFormError('');
     setIsUploading(true);
 
     try {
-      const response = await weddingAPI.uploadWeddingPhotos(weddingId, files);
-      const uploadedPhotos = getPhotoResponse(response, files, form.photos.length + 1);
+      const response = await APIs.frontend.weddings.uploadWeddingPhotos(weddingId, files);
+      const uploadedPhotos = getPhotoResponse(response.data, files, form.images.length + 1);
       setForm((currentForm) => ({
         ...currentForm,
-        photos: [...currentForm.photos, ...uploadedPhotos].map((photo, index) => ({ ...photo, order: index + 1 })),
+        images: [...currentForm.images, ...uploadedPhotos].map((photo, index) => ({ ...photo, order: index + 1 })),
       }));
     } catch (error) {
       setFormError(getErrorMessage(error?.message, 'Unable to upload your photos. Please try again.'));
@@ -373,18 +393,17 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
 
   const removePhoto = async () => {
     if (!photoToDelete || !weddingId) return;
-
     setDeletingPhotoId(photoToDelete.id);
     setFormError('');
 
     try {
-      await weddingAPI.deleteWeddingPhoto(weddingId, photoToDelete.id);
+      await APIs.frontend.weddings.deleteWeddingPhoto(weddingId, photoToDelete.id);
       setForm((currentForm) => {
-        const nextPhotos = currentForm.photos
+        const nextImages = currentForm.images
           .filter((photo) => photo.id !== photoToDelete.id)
           .map((photo, index) => ({ ...photo, order: index + 1 }));
         if (photoToDelete.preview) URL.revokeObjectURL(photoToDelete.preview);
-        return { ...currentForm, photos: nextPhotos };
+        return { ...currentForm, images: nextImages };
       });
       setPhotoToDelete(null);
     } catch (error) {
@@ -403,14 +422,16 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
       if (!weddingId) setFormError('Save your wedding details before publishing.');
       return;
     }
-
     setIsSubmitting(true);
-
     try {
-      await weddingAPI.reorderWeddingPhotos(weddingId, form.photos.map((photo, index) => ({ id: photo.id, order: index + 1 })));
-      await weddingAPI.submitWedding(weddingId);
-      router.replace('/my-weddings?published=true');
+      if (weddingStatus === 'published') {
+        router.replace('/my-weddings?updated=true');
+      } else {
+        await APIs.frontend.weddings.submitWedding(weddingId);
+        router.replace('/my-weddings?published=true');
+      }
     } catch (error) {
+      console.log(error, 'submitWedding error---')
       setErrors((currentErrors) => ({ ...currentErrors, ...getApiFieldErrors(error) }));
       setFormError(getErrorMessage(error?.message, 'Unable to publish your wedding. Please try again.'));
     } finally {
@@ -432,7 +453,7 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
       onFilesRejected: showRejectedFiles,
       onMove: movePhoto,
       onReorder: reorderPhotos,
-      photos: form.photos,
+      images: form.images,
     } : {}),
   };
 
@@ -469,6 +490,7 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
               <div className="mt-7">
                 <WeddingStepNavigation
                   step={currentStep}
+                  isPublished={weddingStatus === 'published'}
                   isSaving={isSaving}
                   isSubmitting={isSubmitting}
                   onPrevious={() => currentStep === firstStep ? router.push('/my-weddings') : goToStep(currentStep - 1)}
