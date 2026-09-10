@@ -168,6 +168,14 @@ export const Sliders = (p) => (
   </S>
 )
 
+export const RefreshCw = (p) => (
+  <S {...p}>
+    <path d="M20 11a8 8 0 0 0-14.8-4L4 9" />
+    <path d="M4 4v5h5M4 13a8 8 0 0 0 14.8 4L20 15" />
+    <path d="M20 20v-5h-5" />
+  </S>
+)
+
 export const Send = (p) => (
   <S {...p}>
     <path d="M4 11.5 20 4l-7.4 16-2-6.4L4 11.5Z" />

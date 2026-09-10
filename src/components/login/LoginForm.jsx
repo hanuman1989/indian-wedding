@@ -194,10 +194,11 @@ export default function LoginForm({ onClose, socialLoginError = '' }) {
     if (Object.keys(validationErrors).length > 0) return
 
     const result = await login(email.trim(), password)
+    console.log(result, 'login result---')
 
     if (result.meta.requestStatus === 'fulfilled') {
-      onClose()
       router.replace('/dashboard')
+     // onClose()
       return
     }
 

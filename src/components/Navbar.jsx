@@ -4,6 +4,7 @@ import { ChevronDown, Globe } from '@/components/Icons'
 import { Logo, Mandala, PaisleyBand } from './Ornaments'
 import LoginButtonSection from '@/components/login/LoginButtonSection'
 import Link from 'next/link'
+import { useUserAuth } from '@/hooks/useUserAuth'
 const links = [
   { label: 'Home', href: '/' },
   { label: 'Browse Weddings', href: '#weddings' },
@@ -14,6 +15,7 @@ const links = [
 ]
 
 export default function Navbar() {
+  const { isAuthenticated } = useUserAuth()
   const [open, setOpen] = useState(false)
 
   return (
@@ -53,13 +55,14 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
 
             <LoginButtonSection />
-
-            <Link
-              href="registration"
-              className="rounded-md border border-gold-300/40 bg-wine-500 px-5 py-2 text-[13px] font-medium text-cream-50 shadow-sm transition-colors hover:bg-wine-400"
-            >
-              Sign Up
-            </Link>
+            {!isAuthenticated && (
+              <Link
+                href="registration"
+                className="rounded-md border border-gold-300/40 bg-wine-500 px-5 py-2 text-[13px] font-medium text-cream-50 shadow-sm transition-colors hover:bg-wine-400"
+              >
+                Sign Up
+              </Link>
+            )}
 
             {/* mobile menu toggle */}
             <button

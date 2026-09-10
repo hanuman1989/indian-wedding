@@ -11,7 +11,7 @@ import LoginForm from './LoginForm'
 
 export default function LoginButtonSection() {
     const { isOpen, openModal, closeModal } = useModal()
-  const { isAuthenticated, loading, logout, user } = useUserAuth()
+    const { isAuthenticated, loading, logout, user } = useUserAuth()
     const pathname = usePathname()
     const router = useRouter()
     const searchParams = useSearchParams()
