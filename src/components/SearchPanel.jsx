@@ -81,7 +81,7 @@ const Field = ({ label, children }) => (
 const shellClasses =
   'flex h-[42px] w-full items-center rounded-md border border-cream-300 bg-cream-50/60  text-[12.5px] text-ink transition-colors focus-within:border-gold-400 focus-within:bg-white'
 
-export default function SearchPanel() {
+export default function SearchPanel({ className = 'relative z-20 -mt-12' }) {
   const router = useRouter()
   const [query, setQuery] = useState({
     where: '',
@@ -257,7 +257,7 @@ export default function SearchPanel() {
   }
 
   return (
-    <section className="relative z-20 -mt-12">
+    <section className={className}>
       <div className="shell">
         <form
           onSubmit={onSubmit}

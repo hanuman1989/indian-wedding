@@ -22,9 +22,9 @@ const Meta = ({ Icon, children }) => (
   </li>
 )
 
-function WeddingCard({ wedding }) {
+export function WeddingCard({ wedding, className = '' }) {
   return (
-    <article className="group flex w-[262px] shrink-0 snap-start flex-col overflow-hidden rounded-xl border border-cream-300 bg-white shadow-sm transition-shadow hover:shadow-[0_16px_36px_-18px_rgba(108,10,34,0.4)] lg:w-[calc((100%-60px)/4)]">
+    <article className={`group flex shrink-0 flex-col overflow-hidden rounded-xl border border-cream-300 bg-white shadow-sm transition-shadow hover:shadow-[0_16px_36px_-18px_rgba(108,10,34,0.4)] ${className}`}>
       <div className="relative aspect-[16/9] overflow-hidden">
         {wedding.image ? (
           <img
@@ -132,7 +132,11 @@ export default function PopularWeddings() {
             className="no-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth pb-2"
           >
             {weddings.map((wedding) => (
-              <WeddingCard key={wedding.id} wedding={wedding} />
+              <WeddingCard
+                key={wedding.id}
+                wedding={wedding}
+                className="w-[262px] snap-start lg:w-[calc((100%-60px)/4)]"
+              />
             ))}
           </div>
 
