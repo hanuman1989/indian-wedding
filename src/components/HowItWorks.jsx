@@ -55,9 +55,6 @@ export default function HowItWorks() {
       id="how-it-works"
       className="relative overflow-hidden bg-cream-100 py-10"
     >
-      {/* side illustrations, decorative only */}
-      <MusiciansScene className="pointer-events-none absolute -left-4 bottom-0 hidden h-[240px] w-[280px] opacity-90 xl:block" />
-      <MandapWalkScene className="pointer-events-none absolute -right-2 bottom-0 hidden h-[240px] w-[280px] opacity-90 xl:block" />
 
       <div className="shell relative">
         <SectionHeading

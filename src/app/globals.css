@@ -750,3 +750,61 @@ span.flatpickr-weekday,
   opacity: 0.8;
   cursor: grabbing; /* Changes the cursor to indicate dragging */
 }
+
+/* home page css */
+.barstats::before, .barstats::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 120px;
+  height: 92px;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.barstats::before {
+  left: 0;
+  background-image: url("/images/statsbar.webp");
+}
+.barstats::after {
+  right: -5px;
+  background-image: url("/images/statsbar1.webp");
+}
+
+#how-it-works::before, #how-it-works::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 200px;
+  height: 303px;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+#how-it-works::before {
+  left: 0;
+  width: 300px;
+  height: 310px;
+  background-image: url("/images/works1.webp");
+}
+#how-it-works::after {
+  right: 0;
+  background-image: url("/images/works2.webp");
+}
+
+header#top::before, header#top::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    z-index: 1;
+    width: 85px;
+    height: 220px;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+header#top::before {
+  left: 0;
+  background-image: url("/images/header_right.webp");
+}
+header#top::after {
+  right: 0;
+  background-image: url("/images/header_left.webp");
+}
