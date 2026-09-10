@@ -20,41 +20,6 @@ import { loadGoogleGeocodingLibrary, loadGooglePlacesLibrary } from '@/lib/googl
 const INDIA_REGION_CODE = 'in'
 const LOCATION_PLACEHOLDER = 'Search by city, venue...'
 
-// PlaceAutocompleteElement nests its real <input> inside one or more shadow
-// roots; walk them (as long as they're open) to find it regardless of depth.
-const findShadowInput = (root) => {
-  if (!root) return null
-
-  const direct = root.querySelector('input')
-  if (direct) return direct
-
-  for (const child of root.querySelectorAll('*')) {
-    if (child.shadowRoot) {
-      const nested = findShadowInput(child.shadowRoot)
-      if (nested) return nested
-    }
-  }
-
-  return null
-}
-
-// Reflects text into the widget's own visible input, not just React state.
-const fillAutocompleteDisplay = (element, text) => {
-  if (!element) return
-
-  try {
-    element.value = text
-  } catch {
-    // `value` isn't a writable property on this element; ignore.
-  }
-
-  const innerInput = findShadowInput(element.shadowRoot)
-  if (innerInput) {
-    innerInput.value = text
-    innerInput.dispatchEvent(new Event('input', { bubbles: true, composed: true }))
-  }
-}
-
 const foodObservanceOptions = [
   'All Food Observances',
   'Vegetarian',
@@ -228,7 +193,11 @@ export default function SearchPanel() {
             longitude,
           }))
 
-          fillAutocompleteDisplay(autocompleteElementRef.current, result.formatted_address)
+          const innerInput = autocompleteElementRef.current?.shadowRoot?.querySelector('input')
+          console.log(innerInput, result.formatted_address)
+          if (innerInput) {
+            innerInput.value = result.formatted_address
+          }
         } catch (error) {
           console.error('Reverse geocoding failed:', error)
           setLocationError('Unable to resolve your current location. Please try again.')
@@ -281,7 +250,7 @@ export default function SearchPanel() {
           <div className="grid gap-3.5 lg:grid-cols-[1.45fr_0.8fr_1fr_auto]">
             <div>
               <Field label="Search location">
-                <span className={`${shellClasses} gap-0 pr-3.5 ${placesReady ? 'pr-3.5' : 'px-3.5'}`}>
+                <span className={`${shellClasses} gap-2.5 pr-3.5 ${placesReady ? 'pr-3.5' : 'px-3.5'}`}>
                   {/* <Search className="h-[18px] w-[18px] shrink-0 text-wine-600" /> */}
                   <input
                     type="text"
@@ -289,7 +258,7 @@ export default function SearchPanel() {
                     onChange={update('where')}
                     placeholder={LOCATION_PLACEHOLDER}
                     aria-label="Search by city, venue..."
-                    className={`h-[42px] w-full bg-transparent placeholder:text-ink-soft/60 focus:outline-none ${placesReady ? 'hidden' : ''}`}
+                    className={`w-full bg-transparent placeholder:text-ink-soft/60 focus:outline-none ${placesReady ? 'hidden' : ''}`}
                   />
                   {/* Google's PlaceAutocompleteElement is mounted into this node once loaded (see effect below). */}
                   <div
