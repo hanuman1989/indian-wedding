@@ -7,8 +7,7 @@ import { useUserAuth } from '@/hooks/useUserAuth';
 
 const accountNavigation = [
   { label: 'Dashboard', href: '/dashboard', icon: Couple },
-  { label: 'My Weddings', href: '/my-weddings', icon: BookHeart },
-  { label: 'Post Wedding', href: '/post-weddings', icon: Plus },
+  { label: 'My Weddings', href: '/my-weddings', icon: BookHeart, ishost: true },
   { label: 'Edit Profile', href: '/profile', icon: Users },
   { label: 'Change Password', href: '/change-password', icon: Lock },
 ];
@@ -38,9 +37,13 @@ export default function AccountSidebar() {
       </div>
 
       <nav aria-label="Account navigation" className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-1">
-        {accountNavigation.map(({ label, href, icon: Icon }) => {
-          const isCurrent = pathname === href;
+        {accountNavigation.map(({ label, href, icon: Icon, ishost }) => {
+          // Only show the "My Weddings" link if the user is a host
+          if (ishost && !user.is_host) {
+            return null;
+          }
 
+          const isCurrent = pathname === href;
           return (
             <Link
               key={href}

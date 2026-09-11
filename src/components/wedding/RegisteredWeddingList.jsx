@@ -15,9 +15,11 @@ import {
 } from '@/components/Icons';
 
 const statusStyles = {
-  live: 'bg-emerald-700 text-white',
+  published: 'bg-emerald-700 text-white',
+  submitted: 'bg-emerald-700 text-white',
   draft: 'bg-slate-600 text-white',
   ended: 'bg-stone-500 text-white',
+  cancelled: 'bg-stone-500 text-white',
 };
 
 function Metadata({ children, Icon, label }) {
@@ -34,7 +36,7 @@ function Metadata({ children, Icon, label }) {
 
 function RegisteredWeddingCard({ deletingWeddingId, onDelete, onEdit, wedding }) {
   const status = wedding.listStatus || 'live';
-  const statusLabel = wedding.statusLabel || status.charAt(0).toUpperCase() + status.slice(1);
+  const statusLabel = wedding.status.charAt(0).toUpperCase() + wedding.status.slice(1);
 
   return (
     <article className="overflow-hidden border border-gold-200/90 bg-white/80 shadow-[0_6px_18px_rgba(108,10,34,0.05)]">
@@ -49,8 +51,8 @@ function RegisteredWeddingCard({ deletingWeddingId, onDelete, onEdit, wedding })
             className="object-cover"
             style={{ objectPosition: wedding.imagePosition || '75% 70%' }}
           />
-          <span className={`absolute left-3 top-3 rounded-sm px-2.5 py-1 text-xs font-semibold shadow-sm ${statusStyles[status]}`}>
-            {statusLabel}
+          <span className={`absolute left-3 top-3 rounded-sm px-2.5 py-1 text-xs font-semibold shadow-sm ${statusStyles[wedding.status]}`}>
+            {statusLabel} 
           </span>
         </div>
 

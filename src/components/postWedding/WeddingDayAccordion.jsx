@@ -1,18 +1,23 @@
 "use client";
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { ChevronDown, MapPin } from '@/components/Icons';
 import { FormField, getInputClassName, InputWithIcon } from './PostWeddingField';
 import { createWeddingDay, createWeddingEvent, eventTimes } from './formUtils';
 
 function getMinimumWeddingDate() {
-  const minimumDate = new Date();
-  minimumDate.setDate(minimumDate.getDate() + 1);
-  return [minimumDate.getFullYear(), String(minimumDate.getMonth() + 1).padStart(2, '0'), String(minimumDate.getDate()).padStart(2, '0')].join('-');
+  const today = new Date()
+
+  const year = today.getFullYear()
+  const month = String(today.getMonth() + 1).padStart(2, '0')
+  const day = String(today.getDate()).padStart(2, '0')
+
+  return `${year}-${month}-${day}`
 }
 
 export default function WeddingDayAccordion({ errors, day, index, onBlur, onChange }) {
   const [isOpen, setIsOpen] = useState(index === 0);
+  const weddingDateInputRef = useRef(null);
   const dayDetails = { ...createWeddingDay(), ...(day || {}) };
   const events = (dayDetails.wedding_day_events?.length ? dayDetails.wedding_day_events : [createWeddingEvent()])
     .map((event) => ({ ...createWeddingEvent(), ...event }));
@@ -20,6 +25,7 @@ export default function WeddingDayAccordion({ errors, day, index, onBlur, onChan
   const getEventError = (eventIndex, field) => errors[`wedding_days.${index}.wedding_day_events.${eventIndex}.${field}`];
   const updateDay = (field, value) => onChange(index, field, value);
   const updateEvent = (eventIndex, field, value) => onChange(index, `wedding_day_events.${eventIndex}.${field}`, value);
+  const addEvent = () => onChange(index, 'wedding_day_events', [...events, createWeddingEvent()]);
   const blur = (field) => onBlur(`wedding_days.${index}.${field}`);
 
   return (
@@ -34,10 +40,19 @@ export default function WeddingDayAccordion({ errors, day, index, onBlur, onChan
 
       {isOpen && (
         <div className="grid gap-4 p-4 sm:grid-cols-2 sm:p-5">
-          <FormField htmlFor={`wedding-day-date-${index}`} label="Wedding Date" error={getError('wedding_day_date')} required>
-            <input id={`wedding-day-date-${index}`} type="date" min={getMinimumWeddingDate()} value={dayDetails.wedding_day_date} onChange={(event) => updateDay('wedding_day_date', event.target.value)} onBlur={() => blur('wedding_day_date')} className={getInputClassName(getError('wedding_day_date'), false)} />
+          <FormField htmlFor={`wedding-day-date-${index}`} label="Wedding Day Date" error={getError('wedding_day_date')} required>
+            <input id={`wedding-day-date-${index}`} 
+              ref={weddingDateInputRef}
+              type="date" 
+              min={getMinimumWeddingDate()} 
+              value={dayDetails.wedding_day_date} 
+              onClick={() => weddingDateInputRef.current?.showPicker?.()}
+              onChange={(event) => updateDay('wedding_day_date', event.target.value)} 
+              onBlur={() => blur('wedding_day_date')} 
+              className={getInputClassName(getError('wedding_day_date'), false)} 
+              />
           </FormField>
-          <FormField htmlFor={`wedding-day-time-${index}`} label="Wedding Time" error={getError('wedding_day_time')} required>
+          <FormField htmlFor={`wedding-day-time-${index}`} label="Event Start Time" error={getError('wedding_day_time')} required>
             <select id={`wedding-day-time-${index}`} value={dayDetails.wedding_day_time} onChange={(event) => updateDay('wedding_day_time', event.target.value)} onBlur={() => blur('wedding_day_time')} className={getInputClassName(getError('wedding_day_time'), false)}>
               <option value="">Please choose</option>
               {eventTimes.map((option) => <option key={option.value} value={option.value}>{option.text}</option>)}
@@ -52,7 +67,7 @@ export default function WeddingDayAccordion({ errors, day, index, onBlur, onChan
             ['landmark_near', 'Landmark', MapPin],
           ].map(([field, label, Icon]) => (
             <FormField key={field} htmlFor={`wedding-day-${field}-${index}`} label={label} error={getError(field)} required={field === 'address_line_1' || field === 'city' || field === 'state'}>
-              <InputWithIcon id={`wedding-day-${field}-${index}`} Icon={Icon} value={dayDetails[field] ?? ''} onChange={(event) => updateDay(field, event.target.value)} onBlur={() => blur(field)} error={getError(field)} />
+              <InputWithIcon id={`wedding-day-${field}-${index}`} Icon={Icon} value={dayDetails[field] ?? ''} onChange={(event) => updateDay(field, event.target.value)} onBlur={() => blur(field)} error={getError(field)} placeholder={label} />
             </FormField>
           ))}
 
@@ -61,7 +76,7 @@ export default function WeddingDayAccordion({ errors, day, index, onBlur, onChan
               <h4 className="font-display text-lg font-bold text-wine-700">Events</h4>
               <span aria-hidden="true" className="h-px flex-1 bg-gold-300" />
             </div>
-            <div className="space-y-4">
+            <div className="space-y-4 event-box">
               {events.map((event, eventIndex) => (
                 <div key={event.id || eventIndex} className="grid gap-4 border border-gold-200 p-4 sm:grid-cols-2">
                   <FormField htmlFor={`event-title-${index}-${eventIndex}`} label="Title" error={getEventError(eventIndex, 'title')} required>
@@ -80,6 +95,10 @@ export default function WeddingDayAccordion({ errors, day, index, onBlur, onChan
                 </div>
               ))}
             </div>
+             <button type="button" onClick={addEvent} className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-md border border-dotted border-wine-500 bg-white px-3.5 py-2 text-sm font-semibold text-wine-600 transition-colors hover:bg-cream-50">
+              <span aria-hidden="true" className="text-base leading-none">+</span>
+              Add Another Event
+            </button>
           </div>
         </div>
       )}

@@ -117,6 +117,12 @@ export default function WeddingPage() {
   const searchParams = useSearchParams()
   const [currentPage, setCurrentPage] = useState(1)
   const [weddingsList, setWeddingsList] = useState([])
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    last_page: 1,
+    per_page: 12,
+    total: 0,
+  })
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -134,7 +140,15 @@ export default function WeddingPage() {
         const response = await APIs.frontend.frontWeddings.getWeddings(
           Object.fromEntries(searchParams.entries()),
         )
-        if (isActive) setWeddingsList(getWeddingList(response).map(normalizeWeddingCard))
+        if (isActive) {
+          setWeddingsList(Array.isArray(response?.data) ? response.data : [])
+          setPagination(response?.pagination || {
+            current_page: 1,
+            last_page: 1,
+            per_page: 12,
+            total: 0,
+          })
+        }
       } catch (error) {
         if (isActive) setErrorMessage('Unable to load weddings. Please try again.')
       } finally {
@@ -201,11 +215,13 @@ export default function WeddingPage() {
             </div>
           )}
 
-          <Pagination
-            currentPage={currentPage}
-            totalPages={TOTAL_PAGES}
-            onPageChange={setCurrentPage}
-          />
+          {(pagination.total ?? 0) > (pagination.per_page ?? 0) && (
+            <Pagination
+              currentPage={pagination.current_page || currentPage}
+              totalPages={pagination.last_page || 1}
+              onPageChange={setCurrentPage}
+            />
+          )}
         </div>
       </section>
     </>
