@@ -79,7 +79,7 @@ export const Mandala = ({ className = 'h-10 w-10', petals = 12 }) => (
 )
 
 /* The "~~◆ Title ◆~~" flourish that brackets every section heading */
-const Flourish = ({ mirrored = false }) => (
+export const Flourish = ({ mirrored = false }) => (
   <svg
     viewBox="0 0 74 16"
     className={`h-4 w-[74px] text-gold-500 ${mirrored ? 'scale-x-[-1]' : ''}`}

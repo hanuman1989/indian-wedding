@@ -20,7 +20,7 @@ export async function getMyWeddings() {
 
 export async function createWedding(payload) {
   try {
-      const response = await axiosInstance.post('/weddings', payload);
+      const response = await axiosInstance.post('weddings', payload);
       return response.data;
     } catch (error) {
       throw error.response?.data || { message: 'Unable to create your account. Please try again.' };

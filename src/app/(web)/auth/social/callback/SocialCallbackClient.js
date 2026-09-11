@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { useRouter } from 'next/navigation'
 import { socialLoginFrontendUser } from '@/store/slices/userAuthSlice'
+import { getSocialLoginPage, removeSocialLoginPage } from '@/lib/helpers';
 
 export default function SocialCallbackClient({ code, errorMessage }) {
   const dispatch = useDispatch()
@@ -23,7 +24,10 @@ export default function SocialCallbackClient({ code, errorMessage }) {
     const exchangeCode = async () => {
       try {
         await dispatch(socialLoginFrontendUser(code)).unwrap()
-        router.replace('/')
+        const socialLoginPage = getSocialLoginPage()
+        removeSocialLoginPage();
+        const redirectPath = socialLoginPage === '/host-wedding' ? '/post-weddings' : '/dashboard'
+        router.replace(redirectPath)
       } catch {
         router.replace('/?login=true&social_login=failed')
       }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import AccountSidebar from '@/components/common/AccountSidebar';
@@ -10,6 +11,8 @@ import SuccessMessage from '@/components/common/SuccessMessage';
 import { Modal } from '@/components/ui/modal';
 import { useProtectedRoute } from '@/hooks/useProtectedRoute';
 import { useUserAuth } from '@/hooks/useUserAuth';
+import { updateFrontendUser } from '@/store/slices/userAuthSlice';
+import { setFrontendUser } from '@/lib/helpers';
 import APIs from '@/lib/apis';
 import CoupleStory from './CoupleStory';
 import {
@@ -113,6 +116,7 @@ function getStepComponent(step, props) {
 }
 
 export default function PostWeddingFlow({ initialStep = firstStep, weddingId: initialWeddingId = null }) {
+  const dispatch = useDispatch();
   const router = useRouter();
   const { isAuthorized } = useProtectedRoute('frontend');
   const { user } = useUserAuth();
@@ -295,6 +299,12 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
         response = await APIs.frontend.weddings.createWedding(getStepPayload(currentStep, form));
         nextWeddingId = response.data?.id;
 
+        if(response.data && !user.is_host){
+          const updatedUser = { ...user, is_host: true };
+          setFrontendUser(updatedUser);
+          dispatch(updateFrontendUser(updatedUser));
+        }
+
         if (!nextWeddingId) {
           throw { message: 'The new wedding draft did not return an ID. Please try again.' };
         }
@@ -305,6 +315,11 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
            response = await APIs.frontend.weddings.updateWedding(weddingId, getStepPayload(currentStep, form));
         }else{
           response = await APIs.frontend.weddings.createWedding(payload);
+        }
+        if(response.data && !user.is_host){
+          const updatedUser = { ...user, is_host: true };
+          setFrontendUser(updatedUser);
+          dispatch(updateFrontendUser(updatedUser));
         }
       } else if (currentStep === 2) {
         response = await APIs.frontend.weddings.updatePartnerDetails(weddingId, getStepPayload(currentStep, form));

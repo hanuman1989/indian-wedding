@@ -83,12 +83,13 @@ export default function LoginButtonSection() {
 
           {isAccountMenuOpen && (
             <div id="account-menu" role="menu" className="absolute right-0 z-99999 mt-2 w-44 overflow-hidden rounded-md border border-gold-300/70 bg-cream-50 py-1 shadow-lg">
+              <Link href="/dashboard" role="menuitem" onClick={() => setIsAccountMenuOpen(false)} className="block px-4 py-2 text-sm text-ink transition-colors hover:bg-gold-100 hover:text-wine-700">
+                Dashboard
+              </Link>
               <Link href="/profile" role="menuitem" onClick={() => setIsAccountMenuOpen(false)} className="block px-4 py-2 text-sm text-ink transition-colors hover:bg-gold-100 hover:text-wine-700">
                 Profile
               </Link>
-              <Link href="/my-weddings" role="menuitem" onClick={() => setIsAccountMenuOpen(false)} className="block px-4 py-2 text-sm text-ink transition-colors hover:bg-gold-100 hover:text-wine-700">
-                My Weddings
-              </Link>
+              
               <div className="my-1 border-t border-gold-200" />
               <button type="button" role="menuitem" onClick={handleLogout} disabled={loading} className="block w-full px-4 py-2 text-left text-sm text-wine-700 transition-colors hover:bg-gold-100 disabled:cursor-not-allowed disabled:opacity-60">
                 {loading ? 'Logging out...' : 'Logout'}

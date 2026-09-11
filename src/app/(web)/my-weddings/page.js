@@ -28,38 +28,6 @@ function formatDate(value) {
   return new Intl.DateTimeFormat('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
 }
 
-function getContactName(contact, fallback) {
-  const firstName = contact?.firstName || contact?.first_name || '';
-  const lastName = contact?.lastName || contact?.last_name || '';
-  return `${firstName} ${lastName}`.trim() || fallback;
-}
-
-function normalizeWedding(wedding) {
-  const events = wedding.events || wedding.wedding_events || [];
-  const firstEvent = events[0] || {};
-  const brideName = getContactName(wedding.bride, wedding.bride_name || 'Bride');
-  const groomName = getContactName(wedding.groom, wedding.groom_name || 'Groom');
-  const photo = (wedding.photos || wedding.wedding_photos || [])[0] || {};
-  const days = Number(wedding.wedding_days || wedding.weddingDays || events.length || 1);
-  const status = wedding.status === 'published' ? 'live' : wedding.status || 'draft';
-
-  return {
-    ...wedding,
-    id: wedding.id || wedding.uuid,
-    couple: `${brideName} & ${groomName}`,
-    createdAt: formatDate(wedding.created_at || wedding.createdAt),
-    dates: wedding.dates || wedding.wedding_dates || firstEvent.event_date || firstEvent.date || 'Dates to be confirmed',
-    duration: `${days} ${days === 1 ? 'Day' : 'Days'}`,
-    venue: wedding.venue_name || wedding.venueName || firstEvent.venue_name || firstEvent.venueName || 'Venue to be confirmed',
-    location: wedding.locations || 'Location to be confirmed',
-    photoCount: wedding.photo_count || wedding.photos_count || (wedding.photos || wedding.wedding_photos || []).length,
-    cover_image: photo.cover_image || '',
-    tagline: wedding.tagline || wedding.story || wedding.type || 'A beautiful wedding celebration',
-    listStatus: ['live', 'draft', 'ended', 'published', 'submitted'].includes(status) ? status : 'draft',
-    statusLabel: status ,
-    currentStep: wedding.current_step || wedding.currentStep || 1,
-  };
-}
 
 export default function MyWeddingsPage() {
   const { isAuthorized } = useProtectedRoute('frontend');
@@ -163,7 +131,7 @@ export default function MyWeddingsPage() {
               {successMessage && <SuccessMessage message={successMessage} onClose={closeSuccessMessage} className="mb-5" />}
               {isLoadingWeddings ? (
                 <div className="grid gap-4" aria-label="Loading weddings">
-                  {[1, 2, 3].map((index) => <div key={index} className="h-52 animate-pulse border border-gold-200 bg-white/65" />)}
+                  {[1].map((index) => <div key={index} className="h-52 animate-pulse border border-gold-200 bg-white/65" />)}
                 </div>
               ) : (
                 <RegisteredWeddingList weddings={weddings} deletingWeddingId={deletingWeddingId} onEdit={editWedding} onDelete={setWeddingToDelete} />

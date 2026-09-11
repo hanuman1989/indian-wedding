@@ -45,6 +45,13 @@ export const Search = (p) => (
   </S>
 )
 
+export const Play = (p) => (
+  <S {...p}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M10 8.4v7.2l6.2-3.6Z" fill="currentColor" stroke="none" />
+  </S>
+)
+
 export const ArrowRight = (p) => (
   <S {...p}>
     <path d="M4 12h15" />

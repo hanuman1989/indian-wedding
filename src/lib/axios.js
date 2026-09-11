@@ -21,7 +21,6 @@ axiosInstance.interceptors.request.use(
 
     if (typeof window !== 'undefined') {
       const requestUrl = `${config.baseURL || ''}${config.url || ''}`;
-      console.log(requestUrl, 'requestUrl---')
       const tokenKey = requestUrl.includes('/admin') ? 'authToken' : 'frontendAuthToken';
       const token = localStorage.getItem(tokenKey);
       if (token && !config.headers.Authorization) {

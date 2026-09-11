@@ -81,7 +81,7 @@ const Field = ({ label, children }) => (
 const shellClasses =
   'flex h-[42px] w-full items-center rounded-md border border-cream-300 bg-cream-50/60  text-[12.5px] text-ink transition-colors focus-within:border-gold-400 focus-within:bg-white'
 
-export default function SearchPanel() {
+export default function SearchPanel({ className = 'relative z-20 -mt-12' }) {
   const router = useRouter()
   const [query, setQuery] = useState({
     where: '',
@@ -95,9 +95,33 @@ export default function SearchPanel() {
 
   const autocompleteContainerRef = useRef(null)
   const autocompleteElementRef = useRef(null)
+  const dateInputRef = useRef(null)
+  
   // Suppresses the "stale coordinates" clearing logic for the synthetic
   // input event that follows a valid gmp-select (or a programmatic fill).
   const justSelectedRef = useRef(false)
+
+  const getTodayDate = () => {
+  const today = new Date()
+
+  const year = today.getFullYear()
+  const month = String(today.getMonth() + 1).padStart(2, '0')
+  const day = String(today.getDate()).padStart(2, '0')
+
+  return `${year}-${month}-${day}`
+}
+
+const todayDate = getTodayDate()
+
+const openDatePicker = () => {
+  const input = dateInputRef.current
+
+  if (!input) return
+
+  if (typeof input.showPicker === 'function') {
+    input.showPicker()
+  }
+}
 
   useEffect(() => {
     let cancelled = false
@@ -257,7 +281,7 @@ export default function SearchPanel() {
   }
 
   return (
-    <section className="relative z-20 -mt-12">
+    <section className={className}>
       <div className="shell">
         <form
           onSubmit={onSubmit}
@@ -317,16 +341,20 @@ export default function SearchPanel() {
             </div>
 
             <Field label="Starting date">
-              <span className={`${shellClasses} relative gap-2.5 px-3.5`}>
-                <Calendar className="h-[18px] w-[18px] shrink-0 text-wine-600" />
+              <span className={`${shellClasses} relative gap-2.5 px-3.5`} >
+                <Calendar className="pointer-events-none h-[18px] w-[18px] shrink-0 text-wine-600" />
                 <input
+                  ref={dateInputRef}
                   type="date"
                   value={query.date}
                   onChange={update('date')}
+                  min={todayDate}
                   aria-label="Starting date"
-                  className="w-full min-w-0 bg-transparent text-ink placeholder:text-ink-soft/60 focus:outline-none"
+                  onClick={openDatePicker}
+                  className="w-full min-w-0 cursor-pointer bg-transparent text-ink focus:outline-none"
+
                 />
-                <Calendar className="pointer-events-none h-[15px] w-[15px] shrink-0 text-ink-soft/60" />
+                <Calendar className="pointer-events-none h-[18px] w-[18px] shrink-0 text-wine-600" />
               </span>
             </Field>
 
