@@ -29,19 +29,12 @@ export default function HostWedding() {
   return (
     <section id="host" className="bg-white pb-11">
       <div className="shell">
-        <div className="relative overflow-hidden rounded-2xl border border-gold-300/70 bg-cream-100">
-          {/* faded venue photo on the right */}
-          <VenueScene className="pointer-events-none absolute -right-6 bottom-0 hidden h-full w-[420px] opacity-40 lg:block" />
-          <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-cream-100 via-cream-100/95 to-cream-100/40 lg:block" />
+        <div className="host_box relative overflow-hidden rounded-2xl border border-gold-300/70 bg-cream-100">
+          <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-cream-100 via-cream-100/95 to-cream-100/40" />
 
-          {/* corner mandalas */}
-          <Mandala className="pointer-events-none absolute -left-6 -top-6 h-28 w-28 text-gold-500/15" />
-          <Mandala className="pointer-events-none absolute -bottom-8 -right-8 h-32 w-32 text-gold-500/15" />
-
-          <div className="relative grid gap-7 p-5 sm:p-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.35fr)] lg:items-center lg:gap-8 lg:p-7">
+          <div className="host_inner relative grid gap-7 p-5 sm:p-6 lg:grid-cols-[minmax(0,01fr)_minmax(0,2fr)] lg:items-center lg:gap-8 lg:p-7">
             {/* left: pitch */}
             <div className="relative">
-              <Mandala className="mb-3 h-7 w-7 text-gold-500" petals={8} />
 
               <p className="font-display text-[16px] font-semibold text-ink">
                 Host Your Wedding
@@ -64,11 +57,10 @@ export default function HostWedding() {
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </a>
 
-              <ElephantScene className="pointer-events-none absolute -bottom-6 -left-2 hidden h-[118px] w-[150px] opacity-70 xl:block" />
             </div>
 
             {/* right: perks */}
-            <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
+            <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
               {perks.map(({ Icon, title, text }) => (
                 <li key={title} className="text-center">
                   <span className="mx-auto mb-2.5 grid h-[46px] w-[46px] place-items-center rounded-full border border-gold-300/80 bg-cream-50 text-wine-700 shadow-sm">
