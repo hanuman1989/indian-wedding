@@ -18,10 +18,20 @@ export async function getPopularWeddings() {
     }
 }
 
+export async function getWeddingDetails(id) {
+  try {
+      const response =  await axiosInstance.get(`wedding-details/${id}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Unable to create your account. Please try again.' };
+    }
+}
+
 
 const frontWeddingAPI = {
   getWeddings,
-  getPopularWeddings
+  getPopularWeddings,
+  getWeddingDetails
 };
 
 export default frontWeddingAPI;

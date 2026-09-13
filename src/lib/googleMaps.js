@@ -75,3 +75,13 @@ export function loadGooglePlacesLibrary() {
 export function loadGoogleGeocodingLibrary() {
   return loadGoogleMaps().then((maps) => maps.importLibrary('geocoding'));
 }
+
+/** Loads the "maps" library (Map, InfoWindow, etc.). */
+export function loadGoogleMapsCoreLibrary() {
+  return loadGoogleMaps().then((maps) => maps.importLibrary('maps'));
+}
+
+/** Loads the "marker" library (Marker, AdvancedMarkerElement). */
+export function loadGoogleMarkerLibrary() {
+  return loadGoogleMaps().then((maps) => maps.importLibrary('marker'));
+}

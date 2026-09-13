@@ -48,7 +48,7 @@ export default function YourDetails({ errors, form, onBlur, onChange }) {
 
         <div>
           <div className="mb-4 flex items-center gap-3">
-            <h3 className="font-display text-lg font-bold text-wine-700">Your Contact Details</h3>
+            <h3 className="font-display text-lg font-bold text-wine-700">Your Details</h3>
             <span aria-hidden="true" className="h-px flex-1 bg-gold-300" />
           </div>
           <div className="grid gap-4 sm:grid-cols-2">

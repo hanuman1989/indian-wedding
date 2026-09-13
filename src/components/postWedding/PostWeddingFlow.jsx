@@ -134,6 +134,7 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
   const [isUploading, setIsUploading] = useState(false);
   const [deletingPhotoId, setDeletingPhotoId] = useState('');
   const [photoToDelete, setPhotoToDelete] = useState(null);
+  const [deletingEventKey, setDeletingEventKey] = useState('');
   const initializedNewForm = useRef(false);
   const photosRef = useRef([]);
 
@@ -270,6 +271,37 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
     setErrors((currentErrors) => ({ ...currentErrors, weddingDays: undefined }));
   };
 
+  const removeEventFromState = (dayIndex, eventIndex) => {
+    setForm((currentForm) => ({
+      ...currentForm,
+      wedding_days: currentForm.wedding_days.map((day, currentDayIndex) => {
+        if (currentDayIndex !== dayIndex) return day;
+
+        const events = day.wedding_day_events?.length ? day.wedding_day_events : [createWeddingEvent()];
+        return { ...day, wedding_day_events: events.filter((_, currentEventIndex) => currentEventIndex !== eventIndex) };
+      }),
+    }));
+  };
+
+  const removeWeddingEvent = async (dayIndex, eventIndex, event) => {
+    if (!event?.id) {
+      removeEventFromState(dayIndex, eventIndex);
+      return;
+    }
+
+    setDeletingEventKey(`${dayIndex}-${eventIndex}`);
+    setFormError('');
+
+    try {
+      await APIs.frontend.weddings.deleteEvent(weddingId, event.id);
+      removeEventFromState(dayIndex, eventIndex);
+    } catch (error) {
+      setFormError(getErrorMessage(error?.message, 'Unable to remove this event. Please try again.'));
+    } finally {
+      setDeletingEventKey('');
+    }
+  };
+
   const goToStep = (step) => {
     if (step > highestAvailableStep || isSaving || isSubmitting) return;
     setErrors({});
@@ -284,6 +316,7 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
 
   const saveCurrentStep = async () => {
     const validationErrors = validateWeddingStep(currentStep, form);
+    console.log(validationErrors, 'validationErrors---');
     setErrors(validationErrors);
     setFormError('');
     setSuccessMessage('');
@@ -326,6 +359,8 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
       } else if (currentStep === 3) {
         response = await APIs.frontend.weddings.updateStory(weddingId, getStepPayload(currentStep, form));
       } else if (currentStep === 4) {
+        console.log(getStepPayload(currentStep, form))
+        console.log('Updating wedding days for weddingId:', weddingId);
         response = await APIs.frontend.weddings.updateWeddingDays(weddingId, getStepPayload(currentStep, form));
       }else if (currentStep === 5) {
         response = await APIs.frontend.weddings.uploadWeddingPhotos(weddingId, getStepPayload(currentStep, form));
@@ -459,7 +494,7 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
     form,
     onBlur: validateField,
     onChange: updateFormField,
-    ...(currentStep === 4 ? { onEventChange: updateEvent, onWeddingDaysChange: updateWeddingDays } : {}),
+    ...(currentStep === 4 ? { onEventChange: updateEvent, onWeddingDaysChange: updateWeddingDays, onRemoveEvent: removeWeddingEvent, deletingEventKey } : {}),
     ...(currentStep === 5 ? {
       deletingPhotoId,
       isUploading,
@@ -472,7 +507,7 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
     } : {}),
   };
 
-  if (!isAuthorized || isLoadingWedding) {
+  if (!isAuthorized) {
     return <Loader />;
   }
 
@@ -496,23 +531,31 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
               <WeddingStepper currentStep={currentStep} highestAvailableStep={highestAvailableStep} onStepChange={goToStep} />
             </div>
 
-            <div className="mt-6 border border-gold-200 bg-cream-50/90 p-5 shadow-[0_8px_24px_rgba(108,10,34,0.05)] sm:p-7">
-              {formError && <ErrorMessage message={formError} onClose={() => setFormError('')} className="mb-5" />}
-              {successMessage && <SuccessMessage message={successMessage} onClose={() => setSuccessMessage('')} className="mb-5" />}
+            <div id="wedding-form" className="mt-6 border border-gold-200 bg-cream-50/90 p-5 shadow-[0_8px_24px_rgba(108,10,34,0.05)] sm:p-7 form-submit-loader">
+              {isLoadingWedding ? (
+                <div className="flex min-h-64 items-center justify-center">
+                  <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-wine-600" />
+                </div>
+              ) : (
+                <>
+                  {formError && <ErrorMessage message={formError} onClose={() => setFormError('')} className="mb-5" />}
+                  {successMessage && <SuccessMessage message={successMessage} onClose={() => setSuccessMessage('')} className="mb-5" />}
 
-              {getStepComponent(currentStep, currentProps)}
+                  {getStepComponent(currentStep, currentProps)}
 
-              <div className="mt-7">
-                <WeddingStepNavigation
-                  step={currentStep}
-                  isPublished={weddingStatus === 'published'}
-                  isSaving={isSaving}
-                  isSubmitting={isSubmitting}
-                  onPrevious={() => currentStep === firstStep ? router.push('/my-weddings') : goToStep(currentStep - 1)}
-                  onNext={saveCurrentStep}
-                  onSubmit={submitWedding}
-                />
-              </div>
+                  <div className="mt-7">
+                    <WeddingStepNavigation
+                      step={currentStep}
+                      isPublished={weddingStatus === 'published'}
+                      isSaving={isSaving}
+                      isSubmitting={isSubmitting}
+                      onPrevious={() => currentStep === firstStep ? router.push('/my-weddings') : goToStep(currentStep - 1)}
+                      onNext={saveCurrentStep}
+                      onSubmit={submitWedding}
+                    />
+                  </div>
+                </>
+              )}
             </div>
           </main>
         </div>
