@@ -4,7 +4,7 @@ import { languageOptions } from './formUtils';
 
 const foodOptions = ['Vegetarian', 'Non-Vegetarian', 'Veg & Non-Veg', 'Jain', 'Other'];
 
-export default function WeddingDetails({ errors, form, onBlur, onChange, onEventChange, onWeddingDaysChange }) {
+export default function WeddingDetails({ deletingEventKey, errors, form, onBlur, onChange, onEventChange, onRemoveEvent, onWeddingDaysChange }) {
   return (
     <div>
       <h2 className="font-display text-2xl font-bold text-wine-700">Step 4: Share Your Wedding Details</h2>
@@ -39,6 +39,8 @@ export default function WeddingDetails({ errors, form, onBlur, onChange, onEvent
               errors={errors}
               onChange={onEventChange}
               onBlur={onBlur}
+              onRemoveEvent={onRemoveEvent}
+              deletingEventKey={deletingEventKey}
             />
           ))}
         </div>

@@ -66,12 +66,12 @@ export function WeddingCard({ wedding, className = '' }) {
 
         <div className="mt-2.5 flex items-end justify-between gap-2 border-t border-cream-200 pt-2.5">
 
-          <button
-            type="button"
+          <Link
+            href={`/wedding-detail/${wedding.id}`}
             className="rounded-md bg-wine-700 px-3.5 py-2 text-[11.5px] font-medium text-cream-50 transition-colors hover:bg-wine-600"
           >
             View Details
-          </button>
+          </Link>
         </div>
       </div>
     </article>

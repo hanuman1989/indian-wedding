@@ -112,6 +112,15 @@ export async function deleteWedding(weddingId) {
     }
 }
 
+export async function deleteEvent(weddingId, eventId) {
+  try {
+      const response = await axiosInstance.delete(`weddings/${weddingId}/events/${eventId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Unable to delete event. Please try again.' };
+    }
+}
+
 const weddingAPI = {
   getMyWeddings,
   getWedding,
@@ -124,7 +133,8 @@ const weddingAPI = {
   updatePhotoOrder,
   deleteWeddingPhoto,
   submitWedding,
-  deleteWedding
+  deleteWedding,
+  deleteEvent
 };
 
 export default weddingAPI;

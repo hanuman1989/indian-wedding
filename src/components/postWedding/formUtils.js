@@ -35,6 +35,7 @@ export function createWeddingDay() {
     wedding_id: null,
     wedding_day_date: '',
     wedding_day_time: '',
+    venue_title: '',
     address_line_1: '',
     address_line_2: '',
     city: '',
@@ -213,7 +214,6 @@ export function validateWeddingStep(step, form) {
         const eventPrefix = `${prefix}.wedding_day_events.${eventIndex}`;
         addRequiredError(errors, event.title, `${eventPrefix}.title`, `Enter the Day ${index + 1} event title.`);
         addRequiredError(errors, event.description, `${eventPrefix}.description`, `Enter the Day ${index + 1} event description.`);
-        addRequiredError(errors, event.dress_code, `${eventPrefix}.dress_code`, `Enter the Day ${index + 1} event dress code.`);
       });
     });
   }
@@ -226,22 +226,27 @@ export function validateEntireWedding(form) {
   return [1, 2, 3, 4, 5].reduce((errors, step) => ({ ...errors, ...validateWeddingStep(step, form) }), {});
 }
 
+// Optional fields can come back as null/undefined from the API, so trim() can't be called on them directly.
+function toTrimmedString(value) {
+  return (value ?? '').toString().trim();
+}
+
 export function getStepPayload(step, form) {
   const contactPayload = (contact) => ({
-    first_name: contact.firstName.trim(),
-    last_name: contact.lastName.trim(),
-    email: contact.email.trim(),
+    first_name: toTrimmedString(contact.firstName),
+    last_name: toTrimmedString(contact.lastName),
+    email: toTrimmedString(contact.email),
     phone: contact.phone,
-    fathers_name: contact.fathersName.trim(),
-    mothers_name: contact.mothersName.trim(),
+    fathers_name: toTrimmedString(contact.fathersName),
+    mothers_name: toTrimmedString(contact.mothersName),
   });
 
   if (step === 1) return {
     creator_type: form.creatorType,
-    creator_type_other: form.creatorType === 'other' ? form.creatorTypeOther.trim() : null,
-    first_name: form.firstName.trim(),
-    last_name: form.lastName.trim(),
-    email: form.email.trim(),
+    creator_type_other: form.creatorType === 'other' ? toTrimmedString(form.creatorTypeOther) : null,
+    first_name: toTrimmedString(form.firstName),
+    last_name: toTrimmedString(form.lastName),
+    email: toTrimmedString(form.email),
     phone: form.phone,
     status: 'draft',
   };
@@ -252,7 +257,7 @@ export function getStepPayload(step, form) {
     return { bride: contactPayload(form.bride), groom: contactPayload(form.groom) };
   }
 
-  if (step === 3) return { description: form.description.trim(), video_url: form.videoUrl.trim() || null };
+  if (step === 3) return { description: toTrimmedString(form.description), video_url: toTrimmedString(form.videoUrl) || null };
 
   return {
     number_of_days: Number(form.weddingDays),
@@ -262,21 +267,22 @@ export function getStepPayload(step, form) {
       wedding_id: day.wedding_id,
       wedding_day_date: day.wedding_day_date,
       wedding_day_time: day.wedding_day_time,
-      address_line_1: day.address_line_1.trim(),
-      address_line_2: day.address_line_2.trim(),
-      city: day.city.trim(),
-      state: day.state.trim(),
-      post_code: day.post_code.trim(),
-      landmark_near: String(day.landmark_near).trim(),
+      venue_title: toTrimmedString(day.venue_title),
+      address_line_1: toTrimmedString(day.address_line_1),
+      address_line_2: toTrimmedString(day.address_line_2),
+      city: toTrimmedString(day.city),
+      state: toTrimmedString(day.state),
+      post_code: toTrimmedString(day.post_code),
+      landmark_near: toTrimmedString(day.landmark_near),
       latitude: day.latitude,
       longitude: day.longitude,
       wedding_day_events: day.wedding_day_events.map((event) => ({
         id: event.id,
         wedding_day_id: event.wedding_day_id,
-        title: event.title.trim(),
-        description: event.description.trim(),
+        title: toTrimmedString(event.title),
+        description: toTrimmedString(event.description),
         is_music_or_dancing: event.is_music_or_dancing,
-        dress_code: event.dress_code.trim(),
+        dress_code: toTrimmedString(event.dress_code),
       })),
     })),
   };

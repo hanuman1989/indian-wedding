@@ -21,12 +21,13 @@ export function FormField({ children, description, error, htmlFor, label, requir
   );
 }
 
-export function InputWithIcon({ Icon, className = '', error, ...inputProps }) {
+export function InputWithIcon({ Icon, className = '', error, value, ...inputProps }) {
   return (
     <div className="relative">
       {Icon && <Icon className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-wine-500" />}
       <input
         {...inputProps}
+        value={value ?? ''}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? `${inputProps.id}-error` : undefined}
         className={`${getInputClassName(error, Boolean(Icon))} ${className}`}

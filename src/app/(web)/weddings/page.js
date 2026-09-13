@@ -11,51 +11,6 @@ import { Flourish } from '@/components/Ornaments'
 // Placeholder until the weddings API returns a real page count.
 const TOTAL_PAGES = 12
 
-function getWeddingList(response) {
-  const data = response?.weddings || response?.data?.weddings || response?.data || response
-  return Array.isArray(data) ? data : []
-}
-
-function getContactName(contact, fallback) {
-  const firstName = contact?.firstName || contact?.first_name || ''
-  const lastName = contact?.lastName || contact?.last_name || ''
-  return `${firstName} ${lastName}`.trim() || fallback
-}
-
-// Maps the raw API wedding record onto the fields WeddingCard expects.
-function normalizeWeddingCard(wedding) {
-  const events = wedding.events || wedding.wedding_events || []
-  const firstEvent = events[0] || {}
-  const brideName = getContactName(wedding.bride, wedding.bride_name || 'Bride')
-  const groomName = getContactName(wedding.groom, wedding.groom_name || 'Groom')
-  const photo = (wedding.photos || wedding.wedding_photos || [])[0] || {}
-  const days = Number(wedding.wedding_days || wedding.weddingDays || events.length || 1)
-
-  return {
-    id: wedding.id || wedding.uuid,
-    couple: wedding.couple || `${groomName} & ${brideName}`,
-    dates:
-      wedding.dates ||
-      wedding.wedding_dates ||
-      firstEvent.event_date ||
-      firstEvent.date ||
-      'Dates to be confirmed',
-    location:
-      wedding.locations ||
-      wedding.location ||
-      wedding.venue_name ||
-      wedding.venueName ||
-      firstEvent.venue_name ||
-      'Location to be confirmed',
-    type: wedding.type || wedding.tagline || wedding.story || 'Wedding Celebration',
-    price: Number(wedding.price || wedding.per_person_price || 0),
-    duration: `${days} ${days === 1 ? 'Day' : 'Days'} Wedding`,
-    status: wedding.status === 'few-seats' ? 'few-seats' : 'available',
-    palette: wedding.palette || 'jaipur',
-    image: photo.cover_image || wedding.cover_image || null,
-  }
-}
-
 function getPageNumbers(current, total) {
   if (total <= 6) return Array.from({ length: total }, (_, i) => i + 1)
   const pages = [1, 2, 3, 4, 5]
