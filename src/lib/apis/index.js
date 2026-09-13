@@ -2,7 +2,8 @@ import authAPI from './auth';
 import adminUsersAPI from './admin/adminUsers';
 import frontendAuthAPI from './frontendAuth';
 import usersAPI from './users';
-import weddingAPI from './wedding';
+import frontWeddingAPI from './frontWeddings';
+import weddingAPI from './weddings';
 
 const APIs = {
   auth: authAPI,
@@ -10,6 +11,7 @@ const APIs = {
     auth: frontendAuthAPI,
     users: usersAPI,
     weddings: weddingAPI,
+    frontWeddings: frontWeddingAPI,
   },
   admin: {
     users: adminUsersAPI,

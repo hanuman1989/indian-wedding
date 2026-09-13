@@ -2,7 +2,6 @@ import { Mail, Phone, Users } from '@/components/Icons';
 import { FormField, InputWithIcon } from './PostWeddingField';
 
 function PartnerContactSection({ errors, onBlur, onChange, partner, title, values }) {
-  console.log(values, 'PartnerContactSection values');
   return (
     <section className="border border-gold-200 bg-white/65 p-5 sm:p-6">
       <div className="mb-5 flex items-center gap-3">
@@ -25,6 +24,14 @@ function PartnerContactSection({ errors, onBlur, onChange, partner, title, value
           <InputWithIcon id={`${partner}-phone`} Icon={Phone} type="tel" inputMode="tel" value={values.phone} onChange={(event) => onChange(`${partner}.phone`, event.target.value)} onBlur={() => onBlur(`${partner}.phone`)} placeholder="e.g., +919876543210" autoComplete="tel" error={errors[`${partner}.phone`]} />
         </FormField>
       </div>
+      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        <FormField htmlFor={`${partner}-fathers-name`} label="Father's Name" error={errors[`${partner}.fathersName`]} required>
+          <InputWithIcon id={`${partner}-fathers-name`} Icon={Users} value={values.fathersName} onChange={(event) => onChange(`${partner}.fathersName`, event.target.value)} onBlur={() => onBlur(`${partner}.fathersName`)} autoComplete="name" error={errors[`${partner}.fathersName`]} />
+        </FormField>
+        <FormField htmlFor={`${partner}-mothers-name`} label="Mother's Name" error={errors[`${partner}.mothersName`]} required>
+          <InputWithIcon id={`${partner}-mothers-name`} Icon={Users} value={values.mothersName} onChange={(event) => onChange(`${partner}.mothersName`, event.target.value)} onBlur={() => onBlur(`${partner}.mothersName`)} autoComplete="name" error={errors[`${partner}.mothersName`]} />
+        </FormField>
+      </div>
     </section>
   );
 }
@@ -32,8 +39,6 @@ function PartnerContactSection({ errors, onBlur, onChange, partner, title, value
 export default function PartnerDetails({ errors, form, onBlur, onChange }) {
   const showBride = form.creatorType === 'groom' || form.creatorType === 'other';
   const showGroom = form.creatorType === 'bride' || form.creatorType === 'other';
-
-  console.log(form, 'form.bride---------------')
 
   return (
     <div>

@@ -84,3 +84,23 @@ export const clearFrontendAuthData = () => {
   }
 };
 
+
+// Social login page
+export const getSocialLoginPage = () => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('socialLoginPage');
+  }
+  return null;
+};
+
+export const setSocialLoginPage = (page) => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('socialLoginPage', page);
+  }
+};
+
+export const removeSocialLoginPage = () => {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('socialLoginPage');
+  }
+};

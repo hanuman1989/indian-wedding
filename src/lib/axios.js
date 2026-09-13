@@ -14,8 +14,15 @@ const axiosInstance = axios.create({
 // Request interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
+    if (typeof FormData !== 'undefined' && config.data instanceof FormData) {
+      config.headers = config.headers || {};
+      config.headers['Content-Type'] = 'multipart/form-data';
+    }
+
     if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('authToken');
+      const requestUrl = `${config.baseURL || ''}${config.url || ''}`;
+      const tokenKey = requestUrl.includes('/admin') ? 'authToken' : 'frontendAuthToken';
+      const token = localStorage.getItem(tokenKey);
       if (token && !config.headers.Authorization) {
         config.headers.Authorization = `Bearer ${token}`;
       }

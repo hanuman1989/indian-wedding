@@ -8,6 +8,7 @@ type ModalSize =
   | 'lg'
   | 'xl'
   | '2xl'
+  | '3xl'
   | 'full';
 
 type ModalProps = {
@@ -58,6 +59,11 @@ type ModalProps = {
    * Additional class for content area
    */
   contentClassName?: string;
+
+  /**
+   * Remove padding from the content area
+   */
+  noPadding?: boolean;
 };
 
 const sizeClasses: Record<ModalSize, string> = {
@@ -66,6 +72,7 @@ const sizeClasses: Record<ModalSize, string> = {
   lg: 'max-w-lg',
   xl: 'max-w-xl',
   '2xl': 'max-w-2xl',
+  '3xl': 'max-w-3xl',
   full: 'max-w-[95vw]',
 };
 
@@ -83,6 +90,7 @@ export default function Modal({
   preventClose = false,
   className = '',
   contentClassName = '',
+  noPadding = false,
 }: ModalProps) {
   /**
    * Handle ESC key
@@ -172,7 +180,7 @@ export default function Modal({
       >
         {/* Header */}
         {(title || description || showCloseButton) && (
-          <div className="flex shrink-0 items-start justify-between border-b border-gray-200 px-6 py-4">
+          <div className="flex shrink-0 items-start justify-between  px-6 py-4">
             <div className="pr-4">
               {title && (
                 <h2
@@ -240,8 +248,7 @@ export default function Modal({
             min-h-0
             flex-1
             overflow-y-auto
-            px-6
-            py-5
+            ${noPadding ? '' : 'px-6 py-5'}
             ${contentClassName}
           `}
         >

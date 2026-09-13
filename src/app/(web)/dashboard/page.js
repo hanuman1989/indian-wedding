@@ -24,7 +24,7 @@ const quickActions = [
   {
     title: 'Change Password',
     description: 'Update your account password',
-    href: '/reset-password',
+    href: '/change-password',
     icon: Lock,
   },
   {

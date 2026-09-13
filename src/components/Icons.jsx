@@ -45,6 +45,13 @@ export const Search = (p) => (
   </S>
 )
 
+export const Play = (p) => (
+  <S {...p}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M10 8.4v7.2l6.2-3.6Z" fill="currentColor" stroke="none" />
+  </S>
+)
+
 export const ArrowRight = (p) => (
   <S {...p}>
     <path d="M4 12h15" />
@@ -165,6 +172,14 @@ export const Sliders = (p) => (
     <circle cx="16" cy="7" r="1.9" />
     <circle cx="9" cy="12" r="1.9" />
     <circle cx="14" cy="17" r="1.9" />
+  </S>
+)
+
+export const RefreshCw = (p) => (
+  <S {...p}>
+    <path d="M20 11a8 8 0 0 0-14.8-4L4 9" />
+    <path d="M4 4v5h5M4 13a8 8 0 0 0 14.8 4L20 15" />
+    <path d="M20 20v-5h-5" />
   </S>
 )
 

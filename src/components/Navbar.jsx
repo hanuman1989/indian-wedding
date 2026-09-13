@@ -1,20 +1,25 @@
 "use client";
 import { useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { ChevronDown, Globe } from '@/components/Icons'
 import { Logo, Mandala, PaisleyBand } from './Ornaments'
 import LoginButtonSection from '@/components/login/LoginButtonSection'
 import Link from 'next/link'
+import { useUserAuth } from '@/hooks/useUserAuth'
 const links = [
   { label: 'Home', href: '/' },
-  { label: 'Browse Weddings', href: '#weddings' },
-  { label: 'How It Works', href: '#how-it-works' },
-  { label: 'Host Wedding', href: '#host' },
+  { label: 'Browse Weddings', href: '/weddings' },
   { label: 'About Us', href: '#about' },
+  { label: 'Blog', href: '#how-it-works' },
+  { label: 'FAQ', href: '/faq' },
+  { label: 'Host Wedding', href: '/host-wedding' },
   { label: 'Contact', href: '#contact' },
 ]
 
 export default function Navbar() {
+  const { isAuthenticated } = useUserAuth()
   const [open, setOpen] = useState(false)
+  const pathname = usePathname()
 
   return (
     <header id="top" className="relative z-30 overflow-hidden">
@@ -36,13 +41,13 @@ export default function Navbar() {
                 <Link
                   href={link.href}
                   className={`relative block py-1 text-[13.5px] font-medium transition-colors ${
-                    i === 0
+                    link.href === pathname
                       ? 'text-cream-50'
                       : 'text-cream-100/85 hover:text-gold-300'
                   }`}
                 >
                   {link.label}
-                  {i === 0 && (
+                  {link.href === pathname && (
                     <span className="absolute -bottom-0.5 left-0 h-[2px] w-full rounded-full bg-gold-400" />
                   )}
                 </Link>
@@ -53,13 +58,14 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
 
             <LoginButtonSection />
-
-            <Link
-              href="registration"
-              className="rounded-md border border-gold-300/40 bg-wine-500 px-5 py-2 text-[13px] font-medium text-cream-50 shadow-sm transition-colors hover:bg-wine-400"
-            >
-              Sign Up
-            </Link>
+            {!isAuthenticated && (
+              <Link
+                href="registration"
+                className="rounded-md border border-gold-300/40 bg-wine-500 px-5 py-2 text-[13px] font-medium text-cream-50 shadow-sm transition-colors hover:bg-wine-400"
+              >
+                Sign Up
+              </Link>
+            )}
 
             {/* mobile menu toggle */}
             <button

@@ -1,7 +1,7 @@
 import SocialLogin from './SocialLogin'
 import { useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { Eye, EyeOff, Lock, Mail } from '@/components/Icons'
 import { useUserAuth } from '@/hooks/useUserAuth'
 import { Modal } from '@/components/ui/modal'
@@ -173,6 +173,7 @@ export default function LoginForm({ onClose, socialLoginError = '' }) {
   const [isSocialLoginErrorDismissed, setIsSocialLoginErrorDismissed] = useState(false)
   const { clearError, loading, login } = useUserAuth()
   const router = useRouter()
+  const pathname = usePathname()
   const displayedFormError = formError || (isSocialLoginErrorDismissed ? '' : socialLoginError)
 
   const handleSubmit = async (event) => {
@@ -196,8 +197,8 @@ export default function LoginForm({ onClose, socialLoginError = '' }) {
     const result = await login(email.trim(), password)
 
     if (result.meta.requestStatus === 'fulfilled') {
-      onClose()
-      router.replace('/dashboard')
+      router.replace(pathname === '/host-wedding' ? '/post-weddings' : '/dashboard')
+     // onClose()
       return
     }
 

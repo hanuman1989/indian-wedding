@@ -20,41 +20,6 @@ import { loadGoogleGeocodingLibrary, loadGooglePlacesLibrary } from '@/lib/googl
 const INDIA_REGION_CODE = 'in'
 const LOCATION_PLACEHOLDER = 'Search by city, venue...'
 
-// PlaceAutocompleteElement nests its real <input> inside one or more shadow
-// roots; walk them (as long as they're open) to find it regardless of depth.
-const findShadowInput = (root) => {
-  if (!root) return null
-
-  const direct = root.querySelector('input')
-  if (direct) return direct
-
-  for (const child of root.querySelectorAll('*')) {
-    if (child.shadowRoot) {
-      const nested = findShadowInput(child.shadowRoot)
-      if (nested) return nested
-    }
-  }
-
-  return null
-}
-
-// Reflects text into the widget's own visible input, not just React state.
-const fillAutocompleteDisplay = (element, text) => {
-  if (!element) return
-
-  try {
-    element.value = text
-  } catch {
-    // `value` isn't a writable property on this element; ignore.
-  }
-
-  const innerInput = findShadowInput(element.shadowRoot)
-  if (innerInput) {
-    innerInput.value = text
-    innerInput.dispatchEvent(new Event('input', { bubbles: true, composed: true }))
-  }
-}
-
 const foodObservanceOptions = [
   'All Food Observances',
   'Vegetarian',
@@ -81,7 +46,7 @@ const Field = ({ label, children }) => (
 const shellClasses =
   'flex h-[42px] w-full items-center rounded-md border border-cream-300 bg-cream-50/60  text-[12.5px] text-ink transition-colors focus-within:border-gold-400 focus-within:bg-white'
 
-export default function SearchPanel({ className = 'relative z-20 -mt-12' }) {
+export default function SearchPanel() {
   const router = useRouter()
   const [query, setQuery] = useState({
     where: '',
@@ -95,33 +60,9 @@ export default function SearchPanel({ className = 'relative z-20 -mt-12' }) {
 
   const autocompleteContainerRef = useRef(null)
   const autocompleteElementRef = useRef(null)
-  const dateInputRef = useRef(null)
-  
   // Suppresses the "stale coordinates" clearing logic for the synthetic
   // input event that follows a valid gmp-select (or a programmatic fill).
   const justSelectedRef = useRef(false)
-
-  const getTodayDate = () => {
-  const today = new Date()
-
-  const year = today.getFullYear()
-  const month = String(today.getMonth() + 1).padStart(2, '0')
-  const day = String(today.getDate()).padStart(2, '0')
-
-  return `${year}-${month}-${day}`
-}
-
-const todayDate = getTodayDate()
-
-const openDatePicker = () => {
-  const input = dateInputRef.current
-
-  if (!input) return
-
-  if (typeof input.showPicker === 'function') {
-    input.showPicker()
-  }
-}
 
   useEffect(() => {
     let cancelled = false
@@ -252,7 +193,11 @@ const openDatePicker = () => {
             longitude,
           }))
 
-          fillAutocompleteDisplay(autocompleteElementRef.current, result.formatted_address)
+          const innerInput = autocompleteElementRef.current?.shadowRoot?.querySelector('input')
+          console.log(innerInput, result.formatted_address)
+          if (innerInput) {
+            innerInput.value = result.formatted_address
+          }
         } catch (error) {
           console.error('Reverse geocoding failed:', error)
           setLocationError('Unable to resolve your current location. Please try again.')
@@ -281,7 +226,7 @@ const openDatePicker = () => {
   }
 
   return (
-    <section className={className}>
+    <section className="relative z-20 -mt-12">
       <div className="shell">
         <form
           onSubmit={onSubmit}
@@ -305,7 +250,7 @@ const openDatePicker = () => {
           <div className="grid gap-3.5 lg:grid-cols-[1.45fr_0.8fr_1fr_auto]">
             <div>
               <Field label="Search location">
-                <span className={`${shellClasses} gap-0 pr-3.5 ${placesReady ? 'pr-3.5' : 'px-3.5'}`}>
+                <span className={`${shellClasses} gap-2.5 pr-3.5 ${placesReady ? 'pr-3.5' : 'px-3.5'}`}>
                   {/* <Search className="h-[18px] w-[18px] shrink-0 text-wine-600" /> */}
                   <input
                     type="text"
@@ -313,7 +258,7 @@ const openDatePicker = () => {
                     onChange={update('where')}
                     placeholder={LOCATION_PLACEHOLDER}
                     aria-label="Search by city, venue..."
-                    className={`h-[42px] w-full bg-transparent placeholder:text-ink-soft/60 focus:outline-none ${placesReady ? 'hidden' : ''}`}
+                    className={`w-full bg-transparent placeholder:text-ink-soft/60 focus:outline-none ${placesReady ? 'hidden' : ''}`}
                   />
                   {/* Google's PlaceAutocompleteElement is mounted into this node once loaded (see effect below). */}
                   <div
@@ -341,20 +286,16 @@ const openDatePicker = () => {
             </div>
 
             <Field label="Starting date">
-              <span className={`${shellClasses} relative gap-2.5 px-3.5`} >
-                <Calendar className="pointer-events-none h-[18px] w-[18px] shrink-0 text-wine-600" />
+              <span className={`${shellClasses} relative gap-2.5 px-3.5`}>
+                <Calendar className="h-[18px] w-[18px] shrink-0 text-wine-600" />
                 <input
-                  ref={dateInputRef}
                   type="date"
                   value={query.date}
                   onChange={update('date')}
-                  min={todayDate}
                   aria-label="Starting date"
-                  onClick={openDatePicker}
-                  className="w-full min-w-0 cursor-pointer bg-transparent text-ink focus:outline-none"
-
+                  className="w-full min-w-0 bg-transparent text-ink placeholder:text-ink-soft/60 focus:outline-none"
                 />
-                <Calendar className="pointer-events-none h-[18px] w-[18px] shrink-0 text-wine-600" />
+                <Calendar className="pointer-events-none h-[15px] w-[15px] shrink-0 text-ink-soft/60" />
               </span>
             </Field>
 

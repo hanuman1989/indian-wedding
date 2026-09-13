@@ -3,15 +3,18 @@
 import { useState } from 'react';
 import { Facebook, Google } from '@/components/Icons'
 import frontendAuthAPI from '@/lib/apis/frontendAuth'
+import { usePathname } from 'next/navigation'
+import { setSocialLoginPage } from '@/lib/helpers';
 
 export default function SocialLogin() {
+    const pathname = usePathname()
     const [redirectingProvider, setRedirectingProvider] = useState('')
     const [error, setError] = useState('')
 
     const handleSocialLogin = (provider) => {
       setError('')
       setRedirectingProvider(provider)
-
+      setSocialLoginPage(pathname)
       try {
         window.location.assign(frontendAuthAPI.getSocialLoginRedirectUrl(provider))
       } catch (requestError) {
