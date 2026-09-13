@@ -67,7 +67,7 @@ export default function SearchPanel() {
   }
 
   return (
-    <section className="relative z-20 -mt-12">
+    <section className="relative z-20">
       <div className="shell">
         <form
           onSubmit={onSubmit}

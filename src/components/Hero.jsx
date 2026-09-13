@@ -12,7 +12,7 @@ export default function Hero() {
     <section className="herobanner relative isolate">
       {/* backdrop */}
       <div className="absolute inset-0 -z-10">
-        <img src="images/banner.webp" alt="banner" />
+        <img src="images/banner.webp" alt="banner" width="100%" />
       </div>
 
       <div className="shell relative flex min-h-[380px] items-center py-12 sm:min-h-[420px] lg:min-h-[460px]">
