@@ -770,20 +770,22 @@ span.flatpickr-weekday,
   background-image: url("/images/statsbar1.webp");
 }
 
+#how-it-works {z-index: 1;}
 #how-it-works::before, #how-it-works::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  width: 200px;
-  height: 303px;
-  background-repeat: no-repeat;
-  background-size: contain;
+    content: "";
+    position: absolute;
+    bottom: 0;
+    width: 171px;
+    height: 260px;
+    z-index: -1;
+    background-repeat: no-repeat;
+    background-size: contain;
 }
 #how-it-works::before {
-  left: 0;
-  width: 300px;
-  height: 310px;
-  background-image: url("/images/works1.webp");
+    left: 0;
+    width: 250px;
+    height: 239px;
+    background-image: url("/images/works1.webp");
 }
 #how-it-works::after {
   right: 0;
@@ -795,7 +797,7 @@ header#top::before, header#top::after {
     position: absolute;
     top: 0;
     z-index: 1;
-    width: 85px;
+    width: 88px;
     height: 220px;
     background-repeat: no-repeat;
     background-size: contain;
@@ -807,4 +809,89 @@ header#top::before {
 header#top::after {
   right: 0;
   background-image: url("/images/header_left.webp");
+}
+
+.host_box {z-index: 1;}
+.host_box::before, .host_box::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    z-index: -1;
+    width: 210px;
+    height: 184px;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+.host_box::before {
+    left: 0;
+    width: 100px;
+    height: 100px;
+    background-image: url("/images/host_left.webp");
+}
+.host_box::after {
+  right: 0;
+  background-image: url("/images/host_right.webp");
+}
+.host_inner {
+    padding-left: 115px;
+    padding-right: 220px;
+}
+
+footer#contact {z-index: 1;}
+footer#contact::before, footer#contact::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    z-index: -1;
+    width: 145px;
+    height: 171px;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+footer#contact::before {
+    left: 0;
+    background-image: url("/images/footer_left.webp");
+}
+footer#contact::after {
+  right: 0;
+  background-image: url("/images/footer_right.webp");
+}
+
+
+@media (max-width: 1662px) {
+  .shell {
+    max-width: 1330px;
+  }
+}
+@media (max-width: 1572px) {
+  .shell {
+    max-width: 1230px;
+  }
+}
+@media (max-width: 1472px) {
+  .shell {
+    max-width: 1130px;
+  }
+}
+@media (max-width: 1372px) {
+  .shell {
+    max-width: 1090px;
+  }
+  .host_inner .lg\:gap-8 {
+      gap: 10px;
+  }
+  .host_inner {
+    padding-left: 110px;
+    padding-right: 160px;
+    gap: 15px;
+  }
+  .host_inner h2 {
+    font-size: 18px;
+  }
+}
+@media (max-width: 1248px) {
+  footer#contact::before, footer#contact::after {
+    width: 100px;
+    height: 118px;
+  }
 }
