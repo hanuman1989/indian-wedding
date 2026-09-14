@@ -94,6 +94,12 @@ export const Plus = (p) => (
   </S>
 )
 
+export const Minus = (p) => (
+  <S {...p}>
+    <path d="M5 12h14" />
+  </S>
+)
+
 export const Pencil = (p) => (
   <S {...p}>
     <path d="m4.5 19.5 3.8-.8L19 8l-3-3L5.3 15.7l-.8 3.8Z" />

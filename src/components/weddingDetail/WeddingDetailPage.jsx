@@ -117,9 +117,11 @@ export default function WeddingDetailPage({ weddingId }) {
   return (
     <div className="bg-cream-50">
       <WeddingBreadcrumb wedding={wedding} />
-      <WeddingHero wedding={wedding} canJoinWedding={canJoinWedding} onJoinWedding={joinWedding} />
-      <WeddingStory wedding={wedding} />
-      <WeddingSchedule weddingDays={wedding?.wedding_days || []} />
+      <WeddingHero wedding={wedding} />
+      <div style={{ backgroundImage: 'url("/images/sectionbg.png")' }} className="py-10 sm:py-14">
+        <WeddingStory wedding={wedding} />
+        <WeddingSchedule weddingDays={wedding?.wedding_days || []} />
+      </div>
       <WeddingJoinCTA canJoinWedding={canJoinWedding} onJoinWedding={joinWedding} />
     </div>
   );

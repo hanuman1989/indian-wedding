@@ -115,7 +115,7 @@ export default function WeddingDayAccordion({ deletingEventKey, errors, day, ind
                   <FormField htmlFor={`event-title-${index}-${eventIndex}`} label="Title" error={getEventError(eventIndex, 'title')} required>
                     <InputWithIcon id={`event-title-${index}-${eventIndex}`} value={event.title} onChange={(inputEvent) => updateEvent(eventIndex, 'title', inputEvent.target.value)} error={getEventError(eventIndex, 'title')} placeholder="Enter event title" />
                   </FormField>
-                  <FormField htmlFor={`event-dress-code-${index}-${eventIndex}`} label="Dress Code" >
+                  <FormField htmlFor={`event-dress-code-${index}-${eventIndex}`} label="What is the dress code at this event" >
                     <InputWithIcon id={`event-dress-code-${index}-${eventIndex}`} value={event.dress_code} onChange={(inputEvent) => updateEvent(eventIndex, 'dress_code', inputEvent.target.value)}  placeholder="Enter dress code" />
                   </FormField>
                   <FormField htmlFor={`event-description-${index}-${eventIndex}`} label="Description" error={getEventError(eventIndex, 'description')} required>

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Calendar, Leaf, MapPin, MessageCircle, Users, WineGlass } from '@/components/Icons';
 import {
   getAlcoholAvailability,
@@ -20,7 +21,7 @@ function SummaryStat({ Icon, primary, secondary }) {
   );
 }
 
-export default function WeddingSummary({ canJoinWedding, onJoinWedding, wedding }) {
+export default function WeddingSummary({ wedding }) {
   const weddingDays = wedding?.wedding_days || [];
   const firstDay = weddingDays[0];
   const food = wedding?.food_observance || wedding?.food_type || 'Not specified';
@@ -36,7 +37,7 @@ export default function WeddingSummary({ canJoinWedding, onJoinWedding, wedding 
 
       <h1 className="mt-3 font-display text-3xl font-bold leading-tight text-wine-700 sm:text-md">{wedding.couple_name}</h1>
       <p className="mt-2 text-base font-semibold text-ink">Two Families, One Beautiful Journey</p>
-      <p className="mt-3 max-w-xl text-sm leading-6 text-ink-soft">{wedding?.description || 'We warmly invite you to be a part of our special celebration.'}</p>
+      <p className="mt-3 max-w-xl text-sm leading-6 text-ink-soft">We warmly invite you to be a part of our special celebration and share in the joy, love, and blessings as we begin this new chapter together.</p>
 
       <div className="mt-6 grid grid-cols-3 gap-3">
         <SummaryStat Icon={Calendar} primary={start} secondary={isRange ? `to ${end}` : null} />
@@ -51,13 +52,11 @@ export default function WeddingSummary({ canJoinWedding, onJoinWedding, wedding 
       </div>
 
       <div className="mt-7 flex flex-wrap items-center justify-between gap-4">
-        {canJoinWedding && (
-          <button type="button" onClick={onJoinWedding} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-wine-700 px-6 text-sm font-semibold text-cream-50 shadow-sm transition-colors hover:bg-wine-600 focus:outline-none focus:ring-2 focus:ring-wine-300">
+          <Link href={`/wedding/${wedding.id}/booking`} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-wine-700 px-6 text-sm font-semibold text-cream-50 shadow-sm transition-colors hover:bg-wine-600 focus:outline-none focus:ring-2 focus:ring-wine-300">
             <Users className="h-4 w-4" />
             Join Our Wedding
             <span aria-hidden="true">&rarr;</span>
-          </button>
-        )}
+          </Link>
         <p className="font-display text-sm italic leading-5 text-wine-400">Celebrating Love<br />Culture &amp; Togetherness</p>
       </div>
     </div>

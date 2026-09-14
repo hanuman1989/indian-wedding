@@ -14,9 +14,9 @@ export default function WeddingSchedule({ weddingDays = [] }) {
   const selectedDay = orderedDays[resolvedIndex];
 
   return (
-    <section id="schedule" className="bg-cream-50 py-10 sm:py-14">
-      <div className="shell">
-        <div className="border border-gold-200 bg-cream-100/60 p-5 shadow-[0_16px_36px_-28px_rgba(108,10,34,0.35)] sm:p-7">
+    <section id="schedule" className="py-10 sm:py-10">
+      <div className="shell bg-white p-6 sm:p-8 lg:p-10">
+        <div className="">
           <div className="flex flex-wrap items-center gap-3">
             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-wine-50 text-wine-600"><Calendar className="h-5 w-5" /></span>
             <h2 className="font-display text-3xl font-bold text-wine-700">Wedding Schedule</h2>
