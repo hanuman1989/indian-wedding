@@ -22,8 +22,7 @@ export default function Navbar() {
   const pathname = usePathname()
 
   return (
-    <header id="top" className="relative z-30 overflow-hidden">
-      <img src="images/topbar.webp" alt="topbar" width="100%" />
+    <header id="top" className="relative z-30">
 
       <nav className="relative overflow-visible bg-wine-700">
         {/* faint mandala watermarks behind the bar */}
