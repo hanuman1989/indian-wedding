@@ -60,7 +60,7 @@ export default function HostingProcess() {
             >
               <span className="relative mb-3.5">
                 <span className="grid h-[60px] w-[60px] place-items-center rounded-full border border-gold-300 bg-white text-wine-700 shadow-sm">
-                  <Icon className="h-[23px] w-[23px]" />
+                  <Icon className="h-[34px] w-[34px]" />
                 </span>
                 <span className="absolute -bottom-1 -right-1 grid h-5 w-5 place-items-center rounded-full bg-wine-700 text-[10.5px] font-semibold text-cream-50 ring-2 ring-wine-50">
                   {String(i + 1).padStart(2, '0')}

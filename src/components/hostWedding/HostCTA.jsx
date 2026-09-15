@@ -3,13 +3,13 @@ import { Heart } from '@/components/Icons'
 
 export default function HostCTA() {
   return (
-    <section className="relative overflow-hidden bg-wine-700 py-12 sm:py-14">
-      <div className="shell flex flex-col items-center justify-between gap-6 text-center lg:flex-row lg:text-left">
+    <section className="celeb_main relative overflow-hidden bg-white py-12 sm:py-14">
+      <div className="shell flex flex-col items-center justify-center gap-6 text-center lg:flex-row">
         <div>
-          <h2 className="font-display text-[22px] font-bold text-cream-50 sm:text-[26px]">
+          <h2 className="font-display text-[22px] font-bold text-wine-700 sm:text-[26px]">
             Your Wedding Deserves to Be Celebrated
           </h2>
-          <p className="mt-2 max-w-lg text-[13px] leading-relaxed text-cream-100/85">
+          <p className="mt-2 max-w-lg text-[13px] leading-relaxed text-wine-700">
             Share your love, welcoming guests from around the world to be part of your special
             day.
           </p>
@@ -21,10 +21,10 @@ export default function HostCTA() {
           </Link>
         </div>
 
-        <p className="hidden items-center gap-2 font-display text-[15px] italic text-cream-100/70 lg:flex">
+        {/* <p className="hidden items-center gap-2 font-display text-[15px] italic text-cream-100/70 lg:flex">
           More than a wedding, a shared joy
           <Heart className="h-4 w-4 text-gold-400" />
-        </p>
+        </p> */}
       </div>
     </section>
   )

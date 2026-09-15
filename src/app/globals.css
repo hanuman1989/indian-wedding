@@ -869,8 +869,8 @@ footer#contact::after {
     position: absolute;
     top: 0;
     z-index: -1;
-    width: 130px;
-    height: 195px;
+    width: 100px;
+    height: 155px;
     background-repeat: no-repeat;
     background-size: contain;
 }
@@ -881,6 +881,26 @@ footer#contact::after {
 #process::after {
   right: 0;
   background-image: url("/images/memory_right.webp");
+}
+
+.celeb_main {z-index: 1;}
+.celeb_main::before, .celeb_main::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    z-index: -1;
+    width: 190px;
+    height: 160px;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+.celeb_main::before {
+    left: 0;
+    background-image: url("/images/statsbar.webp");
+}
+.celeb_main::after {
+  right: 0;
+  background-image: url("/images/statsbar1.webp");
 }
 
 

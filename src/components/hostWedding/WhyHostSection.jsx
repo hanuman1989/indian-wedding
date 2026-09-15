@@ -40,7 +40,7 @@ export default function WhyHostSection() {
               className="rounded-xl border border-cream-300 bg-cream-50 p-5 text-center shadow-sm"
             >
               <span className="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-full bg-cream-100 text-wine-700">
-                <Icon className="h-5 w-5" />
+                <Icon className="h-8 w-8" />
               </span>
               <h3 className="font-display text-[14px] font-bold text-wine-700">{title}</h3>
               <p className="mt-1.5 text-[11.5px] leading-relaxed text-ink-soft">{text}</p>

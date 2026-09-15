@@ -18,7 +18,7 @@ export default function TrustPlatform() {
           {trustItems.map(({ Icon, title, text }) => (
             <li key={title} className="text-center">
               <span className="mx-auto mb-2.5 grid h-12 w-12 place-items-center rounded-full border border-gold-300/70 bg-white text-wine-700 shadow-sm">
-                <Icon className="h-5 w-5" />
+                <Icon className="h-7 w-7" />
               </span>
               <h3 className="text-[12.5px] font-semibold text-wine-700">{title}</h3>
               <p className="mt-1 text-[11px] text-ink-soft">{text}</p>
