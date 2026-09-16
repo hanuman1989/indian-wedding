@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, use } from 'react';
-import WeddingBookingPage from '@/components/booking/WeddingBookingPage';
+import WeddingBookingPaymentPage from '@/components/booking/WeddingBookingPaymentPage';
 import { useUserAuth } from '@/hooks/useUserAuth';
 import { useRouter } from 'next/navigation';
 import BookingSkeleton from "@/components/booking/BookingSkeleton";
@@ -12,7 +12,9 @@ export default function WeddingBookingRoute({ params }) {
         initialized,
     } = useUserAuth();
   const router = useRouter();
-  const { weddingId } = use(params);
+  const { weddingId, bookingId } = use(params);
+
+  console.log(weddingId, bookingId, 'params----')
 
    useEffect(() => {
     if (!initialized) {
@@ -33,6 +35,6 @@ export default function WeddingBookingRoute({ params }) {
         return null;
     }
 
-  return <WeddingBookingPage weddingId={weddingId} />;
+  return <WeddingBookingPaymentPage weddingId={weddingId} bookingId={bookingId} />;
 }
 

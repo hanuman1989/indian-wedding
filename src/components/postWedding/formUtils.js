@@ -25,6 +25,7 @@ export function createWeddingEvent() {
     title: '',
     description: '',
     is_music_or_dancing: false,
+    is_alcohol_offered: false,
     dress_code: '',
   };
 }
@@ -59,6 +60,7 @@ export function ensureWeddingDays(numberOfDays, days = []) {
       wedding_day_events: (source.wedding_day_events || []).map((event) => ({
         ...createWeddingEvent(),
         ...event,
+        is_alcohol_offered: Boolean(event.is_alcohol_offered),
       })),
     };
   });
@@ -79,6 +81,8 @@ export function getInitialWeddingForm(user = {}) {
     lastName: user.last_name || user.lastName || remainingNames.join(' '),
     email: user.email || '',
     phone: user.phone || '',
+    guideFullName: '',
+    guidePhoneNumber: '',
     bride: { firstName: '', lastName: '', email: '', phone: '', fathersName: '', mothersName: '' },
     groom: { firstName: '', lastName: '', email: '', phone: '', fathersName: '', mothersName: '' },
     description: '',
@@ -118,6 +122,7 @@ function normalizeWeddingDay(day = {}) {
     wedding_day_events: (day.wedding_day_events || []).map((event) => ({
       ...createWeddingEvent(),
       ...event,
+      is_alcohol_offered: Boolean(event.is_alcohol_offered),
     })),
   };
 }
@@ -145,6 +150,8 @@ export function normalizeWeddingForm(response, user = {}) {
     lastName: wedding.last_name || initial.lastName,
     email: wedding.email || initial.email,
     phone: wedding.phone || initial.phone,
+    guideFullName: wedding.guide_full_name || wedding.guideFullName || initial.guideFullName,
+    guidePhoneNumber: wedding.guide_phone_number || wedding.guidePhoneNumber || initial.guidePhoneNumber,
     bride: normalizePartnerContact(wedding.bride, 'bride'),
     groom: normalizePartnerContact(wedding.groom, 'groom'),
     description: wedding.description || '',
@@ -183,6 +190,8 @@ export function validateWeddingStep(step, form) {
     if (form.creatorType === 'other') addRequiredError(errors, form.creatorTypeOther, 'creatorTypeOther', 'Please specify your role in the wedding.');
     addRequiredError(errors, form.firstName, 'firstName', 'Enter your first name.');
     addRequiredError(errors, form.lastName, 'lastName', 'Enter your last name.');
+    addRequiredError(errors, form.guideFullName, 'guideFullName', 'Enter the guide\'s full name.');
+    if (!phonePattern.test(form.guidePhoneNumber || '')) errors.guidePhoneNumber = "Guide phone number must start with '+' and contain at least 7 digits.";
     if (!emailPattern.test(form.email?.trim() || '')) errors.email = 'Enter a valid email address.';
     if (!phonePattern.test(form.phone || '')) errors.phone = "Phone number must start with '+' and contain at least 7 digits.";
   }
@@ -248,6 +257,8 @@ export function getStepPayload(step, form) {
     last_name: toTrimmedString(form.lastName),
     email: toTrimmedString(form.email),
     phone: form.phone,
+    guide_full_name: toTrimmedString(form.guideFullName),
+    guide_phone_number: form.guidePhoneNumber,
     status: 'draft',
   };
 
@@ -258,7 +269,6 @@ export function getStepPayload(step, form) {
   }
 
   if (step === 3) return { description: toTrimmedString(form.description), video_url: toTrimmedString(form.videoUrl) || null };
-
   return {
     number_of_days: Number(form.weddingDays),
     food_observance: form.foodType,
@@ -282,6 +292,7 @@ export function getStepPayload(step, form) {
         title: toTrimmedString(event.title),
         description: toTrimmedString(event.description),
         is_music_or_dancing: event.is_music_or_dancing,
+        is_alcohol_offered: event.is_alcohol_offered,
         dress_code: toTrimmedString(event.dress_code),
       })),
     })),

@@ -1,7 +1,7 @@
 import SocialLogin from './SocialLogin'
 import { useState } from 'react'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname, useRouter, useParams  } from 'next/navigation'
 import { Eye, EyeOff, Lock, Mail } from '@/components/Icons'
 import { useUserAuth } from '@/hooks/useUserAuth'
 import { Modal } from '@/components/ui/modal'
@@ -174,10 +174,24 @@ export default function LoginForm({ onClose, socialLoginError = '' }) {
   const { clearError, loading, login } = useUserAuth()
   const router = useRouter()
   const pathname = usePathname()
+  const params = useParams();
   const displayedFormError = formError || (isSocialLoginErrorDismissed ? '' : socialLoginError)
 
+  const getRedirectPath = (pathname) => {
+  if (pathname.startsWith('/wedding-detail')) {
+    const weddingId = params.weddingId;
+    return `/wedding/${weddingId}/booking`;
+  }
+  if (pathname === '/host-wedding') {
+    return '/post-weddings';
+  }
+  return '/dashboard';
+};
+
   const handleSubmit = async (event) => {
+    
     event.preventDefault()
+
     const validationErrors = {}
 
     if (!emailPattern.test(email.trim())) {
@@ -197,7 +211,8 @@ export default function LoginForm({ onClose, socialLoginError = '' }) {
     const result = await login(email.trim(), password)
 
     if (result.meta.requestStatus === 'fulfilled') {
-      router.replace(pathname === '/host-wedding' ? '/post-weddings' : '/dashboard')
+
+      router.replace(getRedirectPath(pathname))
      // onClose()
       return
     }

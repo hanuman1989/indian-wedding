@@ -17,6 +17,7 @@ export type WeddingEvent = {
   dress_code?: string | null;
   description?: string | null;
   is_music_or_dancing: boolean;
+  is_alcohol_offered: boolean;
 };
 
 export type WeddingDay = {

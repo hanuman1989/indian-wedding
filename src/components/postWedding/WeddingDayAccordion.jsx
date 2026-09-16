@@ -118,13 +118,23 @@ export default function WeddingDayAccordion({ deletingEventKey, errors, day, ind
                   <FormField htmlFor={`event-dress-code-${index}-${eventIndex}`} label="What is the dress code at this event" >
                     <InputWithIcon id={`event-dress-code-${index}-${eventIndex}`} value={event.dress_code} onChange={(inputEvent) => updateEvent(eventIndex, 'dress_code', inputEvent.target.value)}  placeholder="Enter dress code" />
                   </FormField>
+                  <div className="sm:col-span-2">
                   <FormField htmlFor={`event-description-${index}-${eventIndex}`} label="Description" error={getEventError(eventIndex, 'description')} required>
                     <textarea id={`event-description-${index}-${eventIndex}`} rows="3" value={event.description ?? ''} onChange={(inputEvent) => updateEvent(eventIndex, 'description', inputEvent.target.value)} className={`${getInputClassName(getEventError(eventIndex, 'description'), false)} resize-y leading-6`} placeholder="Enter event description" />
                   </FormField>
-                  <label className="flex items-center gap-2 self-center text-sm font-medium text-ink">
-                    <input type="checkbox" checked={event.is_music_or_dancing} onChange={(inputEvent) => updateEvent(eventIndex, 'is_music_or_dancing', inputEvent.target.checked)} />
-                    Music or dancing
-                  </label>
+                  </div>
+                  <div className="sm:col-span-1 flex flex-wrap items-center gap-4">
+                    <label className="flex items-center gap-2 self-center text-sm font-medium text-ink">
+                      <input type="checkbox" checked={event.is_music_or_dancing} onChange={(inputEvent) => updateEvent(eventIndex, 'is_music_or_dancing', inputEvent.target.checked)} />
+                      Music or dancing
+                    </label>
+                    <label className="flex items-center gap-2 self-center text-sm font-medium text-ink">
+                      <input type="checkbox" checked={Boolean(event.is_alcohol_offered)} onChange={(inputEvent) => updateEvent(eventIndex, 'is_alcohol_offered', inputEvent.target.checked)} />
+                      Is Alcohol offered?
+                    </label>
+                  </div>
+                  
+                  
                 </div>
               ))}
             </div>

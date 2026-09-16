@@ -53,6 +53,8 @@ function getApiFieldErrors(error) {
     lastName: apiErrors.last_name,
     email: apiErrors.email,
     phone: apiErrors.phone,
+    guideFullName: apiErrors.guide_full_name,
+    guidePhoneNumber: apiErrors.guide_phone_number,
     'bride.firstName': apiErrors['bride.first_name'],
     'bride.lastName': apiErrors['bride.last_name'],
     'bride.email': apiErrors['bride.email'],
@@ -316,7 +318,6 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
 
   const saveCurrentStep = async () => {
     const validationErrors = validateWeddingStep(currentStep, form);
-    console.log(validationErrors, 'validationErrors---');
     setErrors(validationErrors);
     setFormError('');
     setSuccessMessage('');
@@ -359,8 +360,6 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
       } else if (currentStep === 3) {
         response = await APIs.frontend.weddings.updateStory(weddingId, getStepPayload(currentStep, form));
       } else if (currentStep === 4) {
-        console.log(getStepPayload(currentStep, form))
-        console.log('Updating wedding days for weddingId:', weddingId);
         response = await APIs.frontend.weddings.updateWeddingDays(weddingId, getStepPayload(currentStep, form));
       }else if (currentStep === 5) {
         response = await APIs.frontend.weddings.uploadWeddingPhotos(weddingId, getStepPayload(currentStep, form));
@@ -481,7 +480,6 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
         router.replace('/my-weddings?published=true');
       }
     } catch (error) {
-      console.log(error, 'submitWedding error---')
       setErrors((currentErrors) => ({ ...currentErrors, ...getApiFieldErrors(error) }));
       setFormError(getErrorMessage(error?.message, 'Unable to publish your wedding. Please try again.'));
     } finally {
@@ -517,14 +515,14 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
       <div className="shell">
         <div className="grid overflow-hidden border border-gold-200/90 bg-cream-50/95 shadow-[0_16px_48px_rgba(108,10,34,0.12)] lg:grid-cols-[230px_minmax(0,1fr)]">
           <AccountSidebar />
-          <main className="min-w-0 p-5 sm:p-7 lg:p-9">
-            <div className="flex flex-wrap items-start justify-between gap-4 border-b border-gold-200/80 pb-6">
+          <main className="min-w-0 p-5 sm:p-5 lg:p-5">
+            <div className="flex flex-wrap items-start justify-between gap-2 border-b border-gold-200/80 pb-6">
               <div>
                 <p className="text-sm font-medium text-gold-600">Your wedding space</p>
                 <h1 className="mt-2 font-display text-3xl font-bold text-wine-700 sm:text-4xl">{weddingId ? 'Edit Your Wedding' : 'Post Your Wedding'}</h1>
                 <p className="mt-2 text-sm leading-6 text-ink-soft">Share your story with the world. Fill in the details below to create a beautiful wedding page.</p>
               </div>
-              <p className="max-w-48 pt-1 text-right font-display text-lg italic leading-6 text-wine-600">Every love story deserves to be celebrated</p>
+              <p className="max-w-[150px] pt-1 text-right font-display text-lg italic leading-6 text-wine-600">Every love story deserves to be celebrated</p>
             </div>
 
             <div className="no-scrollbar mt-7 overflow-x-auto pb-2">

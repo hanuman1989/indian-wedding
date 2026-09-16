@@ -23,7 +23,16 @@ export async function getWeddingDetails(id) {
       const response =  await axiosInstance.get(`wedding-details/${id}`);
       return response.data;
     } catch (error) {
-      throw error.response?.data || { message: 'Unable to create your account. Please try again.' };
+      throw error.response?.data || { message: 'Unable to get wedding detail. Please try again.' };
+    }
+}
+
+export async function getWeddingBookingDetail(weddingId, bookingId) {
+  try {
+      const response =  await axiosInstance.get(`wedding/${weddingId}/booking/${bookingId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Unable to get wedding booking detail. Please try again.' };
     }
 }
 
@@ -31,7 +40,8 @@ export async function getWeddingDetails(id) {
 const frontWeddingAPI = {
   getWeddings,
   getPopularWeddings,
-  getWeddingDetails
+  getWeddingDetails,
+  getWeddingBookingDetail
 };
 
 export default frontWeddingAPI;
