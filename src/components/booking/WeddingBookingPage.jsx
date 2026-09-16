@@ -6,44 +6,25 @@ import { ElephantScene } from '@/components/Artwork';
 import ErrorMessage from '@/components/common/ErrorMessage';
 import SuccessMessage from '@/components/common/SuccessMessage';
 import { useUserAuth } from '@/hooks/useUserAuth';
+import { useRouter } from 'next/navigation';
+import BookingSkeleton from "@/components/booking/BookingSkeleton";
+
 import APIs from '@/lib/apis';
-import { getSortedWeddingDays } from '@/components/weddingDetail/weddingDetailUtils';
 import BookingBreadcrumb from './BookingBreadcrumb';
 import BookingIntro from './BookingIntro';
 import BookingSidebar from './BookingSidebar';
 import PaymentPanel from './PaymentPanel';
-import StepHeader from './StepHeader';
 import TravelersStepper from './TravelersStepper';
 import WeddingDaysPicker from './WeddingDaysPicker';
 import YourInformationForm from './YourInformationForm';
+import BookingSummary from './BookingSummary'
+import Loader from '@/components/common/Loader';
 import { CONTRIBUTION_PER_PERSON, getInitialBookingForm, validateBookingForm } from './bookingUtils';
-
-function getWeddingFromResponse(response) {
-  const payload = response?.data ?? response;
-  return payload?.data ?? payload;
-}
-
-function BookingSkeleton() {
-  return (
-    <section className="bg-cream-50 py-10 sm:py-14">
-      <div className="shell animate-pulse">
-        <div className="h-4 w-48 rounded bg-cream-200" />
-        <div className="mt-6 h-10 w-2/3 rounded bg-cream-200" />
-        <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.7fr)_minmax(18rem,1fr)]">
-          <div className="space-y-4">
-            <div className="h-40 rounded bg-cream-200" />
-            <div className="h-40 rounded bg-cream-200" />
-            <div className="h-32 rounded bg-cream-200" />
-          </div>
-          <div className="h-96 rounded bg-cream-200" />
-        </div>
-      </div>
-    </section>
-  );
-}
 
 export default function WeddingBookingPage({ weddingId }) {
   const { user } = useUserAuth();
+  const router = useRouter();
+
   const [wedding, setWedding] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -55,6 +36,7 @@ export default function WeddingBookingPage({ weddingId }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
+
   useEffect(() => {
     let isActive = true;
 
@@ -65,7 +47,11 @@ export default function WeddingBookingPage({ weddingId }) {
 
       try {
         const response = await APIs.frontend.frontWeddings.getWeddingDetails(weddingId);
-        const nextWedding = getWeddingFromResponse(response);
+        const nextWedding = response.data;
+
+        if(nextWedding.wid === user.id){
+          router.replace(`/wedding-detail/${weddingId}`);
+        }
 
         if (!nextWedding?.id) {
           if (isActive) setIsNotFound(true);
@@ -74,7 +60,7 @@ export default function WeddingBookingPage({ weddingId }) {
 
         if (isActive) {
           setWedding(nextWedding);
-          const sortedDays = getSortedWeddingDays(nextWedding?.wedding_days || []);
+          const sortedDays = nextWedding?.wedding_days;
           const firstDay = sortedDays[0];
           if (firstDay) setSelectedDayIds([firstDay.id ?? 0]);
         }
@@ -103,8 +89,8 @@ export default function WeddingBookingPage({ weddingId }) {
     const initial = getInitialBookingForm(user);
     setForm((currentForm) => ({
       ...currentForm,
-      firstName: currentForm.firstName || initial.firstName,
-      lastName: currentForm.lastName || initial.lastName,
+      first_name: currentForm.first_name || initial.first_name,
+      last_name: currentForm.last_name || initial.last_name,
       email: currentForm.email || initial.email,
       phone: currentForm.phone || initial.phone,
     }));
@@ -122,21 +108,28 @@ export default function WeddingBookingPage({ weddingId }) {
     setErrors((currentErrors) => ({ ...currentErrors, weddingDays: undefined }));
   };
 
-  const totalAmount = CONTRIBUTION_PER_PERSON * form.travelerCount;
+  const totalAmount = CONTRIBUTION_PER_PERSON * form.number_of_travelers;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setSuccessMessage('');
 
     const validationErrors = validateBookingForm(form, selectedDayIds);
+    console.log(validationErrors)
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length) return;
 
     setIsSubmitting(true);
     try {
-      // No booking/payment endpoint exists on the backend yet, so this only simulates the flow.
-      await new Promise((resolve) => setTimeout(resolve, 900));
-      setSuccessMessage('Thank you! Your spot has been reserved. A confirmation will be sent to your email shortly.');
+      const payload = {...form, ...{selected_days: selectedDayIds }}
+      const response = await APIs.frontend.weddingBooking.createWeddingBooking(weddingId, payload);
+      if(response.data && response.data.booking){
+        router.push(`/wedding/${weddingId}/booking/${response.data.booking.id}`);
+      }
+     
+    } catch(error){
+      console.log(error, 'error------------')
+      setErrorMessage(error?.message || 'Unable to create booking. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -158,29 +151,16 @@ export default function WeddingBookingPage({ weddingId }) {
       </section>
     );
   }
-
-  if (errorMessage) {
-    return (
-      <section className="bg-cream-50 py-16 sm:py-24">
-        <div className="shell max-w-2xl">
-          <ErrorMessage message={errorMessage} onClose={() => setErrorMessage('')} />
-          <Link href="/weddings" className="mt-6 inline-flex min-h-10 items-center rounded-md bg-wine-700 px-5 text-sm font-semibold text-cream-50 transition-colors hover:bg-wine-600 focus:outline-none focus:ring-2 focus:ring-wine-300">
-            Browse weddings
-          </Link>
-        </div>
-      </section>
-    );
-  }
-
   return (
-    <div className="relative overflow-hidden bg-cream-50 pb-16">
+    <div className="relative overflow-hidden bg-cream-50 pb-16" style={{ backgroundImage: 'url("/images/sectionbg.png")', backgroundPosition: 'center center', backgroundSize: 'contain' }}>
       <BookingBreadcrumb wedding={wedding} />
       <BookingIntro wedding={wedding} />
 
       <div className="shell relative mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.7fr)_minmax(18rem,1fr)]">
         <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+           {errorMessage && (<ErrorMessage message={errorMessage} onClose={() => setErrorMessage('')} />)}
           {successMessage && <SuccessMessage message={successMessage} onClose={() => setSuccessMessage('')} />}
-
+           
           <YourInformationForm form={form} errors={errors} onChange={updateField} />
           <WeddingDaysPicker
             weddingDays={wedding?.wedding_days || []}
@@ -188,8 +168,11 @@ export default function WeddingBookingPage({ weddingId }) {
             onToggleDay={toggleDay}
             error={errors.weddingDays}
           />
-          <TravelersStepper travelerCount={form.travelerCount} onChange={(count) => updateField('travelerCount', count)} error={errors.travelerCount} />
-          <PaymentPanel form={form} errors={errors} onChange={updateField} totalAmount={totalAmount} travelerCount={form.travelerCount} isSubmitting={isSubmitting} />
+          <TravelersStepper travelerCount={form.number_of_travelers} onChange={(count) => updateField('number_of_travelers', count)} error={errors.number_of_travelers} />
+
+          <BookingSummary form={form} errors={errors} totalAmount={totalAmount} travelerCount={form.number_of_travelers} selectedDayCount={selectedDayIds.length} isSubmitting={isSubmitting}/>
+
+          {/* <PaymentPanel form={form} errors={errors} onChange={updateField} totalAmount={totalAmount} travelerCount={form.number_of_travelers} isSubmitting={isSubmitting} /> */}
         </form>
 
         <BookingSidebar wedding={wedding} />

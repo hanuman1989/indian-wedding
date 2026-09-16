@@ -1,4 +1,4 @@
-import { Calendar, Check } from '@/components/Icons'
+import { Calendar, Check, MapPin, Ticket } from '@/components/Icons'
 import { formatWeddingDate, formatWeddingTime, getSortedWeddingDays, getSortedWeddingEvents } from '@/components/weddingDetail/weddingDetailUtils'
 import StepHeader from './StepHeader'
 
@@ -17,10 +17,19 @@ function DayOption({ day, index, isSelected, onToggle }) {
       <span className="min-w-0">
         <span className="flex flex-wrap items-baseline gap-x-2">
           <span className="font-display text-base font-bold text-wine-700">Day {dayNumber}</span>
-          <span className="text-xs text-ink-soft">{formatWeddingDate(day?.wedding_day_date, { weekday: 'long' })}</span>
+          <span className="text-xs text-ink-soft">
+            {day.wedding_day_format}
+          </span>
+        </span>
+        <span className="flex flex-wrap items-baseline gap-x-2">
+          <MapPin className="h-3.5 w-3.5 text-gold-500" />
+          <span className="text-xs text-ink-soft">
+            {day.location ?? ''}
+          </span>
         </span>
         {time && <span className="mt-1 flex items-center gap-1.5 text-xs text-ink-soft"><Calendar className="h-3.5 w-3.5 text-gold-500" />{time} (approx)</span>}
-        {eventNames && <span className="mt-1 block truncate text-xs text-ink-soft">{eventNames}</span>}
+        {eventNames && <span className="mt-1 flex items-center gap-1.5 text-xs text-ink-soft"><Ticket className="h-3.5 w-3.5 text-gold-500" /> {eventNames}</span>}
+        
       </span>
     </label>
   )
@@ -33,13 +42,13 @@ export default function WeddingDaysPicker({ error, selectedDayIds, onToggleDay, 
     <section className="space-y-5 border border-gold-200 bg-white p-5 sm:p-7">
       <StepHeader number={2} title="Select Wedding Days" description="Choose the day(s) you plan to attend." />
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-3 sm:grid-cols-1">
         {sortedDays.map((day, index) => (
           <DayOption
-            key={day?.id ?? index}
+            key={day.id}
             day={day}
             index={index}
-            isSelected={selectedDayIds.includes(day?.id ?? index)}
+            isSelected={selectedDayIds.includes(day.id)}
             onToggle={onToggleDay}
           />
         ))}

@@ -1,5 +1,8 @@
 import Link from 'next/link';
 import { Calendar, Leaf, MapPin, MessageCircle, Users, WineGlass } from '@/components/Icons';
+import { useUserAuth } from '@/hooks/useUserAuth'
+import { useModal } from '@/hooks/useModal'
+import { Modal } from '@/components/ui/modal'
 import {
   getAlcoholAvailability,
   getCoupleName,
@@ -22,13 +25,22 @@ function SummaryStat({ Icon, primary, secondary }) {
 }
 
 export default function WeddingSummary({ wedding }) {
+  const { isAuthenticated, user } = useUserAuth()
+  const { isOpen, openModal, closeModal } = useModal()
   const weddingDays = wedding?.wedding_days || [];
   const firstDay = weddingDays[0];
-  const food = wedding?.food_observance || wedding?.food_type || 'Not specified';
+  const food = wedding?.food_observance || 'Not specified';
   const status = wedding?.status ? String(wedding.status).replace(/_/g, ' ') : '';
   const dayCount = weddingDays.length;
   const eventCount = getEventCount(weddingDays);
   const { start, end, isRange } = getWeddingDateRangeParts(weddingDays);
+
+  const handleBecomeHostClick = (event) => {
+      if (isAuthenticated && user.id === wedding.wid) {
+        event.preventDefault()
+        openModal()
+      }
+    }
 
   return (
     <div className="relative">
@@ -52,13 +64,18 @@ export default function WeddingSummary({ wedding }) {
       </div>
 
       <div className="mt-7 flex flex-wrap items-center justify-between gap-4">
-          <Link href={`/wedding/${wedding.id}/booking`} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-wine-700 px-6 text-sm font-semibold text-cream-50 shadow-sm transition-colors hover:bg-wine-600 focus:outline-none focus:ring-2 focus:ring-wine-300">
+          <Link 
+            href={`/wedding/${wedding.id}/booking`} 
+            onClick={handleBecomeHostClick}
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-wine-700 px-6 text-sm font-semibold text-cream-50 shadow-sm transition-colors hover:bg-wine-600 focus:outline-none focus:ring-2 focus:ring-wine-300">
             <Users className="h-4 w-4" />
             Join Our Wedding
             <span aria-hidden="true">&rarr;</span>
           </Link>
         <p className="font-display text-sm italic leading-5 text-wine-400">Celebrating Love<br />Culture &amp; Togetherness</p>
       </div>
+       <Modal isOpen={isOpen} onClose={closeModal} size="sm" noPadding title="You Can’t Book Your Own Wedding" description="You’re the host of this wedding, so you don’t need to book it. Your guests can book and join your wedding from this page.">
+            </Modal>
     </div>
   );
 }

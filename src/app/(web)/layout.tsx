@@ -1,6 +1,9 @@
+"use client"
+
+import { Provider } from 'react-redux';
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import StoreProvider from "@/app/providers/StoreProvider";
+import store from '@/store/store';
 import '../index.css'
 export default function WedbLayout({
   children,
@@ -8,7 +11,7 @@ export default function WedbLayout({
   children: React.ReactNode;
 }>) {
   return (
-      <StoreProvider>
+      <Provider store={store}>
         <div className="min-h-screen bg-white">
           <Navbar />
           <main>
@@ -16,6 +19,6 @@ export default function WedbLayout({
           </main>
           <Footer />
         </div>
-      </StoreProvider>
+      </Provider>
   );
 }

@@ -11,6 +11,16 @@ export default function SocialCallbackClient({ code, errorMessage }) {
   const router = useRouter()
   const hasProcessedCallback = useRef(false)
 
+    const getRedirectPath = (pathname) => {
+      if (pathname.startsWith('/wedding-detail')) {
+        return pathname;
+      }
+      if (pathname === '/host-wedding') {
+        return '/post-weddings';
+      }
+      return '/dashboard';
+    };
+
   useEffect(() => {
     if (hasProcessedCallback.current) return
 
@@ -26,8 +36,7 @@ export default function SocialCallbackClient({ code, errorMessage }) {
         await dispatch(socialLoginFrontendUser(code)).unwrap()
         const socialLoginPage = getSocialLoginPage()
         removeSocialLoginPage();
-        const redirectPath = socialLoginPage === '/host-wedding' ? '/post-weddings' : '/dashboard'
-        router.replace(redirectPath)
+        router.replace(getRedirectPath(socialLoginPage))
       } catch {
         router.replace('/?login=true&social_login=failed')
       }

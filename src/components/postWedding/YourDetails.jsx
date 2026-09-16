@@ -67,6 +67,21 @@ export default function YourDetails({ errors, form, onBlur, onChange }) {
               <InputWithIcon id="phone" Icon={Phone} type="tel" inputMode="tel" value={form.phone} onChange={(event) => onChange('phone', event.target.value)} onBlur={() => onBlur('phone')} placeholder="e.g., +919876543210" autoComplete="tel" error={errors.phone} />
             </FormField>
           </div>
+          <div className="mb-4 flex items-center gap-3 mt-5">
+            <h3 className="font-display text-lg font-bold text-wine-700 ">Guide Details</h3>
+            <span aria-hidden="true" className="h-px flex-1 bg-gold-300" />
+          </div>
+          <p className="text-ink-soft text-sm">
+            Who will take care of and guide your Indian wedding guests during the wedding?
+          </p>
+          <div className="mt-4 space-y-4">
+            <FormField htmlFor="guide-full-name" label="Guide Full Name" error={errors.guideFullName} required>
+              <InputWithIcon id="guide-full-name" Icon={Users} value={form.guideFullName} onChange={(event) => onChange('guideFullName', event.target.value)} onBlur={() => onBlur('guideFullName')} autoComplete="guide-full-name" error={errors.guideFullName} placeholder="Guide Full Name" />
+            </FormField>
+             <FormField htmlFor="guide_phone_number" label="Phone Number Including Country Code" error={errors.guidePhoneNumber} required>
+              <InputWithIcon id="guide_phone_number" Icon={Phone} type="tel" inputMode="tel" value={form.guidePhoneNumber} onChange={(event) => onChange('guidePhoneNumber', event.target.value)} onBlur={() => onBlur('guidePhoneNumber')} placeholder="e.g., +919876543210" autoComplete="tel" error={errors.guidePhoneNumber} />
+            </FormField>
+          </div>
         </div>
       </div>
 

@@ -92,9 +92,9 @@ export default function LocationMap({ address = '', latitude = null, longitude =
         const map = new google.maps.Map(mapContainerRef.current, {
           center: initialPosition,
           zoom: startWithCoordinates ? PIN_ZOOM : FALLBACK_ZOOM,
-          mapTypeControl: false,
+          mapTypeControl: true,
           streetViewControl: false,
-          fullscreenControl: false,
+          fullscreenControl: true,
           clickableIcons: false,
         });
 
@@ -161,7 +161,7 @@ export default function LocationMap({ address = '', latitude = null, longitude =
 
     const timeoutId = setTimeout(() => void geocodeAddress(address), GEOCODE_DEBOUNCE_MS);
     return () => clearTimeout(timeoutId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [address, status]);
 
   const retry = () => setRetryToken((token) => token + 1);

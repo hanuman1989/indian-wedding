@@ -12,22 +12,18 @@ export const hearAboutUsOptions = [
 
 export function getInitialBookingForm(user = {}) {
   const fullName = (user?.name || user?.full_name || '').trim()
-  const [firstName = '', ...remainingNames] = fullName.split(/\s+/).filter(Boolean)
+  const [first_name = '', ...remainingNames] = fullName.split(/\s+/).filter(Boolean)
 
   return {
-    firstName: user?.first_name || user?.firstName || firstName,
-    lastName: user?.last_name || user?.lastName || remainingNames.join(' '),
+    first_name: first_name,
+    last_name: remainingNames.join(' '),
     email: user?.email || '',
     phone: user?.phone || '',
-    visitingFrom: '',
-    hearAboutUs: '',
-    travelerCount: 1,
-    paymentMethod: 'card',
-    cardNumber: '',
-    cardExpiry: '',
-    cardCvc: '',
-    cardCountry: 'India',
-    acceptedTerms: false,
+    visiting_from: '',
+    hear_about: '',
+    number_of_travelers: 1,
+    card_country: 'India',
+    accepted_terms: false,
   }
 }
 
@@ -45,22 +41,23 @@ export function formatCardExpiry(value) {
 export function validateBookingForm(form, selectedDayIds) {
   const errors = {}
 
-  if (!form.firstName.trim()) errors.firstName = 'First name is required.'
-  if (!form.lastName.trim()) errors.lastName = 'Last name is required.'
+  if (!form.first_name.trim()) errors.first_name = 'First name is required.'
+  if (!form.last_name.trim()) errors.last_name = 'Last name is required.'
   if (!form.email.trim()) errors.email = 'Email address is required.'
   if (!form.phone.trim()) errors.phone = 'Phone number is required.'
-  if (!form.visitingFrom.trim()) errors.visitingFrom = 'Please tell us where you are visiting from.'
-  if (!form.hearAboutUs) errors.hearAboutUs = 'Please select an option.'
+  if (!form.visiting_from.trim()) errors.visiting_from = 'Please tell us where you are visiting from.'
+  if (!form.hear_about) errors.hear_about = 'Please select an option.'
   if (!selectedDayIds.length) errors.weddingDays = 'Select at least one wedding day to attend.'
-  if (form.travelerCount < 1) errors.travelerCount = 'At least one traveler is required.'
+  if (form.number_of_travelers < 1) errors.number_of_travelers = 'At least one traveler is required.'
 
   if (form.paymentMethod === 'card') {
-    if (form.cardNumber.replace(/\s/g, '').length < 15) errors.cardNumber = 'Enter a valid card number.'
-    if (!/^\d{2}\/\d{2}$/.test(form.cardExpiry)) errors.cardExpiry = 'Enter a valid expiration date (MM/YY).'
-    if (!/^\d{3,4}$/.test(form.cardCvc)) errors.cardCvc = 'Enter a valid security code.'
+    if (form.card_number.replace(/\s/g, '').length < 15) errors.card_number = 'Enter a valid card number.'
+    if (!/^\d{2}\/\d{2}$/.test(form.card_expiry)) errors.card_expiry = 'Enter a valid expiration date (MM/YY).'
+    if (!/^\d{3,4}$/.test(form.card_cvc)) errors.card_cvc = 'Enter a valid security code.'
+    if (!form.accepted_terms) errors.accepted_terms = 'You must accept the Terms of Use and Privacy Notice.'
   }
 
-  if (!form.acceptedTerms) errors.acceptedTerms = 'You must accept the Terms of Use and Privacy Notice.'
+  
 
   return errors
 }

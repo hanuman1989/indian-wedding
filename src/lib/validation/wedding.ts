@@ -56,6 +56,7 @@ export const eventSchema = z.object({
   dress_code: z.string().trim().max(150).optional().or(z.literal("")),
   description: z.string().trim().max(1000).optional().or(z.literal("")),
   is_music_or_dancing: z.boolean(),
+  is_alcohol_offered: z.boolean(),
 });
 
 export const daySchema = z.object({
