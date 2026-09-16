@@ -15,16 +15,16 @@ export default function ShareYourStory() {
     <section className="bg-cream-50 py-12 sm:py-14">
       <div className="shell grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
         <div className="relative">
-          <div className="overflow-hidden rounded-2xl border border-gold-300/60 shadow-sm">
+          <div className="overflow-hidden">
             <img
-              src="/images/banner.webp"
+              src="/images/wedding_collage.webp"
               alt="Couple celebrating a wedding tradition"
               className="h-[280px] w-full object-cover sm:h-[340px]"
             />
           </div>
-          <div className="absolute -bottom-4 left-4 rounded-lg border border-gold-300/70 bg-white px-3.5 py-2 text-[11px] font-medium text-wine-700 shadow-md">
+          {/* <div className="absolute -bottom-4 left-4 rounded-lg border border-gold-300/70 bg-white px-3.5 py-2 text-[11px] font-medium text-wine-700 shadow-md">
             Traditions bring people together
-          </div>
+          </div> */}
         </div>
 
         <div>
@@ -43,7 +43,7 @@ export default function ShareYourStory() {
             {shareItems.map(({ Icon, title, text }) => (
               <div key={title} className="flex items-start gap-2.5">
                 <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-cream-100 text-wine-700">
-                  <Icon className="h-[15px] w-[15px]" />
+                  <Icon className="h-[22px] w-[22px]" />
                 </span>
                 <span className="leading-tight">
                   <span className="block text-[12.5px] font-semibold text-wine-700">{title}</span>
