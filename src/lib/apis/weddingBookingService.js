@@ -18,9 +18,19 @@ export async function createWeddingBooking(weddingId, payload) {
     }
 }
 
+export async function verifyWeddingBooking(bookingId, payload) {
+  try {
+      const response = await axiosInstance.post(`wedding-bookings/${bookingId}/payment/verify`, payload);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Unable to verify booking. Please try again.' };
+    }
+}
+
 const weddingBookingAPI = {
   getWeddingBooking,
-  createWeddingBooking
+  createWeddingBooking,
+  verifyWeddingBooking
 };
 
 export default weddingBookingAPI;

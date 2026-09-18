@@ -1,8 +1,10 @@
 import Link from 'next/link';
 import { Calendar, Leaf, MapPin, MessageCircle, Users, WineGlass } from '@/components/Icons';
+import { useEffect, useState } from 'react';
 import { useUserAuth } from '@/hooks/useUserAuth'
 import { useModal } from '@/hooks/useModal'
 import { Modal } from '@/components/ui/modal'
+import LoginForm from '@/components/login/LoginForm'
 import {
   getAlcoholAvailability,
   getCoupleName,
@@ -27,6 +29,9 @@ function SummaryStat({ Icon, primary, secondary }) {
 export default function WeddingSummary({ wedding }) {
   const { isAuthenticated, user } = useUserAuth()
   const { isOpen, openModal, closeModal } = useModal()
+  const [title, setTitle] = useState('You Can’t Book Your Own Wedding');
+  const [description, setDescription] = useState('You’re the host of this wedding, so you don’t need to book it. Your guests can book and join your wedding from this page.');
+  const [isLoginForm, setIsLoginForm] = useState(false);
   const weddingDays = wedding?.wedding_days || [];
   const firstDay = weddingDays[0];
   const food = wedding?.food_observance || 'Not specified';
@@ -35,8 +40,16 @@ export default function WeddingSummary({ wedding }) {
   const eventCount = getEventCount(weddingDays);
   const { start, end, isRange } = getWeddingDateRangeParts(weddingDays);
 
+
   const handleBecomeHostClick = (event) => {
       if (isAuthenticated && user.id === wedding.wid) {
+        event.preventDefault()
+        openModal()
+      }
+      if (!isAuthenticated) {
+        setTitle('');
+        setDescription('');
+        setIsLoginForm(true)
         event.preventDefault()
         openModal()
       }
@@ -74,8 +87,9 @@ export default function WeddingSummary({ wedding }) {
           </Link>
         <p className="font-display text-sm italic leading-5 text-wine-400">Celebrating Love<br />Culture &amp; Togetherness</p>
       </div>
-       <Modal isOpen={isOpen} onClose={closeModal} size="sm" noPadding title="You Can’t Book Your Own Wedding" description="You’re the host of this wedding, so you don’t need to book it. Your guests can book and join your wedding from this page.">
-            </Modal>
+       <Modal isOpen={isOpen} onClose={closeModal} size={isLoginForm ? '3xl' : 'sm'} noPadding title={title} description={description}>
+        {isLoginForm && (<LoginForm onClose={closeModal} />)}
+      </Modal>
     </div>
   );
 }

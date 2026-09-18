@@ -1,8 +1,6 @@
 import { Flourish } from '@/components/Ornaments'
-import { getCoupleName } from '@/components/weddingDetail/weddingDetailUtils'
 
 export default function BookingIntro({ wedding }) {
-  const coupleName = getCoupleName(wedding)
 
   return (
     <div className="shell relative mt-4">

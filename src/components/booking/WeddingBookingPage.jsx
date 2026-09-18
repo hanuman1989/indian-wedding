@@ -153,7 +153,12 @@ export default function WeddingBookingPage({ weddingId }) {
   }
   return (
     <div className="relative overflow-hidden bg-cream-50 pb-16" style={{ backgroundImage: 'url("/images/sectionbg.png")', backgroundPosition: 'center center', backgroundSize: 'contain' }}>
-      <BookingBreadcrumb wedding={wedding} />
+      <BookingBreadcrumb items={[
+        { title: 'Home', link: '/' },
+        { title: 'Weddings', link: '/weddings' },
+        { title: wedding.couple_name, link: `/wedding-detail/${wedding?.id}` },
+        { title: 'Join Wedding', className: 'font-semibold text-wine-700' },
+      ]} />
       <BookingIntro wedding={wedding} />
 
       <div className="shell relative mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.7fr)_minmax(18rem,1fr)]">
