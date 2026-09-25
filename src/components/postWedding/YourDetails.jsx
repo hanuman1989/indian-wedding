@@ -67,6 +67,24 @@ export default function YourDetails({ errors, form, onBlur, onChange }) {
               <InputWithIcon id="phone" Icon={Phone} type="tel" inputMode="tel" value={form.phone} onChange={(event) => onChange('phone', event.target.value)} onBlur={() => onBlur('phone')} placeholder="e.g., +919876543210" autoComplete="tel" error={errors.phone} />
             </FormField>
           </div>
+
+        {form.creatorType && form.creatorType !== 'other' && (
+          <div>
+            <div className="mb-4 flex items-center gap-3 mt-5">
+              <h3 className="font-display text-lg font-bold text-wine-700">Parent&apos;s Details</h3>
+              <span aria-hidden="true" className="h-px flex-1 bg-gold-300" />
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <FormField htmlFor="fathers-name" label="Father's Name" error={errors.fathersName} required>
+                <InputWithIcon id="fathers-name" Icon={Users} value={form.fathersName} onChange={(event) => onChange('fathersName', event.target.value)} onBlur={() => onBlur('fathersName')} autoComplete="name" error={errors.fathersName} placeholder="Enter father's name" />
+              </FormField>
+              <FormField htmlFor="mothers-name" label="Mother's Name" error={errors.mothersName} required>
+                <InputWithIcon id="mothers-name" Icon={Users} value={form.mothersName} onChange={(event) => onChange('mothersName', event.target.value)} onBlur={() => onBlur('mothersName')} autoComplete="name" error={errors.mothersName} placeholder="Enter mother's name" />
+              </FormField>
+            </div>
+          </div>
+        )}
+
           <div className="mb-4 flex items-center gap-3 mt-5">
             <h3 className="font-display text-lg font-bold text-wine-700 ">Guide Details</h3>
             <span aria-hidden="true" className="h-px flex-1 bg-gold-300" />

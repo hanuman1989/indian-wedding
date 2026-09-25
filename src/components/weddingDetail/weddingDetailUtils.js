@@ -151,9 +151,11 @@ export function getMainLanguage(wedding) {
 }
 
 export function getAlcoholAvailability(wedding) {
-  if (wedding?.is_alcohol_offered === true) return 'Available';
-  if (wedding?.is_alcohol_offered === false) return 'Not available';
-  return 'Not specified';
+  const isAlcoholOfferedInEvents = wedding?.wedding_days?.some(day =>
+        day?.wedding_day_events?.some(event => event?.is_alcohol_offered === true)
+    ) ?? false;
+  return isAlcoholOfferedInEvents ? 'Available' : 'Not available';
+
 }
 
 export function toCoordinate(value) {

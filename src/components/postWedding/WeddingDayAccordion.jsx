@@ -1,23 +1,30 @@
 "use client";
 
 import { useRef, useState } from 'react';
+import { Switch } from '@headlessui/react';
 import { ChevronDown, MapPin, Trash } from '@/components/Icons';
 import { FormField, getInputClassName, InputWithIcon } from './PostWeddingField';
 import { createWeddingDay, createWeddingEvent, eventTimes } from './formUtils';
 import LocationMap from './LocationMap';
 
-function getMinimumWeddingDate() {
+function getMinimumWeddingDate(previousDay) {
   const today = new Date()
 
   const year = today.getFullYear()
   const month = String(today.getMonth() + 1).padStart(2, '0')
   const day = String(today.getDate()).padStart(2, '0')
+  const todayDate = `${year}-${month}-${day}`
 
-  return `${year}-${month}-${day}`
+  if (previousDay?.wedding_day_date && previousDay.wedding_day_date > todayDate) {
+    return previousDay.wedding_day_date
+  }
+
+  return todayDate
 }
 
-export default function WeddingDayAccordion({ deletingEventKey, errors, day, index, onBlur, onChange, onRemoveEvent }) {
+export default function WeddingDayAccordion({ deletingEventKey, errors, day, index, onBlur, onChange, onRemoveEvent, previousDay }) {
   const [isOpen, setIsOpen] = useState(index === 0);
+  const [isSameAsPreviousDay, setIsSameAsPreviousDay] = useState(false);
   const weddingDateInputRef = useRef(null);
   const dayDetails = { ...createWeddingDay(), ...(day || {}) };
   const events = (dayDetails.wedding_day_events?.length ? dayDetails.wedding_day_events : [createWeddingEvent()])
@@ -39,6 +46,23 @@ export default function WeddingDayAccordion({ deletingEventKey, errors, day, ind
   };
   const hasDayErrors = Object.entries(errors || {}).some(([key, value]) => value && key.startsWith(`wedding_days.${index}.`));
 
+  const autoFillPreviousDayLocation = () => {
+    if (!previousDay) return;
+    updateDay('venue_title', previousDay.venue_title || '');
+    updateDay('address_line_1', previousDay.address_line_1 || '');
+    updateDay('address_line_2', previousDay.address_line_2 || '');
+    updateDay('city', previousDay.city || '');
+    updateDay('state', previousDay.state || '');
+    updateDay('post_code', previousDay.post_code || '');
+    updateDay('latitude', previousDay.latitude || '');
+    updateDay('longitude', previousDay.longitude || '');
+  };
+
+  const toggleSameAsPreviousDay = (enabled) => {
+    setIsSameAsPreviousDay(enabled);
+    if (enabled) autoFillPreviousDayLocation();
+  };
+
   return (
     <section className="overflow-hidden border border-gold-200 bg-white/70">
       <button type="button" onClick={() => setIsOpen((current) => !current)} aria-expanded={isOpen} className={`group flex min-h-14 w-full items-center justify-between gap-4 px-4 text-left transition-colors sm:px-5 ${hasDayErrors ? 'bg-red-300 hover:bg-red-800 hover:text-white' : 'bg-gold-100/45 hover:bg-gold-100/70'}`}>
@@ -57,7 +81,7 @@ export default function WeddingDayAccordion({ deletingEventKey, errors, day, ind
             <input id={`wedding-day-date-${index}`} 
               ref={weddingDateInputRef}
               type="date" 
-              min={getMinimumWeddingDate()} 
+              min={getMinimumWeddingDate(previousDay)} 
               value={dayDetails.wedding_day_date} 
               onClick={() => weddingDateInputRef.current?.showPicker?.()}
               onChange={(event) => updateDay('wedding_day_date', event.target.value)} 
@@ -71,6 +95,22 @@ export default function WeddingDayAccordion({ deletingEventKey, errors, day, ind
               {eventTimes.map((option) => <option key={option.value} value={option.value}>{option.text}</option>)}
             </select>
           </FormField>
+
+          {previousDay && (
+            <div className="autoFillPreviousDayLocation flex items-center gap-3">
+              <Switch
+                checked={isSameAsPreviousDay}
+                onChange={toggleSameAsPreviousDay}
+                className={`${isSameAsPreviousDay ? 'bg-wine-700' : 'bg-gold-200'} relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors`}
+              >
+                <span className="sr-only">Auto fill previous day location</span>
+                <span
+                  className={`${isSameAsPreviousDay ? 'translate-x-6' : 'translate-x-1'} inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                />
+              </Switch>
+              <span className="text-[11.5px] font-medium text-wine-700">Auto Fill Previous Day Location</span>
+            </div>
+          )}
           
         <div className="sm:col-span-2">
           <FormField htmlFor={`wedding-day-venue-title-${index}`} label="Venue Title" error={getError('venue_title')}>

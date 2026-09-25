@@ -1,13 +1,9 @@
-import Link from 'next/link';
+'use client';
+
 import { Calendar, Leaf, MapPin, MessageCircle, Users, WineGlass } from '@/components/Icons';
-import { useEffect, useState } from 'react';
-import { useUserAuth } from '@/hooks/useUserAuth'
-import { useModal } from '@/hooks/useModal'
-import { Modal } from '@/components/ui/modal'
-import LoginForm from '@/components/login/LoginForm'
+import AuthGatedLink from '@/components/common/AuthGatedLink'
 import {
   getAlcoholAvailability,
-  getCoupleName,
   getEventCount,
   getGeneralLocation,
   getMainLanguage,
@@ -27,11 +23,6 @@ function SummaryStat({ Icon, primary, secondary }) {
 }
 
 export default function WeddingSummary({ wedding }) {
-  const { isAuthenticated, user } = useUserAuth()
-  const { isOpen, openModal, closeModal } = useModal()
-  const [title, setTitle] = useState('You Can’t Book Your Own Wedding');
-  const [description, setDescription] = useState('You’re the host of this wedding, so you don’t need to book it. Your guests can book and join your wedding from this page.');
-  const [isLoginForm, setIsLoginForm] = useState(false);
   const weddingDays = wedding?.wedding_days || [];
   const firstDay = weddingDays[0];
   const food = wedding?.food_observance || 'Not specified';
@@ -41,19 +32,25 @@ export default function WeddingSummary({ wedding }) {
   const { start, end, isRange } = getWeddingDateRangeParts(weddingDays);
 
 
-  const handleBecomeHostClick = (event) => {
-      if (isAuthenticated && user.id === wedding.wid) {
-        event.preventDefault()
-        openModal()
-      }
-      if (!isAuthenticated) {
-        setTitle('');
-        setDescription('');
-        setIsLoginForm(true)
-        event.preventDefault()
-        openModal()
-      }
+  const guardJoinWedding = ({ isAuthenticated, user }) => {
+    if (isAuthenticated && user.id === wedding.wid) {
+      return {
+          title: 'You Can’t Book Your Own Wedding',
+          description: 'You’re the host of this wedding, so you don’t need to book it. Your guests can book and join your wedding from this page.',
+          showLoginForm: false,
+        }
+    }else if(isAuthenticated && user.is_host){
+      return {
+              title: 'Unable to Join Wedding',
+              description: 'Host accounts are only for creating and managing weddings. To join a wedding, please use a guest account.',
+              showLoginForm: false,
+            }
     }
+    if (!isAuthenticated) {
+      return { title: '', description: '', showLoginForm: true }
+    }
+    return null
+  }
 
   return (
     <div className="relative">
@@ -77,19 +74,16 @@ export default function WeddingSummary({ wedding }) {
       </div>
 
       <div className="mt-7 flex flex-wrap items-center justify-between gap-4">
-          <Link 
-            href={`/wedding/${wedding.id}/booking`} 
-            onClick={handleBecomeHostClick}
+          <AuthGatedLink
+            href={`/wedding/${wedding.id}/booking`}
+            guard={guardJoinWedding}
             className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-wine-700 px-6 text-sm font-semibold text-cream-50 shadow-sm transition-colors hover:bg-wine-600 focus:outline-none focus:ring-2 focus:ring-wine-300">
             <Users className="h-4 w-4" />
             Join Our Wedding
             <span aria-hidden="true">&rarr;</span>
-          </Link>
+          </AuthGatedLink>
         <p className="font-display text-sm italic leading-5 text-wine-400">Celebrating Love<br />Culture &amp; Togetherness</p>
       </div>
-       <Modal isOpen={isOpen} onClose={closeModal} size={isLoginForm ? '3xl' : 'sm'} noPadding title={title} description={description}>
-        {isLoginForm && (<LoginForm onClose={closeModal} />)}
-      </Modal>
     </div>
   );
 }

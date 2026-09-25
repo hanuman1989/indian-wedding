@@ -5,6 +5,8 @@ import usersAPI from './users';
 import frontWeddingAPI from './frontWeddings';
 import weddingAPI from './weddings';
 import weddingBookingAPI from './weddingBookingService'
+import contactInquiryAPI from './contactInquiry';
+import myBookingsAPI from './myBookings';
 
 const APIs = {
   auth: authAPI,
@@ -13,7 +15,11 @@ const APIs = {
     users: usersAPI,
     weddings: weddingAPI,
     frontWeddings: frontWeddingAPI,
-    weddingBooking: weddingBookingAPI
+    weddingBooking: weddingBookingAPI,
+    contactInquiry: contactInquiryAPI
+  },
+  account:{
+    myBookings: myBookingsAPI,
   },
   admin: {
     users: adminUsersAPI,

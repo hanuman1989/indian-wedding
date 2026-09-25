@@ -5,6 +5,9 @@
  * All of them are pure SVG so they scale crisply and recolour with props.
  */
 
+import Link from 'next/link'
+import Image from 'next/image'
+
 /* Thin repeating paisley band that sits above the navbar and under the footer */
 export const PaisleyBand = ({ className = '', flip = false }) => (
   <div className={`h-4 w-full overflow-hidden bg-wine-900 ${className}`}>
@@ -227,21 +230,33 @@ export const BrandMark = ({ className = 'h-11 w-11' }) => (
 )
 
 export const Logo = ({ tone = 'light' }) => (
-  <a href="#top" className="flex items-center gap-3" aria-label="Shaadi Invites home">
+  <Link href="/" className="flex items-center gap-3" aria-label="Shaadi Invites home">
+    <Image
+      src="/images/logo/logo-main.png"
+      alt="Shaadi Invites logo"
+      width={180}
+      height={120}
+      className="h-16 w-auto object-contain"
+    />
+  </Link>
+)
+
+export const LogoText = ({ tone = 'light' }) => (
+  <Link href="/" className="flex items-center gap-3" aria-label="Shaadi Invites home">
     <BrandMark />
-    <span className="leading-none">
+    <span className="leading-none text-center">
       <span
-        className={`block font-display text-[26px] font-semibold ${
+        className={`block font-display text-[20px] font-semibold ${
           tone === 'light' ? 'text-cream-50' : 'text-wine-700'
         }`}
       >
-        Shaadi
+        Indian Wedding
       </span>
-      <span className="mt-0.5 flex items-center gap-1.5 text-[9px] font-medium tracking-[0.28em] text-gold-300">
-        <span className="h-px w-3 bg-gold-400/70" />
-        INVITES
+      <span className="mt-0.5 flex items-center gap-1.5 text-[9px] font-medium tracking-[0.28em] text-gold-300 text-center">
+        <span className="h-px w-3 bg-gold-400/70 " />
+        INVITATION
         <span className="h-px w-3 bg-gold-400/70" />
       </span>
     </span>
-  </a>
+  </Link>
 )

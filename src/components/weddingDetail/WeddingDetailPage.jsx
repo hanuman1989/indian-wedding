@@ -111,9 +111,6 @@ export default function WeddingDetailPage({ weddingId }) {
     );
   }
 
-  const canJoinWedding = wedding?.can_join !== false && wedding?.is_joinable !== false;
-  const joinWedding = () => router.push('/registration');
-
   return (
     <div className="bg-cream-50">
       <WeddingBreadcrumb wedding={wedding} />
@@ -122,7 +119,7 @@ export default function WeddingDetailPage({ weddingId }) {
         <WeddingStory wedding={wedding} />
         <WeddingSchedule weddingDays={wedding?.wedding_days || []} />
       </div>
-      <WeddingJoinCTA canJoinWedding={canJoinWedding} onJoinWedding={joinWedding} />
+      <WeddingJoinCTA wedding={wedding} />
     </div>
   );
 }

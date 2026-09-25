@@ -11,8 +11,23 @@ const PIN_ZOOM = 15;
 const GEOCODE_DEBOUNCE_MS = 700;
 const MIN_ADDRESS_LENGTH = 6;
 
-function hasValidCoordinates(latitude, longitude) {
-  return typeof latitude === 'number' && typeof longitude === 'number' && !Number.isNaN(latitude) && !Number.isNaN(longitude);
+function getValidCoordinates(latitude, longitude) {
+  const parseCoordinate = (value) => {
+    if (typeof value === 'number') return Number.isFinite(value) ? value : null;
+    if (typeof value !== 'string' || !value.trim()) return null;
+
+    const parsedValue = Number(value);
+    return Number.isFinite(parsedValue) ? parsedValue : null;
+  };
+
+  const parsedLatitude = parseCoordinate(latitude);
+  const parsedLongitude = parseCoordinate(longitude);
+
+  if (parsedLatitude === null || parsedLongitude === null || parsedLatitude < -90 || parsedLatitude > 90 || parsedLongitude < -180 || parsedLongitude > 180) {
+    return null;
+  }
+
+  return { lat: parsedLatitude, lng: parsedLongitude };
 }
 
 /**
@@ -86,12 +101,12 @@ export default function LocationMap({ address = '', latitude = null, longitude =
         if (cancelled || !mapContainerRef.current) return;
 
         const google = window.google;
-        const startWithCoordinates = hasValidCoordinates(latitude, longitude);
-        const initialPosition = startWithCoordinates ? { lat: latitude, lng: longitude } : FALLBACK_CENTER;
+        const savedPosition = getValidCoordinates(latitude, longitude);
+        const initialPosition = savedPosition || FALLBACK_CENTER;
 
         const map = new google.maps.Map(mapContainerRef.current, {
           center: initialPosition,
-          zoom: startWithCoordinates ? PIN_ZOOM : FALLBACK_ZOOM,
+          zoom: savedPosition ? PIN_ZOOM : FALLBACK_ZOOM,
           mapTypeControl: true,
           streetViewControl: false,
           fullscreenControl: true,
@@ -118,7 +133,7 @@ export default function LocationMap({ address = '', latitude = null, longitude =
         markerRef.current = marker;
         setStatus('ready');
 
-        if (startWithCoordinates) {
+        if (savedPosition) {
           lastGeocodedAddressRef.current = addressRef.current;
         } else if (addressRef.current.trim().length >= MIN_ADDRESS_LENGTH) {
           void geocodeAddress(addressRef.current);
@@ -142,15 +157,15 @@ export default function LocationMap({ address = '', latitude = null, longitude =
   // Keeps the marker in sync with externally supplied coordinates (e.g. switching days).
   useEffect(() => {
     if (status !== 'ready' || !markerRef.current || !mapRef.current) return;
-    if (!hasValidCoordinates(latitude, longitude)) return;
+    const savedPosition = getValidCoordinates(latitude, longitude);
+    if (!savedPosition) return;
 
     const current = markerRef.current.getPosition();
-    const isAlreadyThere = current && Math.abs(current.lat() - latitude) < 1e-9 && Math.abs(current.lng() - longitude) < 1e-9;
+    const isAlreadyThere = current && Math.abs(current.lat() - savedPosition.lat) < 1e-9 && Math.abs(current.lng() - savedPosition.lng) < 1e-9;
     if (isAlreadyThere) return;
 
-    const position = { lat: latitude, lng: longitude };
-    markerRef.current.setPosition(position);
-    mapRef.current.setCenter(position);
+    markerRef.current.setPosition(savedPosition);
+    mapRef.current.setCenter(savedPosition);
   }, [latitude, longitude, status]);
 
   // Debounced re-geocode whenever the combined address meaningfully changes.

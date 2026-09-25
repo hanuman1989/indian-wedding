@@ -1,10 +1,6 @@
 'use client'
-import Link from 'next/link'
 import { ArrowRight, Calendar, Globe, Gift, Heart, Photo, Plate } from '@/components/Icons'
-import { useUserAuth } from '@/hooks/useUserAuth'
-import { useModal } from '@/hooks/useModal'
-import { Modal } from '@/components/ui/modal'
-import LoginForm from '@/components/login/LoginForm'
+import AuthGatedLink from '@/components/common/AuthGatedLink'
 
 const shareItems = [
   { Icon: Heart, title: 'Wedding Story', text: 'Your love journey' },
@@ -16,15 +12,6 @@ const shareItems = [
 ]
 
 export default function ShareYourStory() {
-   const { isAuthenticated } = useUserAuth()
-    const { isOpen, openModal, closeModal } = useModal()
-
-    const handleBecomeHostClick = (event) => {
-      if (!isAuthenticated) {
-        event.preventDefault()
-        openModal()
-      }
-    }
   return (
     <section className="bg-cream-50 py-12 sm:py-14">
       <div className="shell grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
@@ -67,19 +54,15 @@ export default function ShareYourStory() {
             ))}
           </div>
 
-          <Link
+          <AuthGatedLink
             href="/post-weddings"
-            onClick={handleBecomeHostClick}
             className="group mt-6 inline-flex items-center gap-2.5 rounded-md bg-wine-700 px-5 py-3 text-[13px] font-medium text-cream-50 transition-colors hover:bg-wine-600"
           >
             Start Your Wedding Listing
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Link>
+          </AuthGatedLink>
         </div>
       </div>
-      <Modal isOpen={isOpen} onClose={closeModal} size="3xl" noPadding>
-        <LoginForm onClose={closeModal} />
-      </Modal>
     </section>
   )
 }

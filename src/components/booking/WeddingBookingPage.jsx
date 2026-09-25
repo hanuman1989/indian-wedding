@@ -61,7 +61,7 @@ export default function WeddingBookingPage({ weddingId }) {
         if (isActive) {
           setWedding(nextWedding);
           const sortedDays = nextWedding?.wedding_days;
-          const firstDay = sortedDays[0];
+          const firstDay = sortedDays.find((day) => !day?.is_day_expired);
           if (firstDay) setSelectedDayIds([firstDay.id ?? 0]);
         }
       } catch (error) {
@@ -128,7 +128,6 @@ export default function WeddingBookingPage({ weddingId }) {
       }
      
     } catch(error){
-      console.log(error, 'error------------')
       setErrorMessage(error?.message || 'Unable to create booking. Please try again.');
     } finally {
       setIsSubmitting(false);

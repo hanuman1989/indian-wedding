@@ -4,69 +4,42 @@ import { useSearchParams } from 'next/navigation'
 import SearchPanel from '@/components/SearchPanel'
 import { WeddingCard } from '@/components/PopularWeddings'
 import ErrorMessage from '@/components/common/ErrorMessage'
+import Pagination from '@/components/common/Pagination'
+import WeddingCardSkeleton from '@/components/common/WeddingCardSkeleton'
 import APIs from '@/lib/apis'
-import { ChevronLeft, ChevronRight, Heart } from '@/components/Icons'
+import { Heart } from '@/components/Icons'
 import { Flourish } from '@/components/Ornaments'
 
-// Placeholder until the weddings API returns a real page count.
-const TOTAL_PAGES = 12
+// export const metadata = {
+//   title: "Find Indian Weddings | Discover & Join Real Weddings in India",
 
-function getPageNumbers(current, total) {
-  if (total <= 6) return Array.from({ length: total }, (_, i) => i + 1)
-  const pages = [1, 2, 3, 4, 5]
-  if (!pages.includes(current) && current < total) pages[pages.length - 1] = current
-  return [...pages, '...', total]
-}
+//   description:
+//     "Discover real Indian weddings across India. Explore wedding celebrations, traditions, food, music and culture, and find your opportunity to join as a wedding guest.",
 
-function Pagination({ currentPage, totalPages, onPageChange }) {
-  const pages = getPageNumbers(currentPage, totalPages)
+//   keywords: [
+//     "Indian weddings",
+//     "real Indian weddings",
+//     "find Indian weddings",
+//     "Indian wedding experience",
+//     "Indian wedding guest",
+//     "attend an Indian wedding",
+//     "join an Indian wedding",
+//     "Indian wedding celebrations",
+//     "weddings in India",
+//     "Indian wedding traditions",
+//     "Indian wedding culture",
+//     "Indian wedding experiences",
+//     "Indian wedding tourism",
+//     "international guests Indian weddings",
+//     "Indian wedding travel",
+//     "experience an Indian wedding",
+//     "discover Indian weddings",
+//     "Indian wedding destinations",
+//   ],
+// };
 
-  return (
-    <nav aria-label="Pagination" className="mt-10 flex items-center justify-center gap-2">
-      <button
-        type="button"
-        onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-        disabled={currentPage === 1}
-        aria-label="Previous page"
-        className="grid h-9 w-9 place-items-center rounded-full border border-cream-300 text-wine-700 transition-colors hover:bg-cream-100 disabled:pointer-events-none disabled:opacity-40"
-      >
-        <ChevronLeft className="h-4 w-4" />
-      </button>
-
-      {pages.map((page, index) =>
-        page === '...' ? (
-          <span key={`ellipsis-${index}`} className="px-1 text-[13px] text-ink-soft">
-            …
-          </span>
-        ) : (
-          <button
-            key={page}
-            type="button"
-            onClick={() => onPageChange(page)}
-            aria-current={page === currentPage ? 'page' : undefined}
-            className={`grid h-9 w-9 place-items-center rounded-full text-[13px] font-medium transition-colors ${
-              page === currentPage
-                ? 'bg-wine-700 text-cream-50'
-                : 'text-ink-soft hover:bg-cream-100'
-            }`}
-          >
-            {page}
-          </button>
-        ),
-      )}
-
-      <button
-        type="button"
-        onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
-        disabled={currentPage === totalPages}
-        aria-label="Next page"
-        className="grid h-9 w-9 place-items-center rounded-full border border-cream-300 text-wine-700 transition-colors hover:bg-cream-100 disabled:pointer-events-none disabled:opacity-40"
-      >
-        <ChevronRight className="h-4 w-4" />
-      </button>
-    </nav>
-  )
-}
+const PER_PAGE = 12;
+const SKELETON_COUNT = 8;
 
 export default function WeddingPage() {
   const searchParams = useSearchParams()
@@ -75,7 +48,7 @@ export default function WeddingPage() {
   const [pagination, setPagination] = useState({
     current_page: 1,
     last_page: 1,
-    per_page: 12,
+    per_page: PER_PAGE,
     total: 0,
   })
   const [isLoading, setIsLoading] = useState(true)
@@ -83,6 +56,8 @@ export default function WeddingPage() {
 
   // Reruns on mount and whenever SearchPanel navigates here with new query params.
   const filters = searchParams.toString()
+
+
 
   useEffect(() => {
     let isActive = true
@@ -92,15 +67,17 @@ export default function WeddingPage() {
       setErrorMessage('')
 
       try {
-        const response = await APIs.frontend.frontWeddings.getWeddings(
-          Object.fromEntries(searchParams.entries()),
-        )
+        const response = await APIs.frontend.frontWeddings.getWeddings({
+          ...Object.fromEntries(searchParams.entries()),
+          page: currentPage,
+          per_page: PER_PAGE,
+        })
         if (isActive) {
           setWeddingsList(Array.isArray(response?.data) ? response.data : [])
           setPagination(response?.pagination || {
             current_page: 1,
             last_page: 1,
-            per_page: 12,
+            per_page: PER_PAGE,
             total: 0,
           })
         }
@@ -117,7 +94,7 @@ export default function WeddingPage() {
       isActive = false
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters])
+  }, [filters, currentPage])
 
   return (
     <>
@@ -153,8 +130,10 @@ export default function WeddingPage() {
       <section className="bg-white py-10">
         <div className="shell">
           {isLoading ? (
-            <div className="mt-8 flex items-center justify-center py-16">
-              <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-wine-700" />
+            <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {Array.from({ length: SKELETON_COUNT }, (_, index) => (
+                <WeddingCardSkeleton key={index} className="w-full" />
+              ))}
             </div>
           ) : errorMessage ? (
             <ErrorMessage message={errorMessage} onClose={() => setErrorMessage('')} className="mt-8" />

@@ -1,5 +1,5 @@
 // Flat contribution per traveler (the API does not expose wedding pricing yet).
-export const CONTRIBUTION_PER_PERSON = 250;
+export const CONTRIBUTION_PER_PERSON = 150;
 
 export const hearAboutUsOptions = [
   { value: '', label: 'Select an option' },

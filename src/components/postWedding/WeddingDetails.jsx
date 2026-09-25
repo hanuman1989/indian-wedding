@@ -35,6 +35,7 @@ export default function WeddingDetails({ deletingEventKey, errors, form, onBlur,
             <WeddingDayAccordion
               key={day.id || index + 1}
               day={day}
+              previousDay={form.wedding_days?.[index - 1]}
               index={index}
               errors={errors}
               onChange={onEventChange}

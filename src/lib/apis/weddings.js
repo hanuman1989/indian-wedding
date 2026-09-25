@@ -9,9 +9,9 @@ export async function getWedding(id) {
     }
 }
 
-export async function getMyWeddings() {
+export async function getMyWeddings(parms) {
   try {
-      const response =  await axiosInstance.get('my-weddings');
+      const response =  await axiosInstance.get('my-weddings', { params: parms });
       return response.data;
     } catch (error) {
       throw error.response?.data || { message: 'Unable to load your weddings. Please try again.' };

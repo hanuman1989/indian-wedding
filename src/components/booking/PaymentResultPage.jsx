@@ -2,12 +2,16 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useProtectedRoute } from '@/hooks/useProtectedRoute';
+import Loader from '@/components/common/Loader';
+import InvitationCard from '@/components/bookingDetail/InvitationCard';
 import APIs from '@/lib/apis';
 
 const STATUS = {
   LOADING: "loading",
   SUCCESS: "success",
   PROCESSING: "processing",
+  CANCELLED: "cancelled",
   FAILED: "failed",
   VERIFY_ERROR: "verify_error",
 };
@@ -19,6 +23,7 @@ export default function PaymentResultPage({
   bookingId,
   paymentIntentId = "",
 }) {
+  const { isAuthorized } = useProtectedRoute('frontend');
   const router = useRouter();
 
   const [status, setStatus] = useState(STATUS.LOADING);
@@ -51,11 +56,11 @@ export default function PaymentResultPage({
       setBooking(payload || null);
       setPayment(response.data.pricing || null);
 
-      if (response.status === "paid") {
+      if (response.status === "succeeded") {
         clearPolling();
         setStatus(STATUS.SUCCESS);
         setMessage(payload.message || "Payment verified successfully.");
-        return "paid";
+        return "succeeded";
       }
 
       if (response.status === "processing") {
@@ -67,6 +72,14 @@ export default function PaymentResultPage({
         return "processing";
       }
 
+      if (response.status === "cancelled") {
+        clearPolling();
+        setStatus(STATUS.CANCELLED);
+        setMessage(payload.message || "The payment was cancelled.");
+        return "cancelled";
+      }
+
+      // Any other status (e.g. requires_action, requires_payment_method) falls back here.
       clearPolling();
       setStatus(STATUS.FAILED);
       setMessage(
@@ -184,6 +197,10 @@ export default function PaymentResultPage({
     }
   };
 
+  if (!isAuthorized) {
+    return <Loader />;
+  }
+
   return (
     <section className="min-h-screen bg-[#FFF9F0] text-[#3B1F25]" style={{ backgroundImage: 'url("/images/sectionbg.png")', backgroundPosition: 'center center', backgroundSize: 'contain' }}>
       <div className="relative overflow-hidden border-b border-[#E7CFA9]">
@@ -204,6 +221,7 @@ export default function PaymentResultPage({
           <h1 className="font-serif text-3xl font-bold text-[#761337] sm:text-4xl">
             {status === STATUS.SUCCESS && "Payment Successful!"}
             {status === STATUS.PROCESSING && "Payment Processing"}
+            {status === STATUS.CANCELLED && "Payment Cancelled"}
             {status === STATUS.FAILED && "Payment Unsuccessful"}
             {status === STATUS.VERIFY_ERROR && "Payment Verification"}
             {status === STATUS.LOADING && "Verifying Your Payment"}
@@ -215,6 +233,9 @@ export default function PaymentResultPage({
 
             {status === STATUS.PROCESSING &&
               "Your payment has been received and is being processed. We will confirm your booking when Stripe reports the final result."}
+
+            {status === STATUS.CANCELLED &&
+              "The payment was cancelled before it completed. Your booking has not been confirmed."}
 
             {status === STATUS.FAILED &&
               "We could not complete this payment. Your booking has not been confirmed."}
@@ -254,7 +275,7 @@ export default function PaymentResultPage({
           />
         )}
 
-        {status === STATUS.FAILED && (
+        {(status === STATUS.FAILED || status === STATUS.CANCELLED) && (
           <FailedCard
             booking={booking}
             payment={payment}
@@ -343,6 +364,8 @@ function SuccessCard({
       />
 
       <SecurityNotice />
+
+      <InvitationCard wedding={booking.wedding} invoiceId={booking.booking_number} bookingId={booking?.id} />
 
       <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-center">
         <button
@@ -561,8 +584,6 @@ function VerificationErrorCard({
 
 function BookingDetails({ booking, payment }) {
   const wedding = booking?.wedding || {};
-
-  console.log(wedding, 'wedding---')
 
   return (
     <div className="overflow-hidden rounded-2xl border border-[#E9D3B2] bg-white shadow-[0_8px_30px_rgba(115,20,55,0.06)]">

@@ -7,19 +7,21 @@ function DayOption({ day, index, isSelected, onToggle }) {
   const events = getSortedWeddingEvents(day?.wedding_day_events)
   const eventNames = events.map((event) => event?.title).filter(Boolean).join(', ')
   const time = formatWeddingTime(day?.wedding_day_time)
+  const isExpired = Boolean(day?.is_day_expired)
 
   return (
-    <label className={`flex cursor-pointer gap-3 border p-4 transition-colors ${isSelected ? 'border-wine-400 bg-rose-50' : 'border-gold-200 bg-white hover:border-wine-200'}`}>
-      <span className={`mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded border ${isSelected ? 'border-wine-700 bg-wine-700 text-cream-50' : 'border-gold-300 bg-white'}`}>
-        {isSelected && <Check className="h-3.5 w-3.5" />}
+    <label className={`flex gap-3 border p-4 transition-colors ${isExpired ? 'cursor-not-allowed border-gold-200 bg-cream-50/70 opacity-60' : isSelected ? 'cursor-pointer border-wine-400 bg-rose-50' : 'cursor-pointer border-gold-200 bg-white hover:border-wine-200'}`}>
+      <span className={`mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded border ${isSelected && !isExpired ? 'border-wine-700 bg-wine-700 text-cream-50' : 'border-gold-300 bg-white'}`}>
+        {isSelected && !isExpired && <Check className="h-3.5 w-3.5" />}
       </span>
-      <input type="checkbox" checked={isSelected} onChange={() => onToggle(day?.id ?? index)} className="sr-only" />
+      <input type="checkbox" checked={isSelected && !isExpired} disabled={isExpired} onChange={() => !isExpired && onToggle(day?.id ?? index)} className="sr-only" />
       <span className="min-w-0">
         <span className="flex flex-wrap items-baseline gap-x-2">
           <span className="font-display text-base font-bold text-wine-700">Day {dayNumber}</span>
           <span className="text-xs text-ink-soft">
             {day.wedding_day_format}
           </span>
+          {isExpired && <span className="rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 text-[10px] font-semibold text-rose-700">Completed</span>}
         </span>
         <span className="flex flex-wrap items-baseline gap-x-2">
           <MapPin className="h-3.5 w-3.5 text-gold-500" />

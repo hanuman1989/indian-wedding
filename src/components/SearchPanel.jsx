@@ -1,11 +1,11 @@
 'use client';
 import { useEffect, useRef, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import {
   Calendar,
   ChevronDown,
-  MapPin,
+  CrosshairsGps,
   RefreshCw,
   Rings,
   Search,
@@ -83,12 +83,20 @@ const shellClasses =
 
 export default function SearchPanel({ className = 'relative z-20 -mt-12' }) {
   const router = useRouter()
-  const [query, setQuery] = useState({
-    where: '',
-    date: '',
-    food_observance: foodObservanceOptions[0],
-    latitude: null,
-    longitude: null,
+  const searchParams = useSearchParams()
+
+  const [query, setQuery] = useState(() => {
+    const latitude = searchParams.get('latitude')
+    const longitude = searchParams.get('longitude')
+
+    return {
+      where: searchParams.get('where') || '',
+      date: searchParams.get('date') || '',
+      end_date: searchParams.get('end_date') || '',
+      food_observance: searchParams.get('food_observance') || foodObservanceOptions[0],
+      latitude: latitude !== null ? Number(latitude) : null,
+      longitude: longitude !== null ? Number(longitude) : null,
+    }
   })
   const [locationError, setLocationError] = useState('')
   const [placesReady, setPlacesReady] = useState(false)
@@ -195,6 +203,10 @@ const openDatePicker = () => {
         autocompleteContainerRef.current.appendChild(element)
         autocompleteElementRef.current = element
         setPlacesReady(true)
+
+        // Pre-fill the widget's own input when the page loaded with a `where` query param.
+        const initialWhere = searchParams.get('where')
+        if (initialWhere) fillAutocompleteDisplay(element, initialWhere)
       })
       .catch((error) => {
         // Falls back to the plain text input (see render below); location
@@ -270,6 +282,7 @@ const openDatePicker = () => {
     const params = new URLSearchParams()
     if (query.where) params.set('where', query.where)
     if (query.date) params.set('date', query.date)
+    if (query.end_date) params.set('end_date', query.end_date)
     if (query.food_observance && query.food_observance !== foodObservanceOptions[0]) {
       params.set('food_observance', query.food_observance)
     }
@@ -327,7 +340,7 @@ const openDatePicker = () => {
                     aria-label="Use current location"
                     className="grid h-7 w-7 shrink-0 place-items-center border-l border-cream-200 pl-2 text-wine-600 transition-colors hover:text-wine-700"
                   >
-                    <MapPin className="h-[18px] w-[18px]" />
+                    <CrosshairsGps className="h-[18px] w-[18px]" />
                   </button>
                 </span>
               </Field>

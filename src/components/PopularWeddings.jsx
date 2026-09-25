@@ -1,9 +1,10 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { CoupleScene } from './Artwork'
-import { ArrowRight, Calendar, ChevronLeft, ChevronRight, MapPin, Plate } from '@/components/Icons'
+import { ArrowRight, Calendar, ChevronLeft, ChevronRight, MapPin, Navigation, Plate } from '@/components/Icons'
 import { SectionHeading } from './Ornaments'
 import ErrorMessage from './common/ErrorMessage'
+import WeddingCardSkeleton from './common/WeddingCardSkeleton'
 import APIs from '@/lib/apis'
 import Link from 'next/link'
 
@@ -14,22 +15,13 @@ const Meta = ({ Icon, children }) => (
   </li>
 )
 
-const WeddingCardSkeleton = () => (
-  <div className="flex w-[262px] shrink-0 snap-start animate-pulse flex-col overflow-hidden rounded-xl border border-cream-300 bg-white lg:w-[calc((100%-60px)/4)]">
-    <div className="aspect-[16/9] bg-cream-200" />
-    <div className="space-y-3 p-3">
-      <div className="h-4 w-3/5 rounded bg-cream-200" />
-      <div className="space-y-2">
-        <div className="h-3 w-4/5 rounded bg-cream-100" />
-        <div className="h-3 w-3/4 rounded bg-cream-100" />
-        <div className="h-3 w-2/3 rounded bg-cream-100" />
-      </div>
-      <div className="border-t border-cream-200 pt-2.5">
-        <div className="h-8 w-24 rounded-md bg-cream-200" />
-      </div>
-    </div>
-  </div>
-)
+function formatDistanceFromYou(distanceKm) {
+  const parsedDistance = typeof distanceKm === 'number' ? distanceKm : Number(distanceKm)
+  if (!Number.isFinite(parsedDistance) || parsedDistance < 0) return null
+
+  const roundedDistance = Math.round(parsedDistance * 10) / 10
+  return `${roundedDistance} km from you`
+}
 
 export function WeddingCard({ wedding, className = '' }) {
   return (
@@ -62,6 +54,9 @@ export function WeddingCard({ wedding, className = '' }) {
           <Meta Icon={Calendar}>{wedding.wedding_dates}</Meta>
           <Meta Icon={MapPin}>{wedding.locations}</Meta>
           <Meta Icon={Plate}>{wedding.food_observance}</Meta>
+          {wedding.distance_km > 0 && formatDistanceFromYou(wedding.distance_km) && (
+            <Meta Icon={Navigation}>{formatDistanceFromYou(wedding.distance_km)}</Meta>
+          )}
         </ul>
 
         <div className="mt-2.5 flex items-end justify-between gap-2 border-t border-cream-200 pt-2.5">
@@ -158,7 +153,10 @@ export default function PopularWeddings() {
           {isLoading ? (
             <div className="no-scrollbar flex snap-x snap-mandatory gap-5 overflow-hidden pb-2">
               {Array.from({ length: 4 }, (_, index) => (
-                <WeddingCardSkeleton key={index} />
+                <WeddingCardSkeleton
+                  key={index}
+                  className="w-[262px] shrink-0 snap-start lg:w-[calc((100%-60px)/4)]"
+                />
               ))}
             </div>
           ) : errorMessage ? (
