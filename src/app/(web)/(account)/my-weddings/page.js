@@ -102,7 +102,7 @@ export default function MyWeddingsPage() {
   }
 
   return (
-    <section className="relative isolate overflow-hidden bg-cream-50 py-8 sm:py-10 lg:py-12">
+    <section className="relative bg-cream-50 py-8 sm:py-10 lg:py-12">
       <Image
         src="/images/bg.png"
         alt=""

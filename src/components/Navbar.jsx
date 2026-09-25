@@ -20,7 +20,7 @@ export default function Navbar() {
   const pathname = usePathname()
 
   return (
-    <header id="top" className="relative z-30">
+    <header id="top" className="relative z-2">
 
       <nav className="relative overflow-visible bg-wine-700">
         {/* faint mandala watermarks behind the bar */}
