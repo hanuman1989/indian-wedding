@@ -52,7 +52,7 @@ export default function Footer() {
   }
 
   return (
-    <footer id="contact" className="relative overflow-hidden bg-wine-700">
+    <footer id="contact" className="relative overflow-hidden bg-wine-700 z-1">
 
       <div className="shell relative pt-8 pb-5">
         <div className="grid gap-7 lg:grid-cols-[1.25fr_repeat(4,0.75fr)_1.3fr] lg:gap-6">

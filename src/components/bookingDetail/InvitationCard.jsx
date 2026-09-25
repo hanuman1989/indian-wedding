@@ -5,6 +5,8 @@ import DownloadInvitationButton from '@/components/common/DownloadInvitationButt
 export default function InvitationCard({ wedding, bookingId, invoiceId }) {
   if (!wedding) return null;
 
+  console.log(wedding, 'wedding--')
+
   return (
     <div className="overflow-hidden rounded-2xl border border-gold-200/80 bg-white shadow-sm">
       <SectionHeader icon={BookHeart} title="Invitation Card" />

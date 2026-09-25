@@ -48,7 +48,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <section className="relative isolate overflow-hidden bg-cream-50 py-8 sm:py-10 lg:py-12">
+    <section className="relative bg-cream-50 py-8 sm:py-10 lg:py-12">
       <Image
         src="/images/bg.png"
         alt=""
@@ -66,7 +66,7 @@ export default function DashboardPage() {
             <div className="grid items-center gap-6 border-b border-gold-200/80 pb-7 md:grid-cols-[minmax(0,1fr)_250px] mb-7">
               <div>
                 <p className="text-sm font-medium text-gold-600">Your wedding space</p>
-                <h1 className="mt-2 font-display text-3xl font-bold leading-tight text-wine-700 sm:text-4xl">
+                <h1 className="mt-2 font-display text-2xl font-bold leading-tight text-wine-700 sm:text-3xl">
                   Welcome back, {firstName}!
                 </h1>
                 <p className="mt-1 text-sm leading-6 text-ink-soft sm:text-base">

@@ -34,5 +34,50 @@ axiosInstance.interceptors.request.use(
   }
 );
 
+// Response interceptor
+axiosInstance.interceptors.response.use(
+  // Successful response
+  (response) => {
+    return response;
+  },
+
+  // Error response
+  (error) => {
+    if (typeof window !== 'undefined') {
+      const status = error?.response?.status;
+
+      if (status === 401) {
+        const requestUrl =
+          `${error?.config?.baseURL || ''}${error?.config?.url || ''}`;
+
+        const isAdminRequest = requestUrl.includes('/admin');
+
+        const tokenKey = isAdminRequest
+          ? 'authToken'
+          : 'frontendAuthToken';
+
+        // Remove invalid/expired token
+        localStorage.removeItem(tokenKey);
+
+        // Optional: remove related user/session information
+        // localStorage.removeItem('user');
+        // sessionStorage.removeItem('tenantId');
+
+        // Determine login page
+        const loginPath = isAdminRequest
+          ? '/admin/login'
+          : '/?login=true';
+
+        // Avoid redirect loop
+        if (window.location.pathname !== loginPath) {
+          window.location.href = loginPath;
+        }
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 
 export default axiosInstance;

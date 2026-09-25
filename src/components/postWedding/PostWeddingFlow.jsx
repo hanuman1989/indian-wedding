@@ -516,7 +516,7 @@ export default function PostWeddingFlow({ initialStep = firstStep, weddingId: in
   }
 
   return (
-    <section className="relative isolate overflow-hidden bg-cream-50 py-8 sm:py-10 lg:py-12">
+    <section className="relative bg-cream-50 py-8 sm:py-10 lg:py-12">
       <Image src="/images/bg.png" alt="" fill priority sizes="100vw" className="-z-10 object-cover object-center opacity-20" />
       <div className="shell">
         <div className="grid overflow-hidden border border-gold-200/90 bg-cream-50/95 shadow-[0_16px_48px_rgba(108,10,34,0.12)] lg:grid-cols-[230px_minmax(0,1fr)]">
