@@ -1,10 +1,6 @@
 'use client'
-import Link from 'next/link'
 import { ArrowRight, Couple, Heart, Play, Users } from '@/components/Icons'
-import { useUserAuth } from '@/hooks/useUserAuth'
-import { useModal } from '@/hooks/useModal'
-import { Modal } from '@/components/ui/modal'
-import LoginForm from '@/components/login/LoginForm'
+import AuthGatedLink from '@/components/common/AuthGatedLink'
 
 const stats = [
   { Icon: Couple, value: '500+', label: 'Happy Couples' },
@@ -13,15 +9,6 @@ const stats = [
 ]
 
 export default function HostHero() {
-    const { isAuthenticated } = useUserAuth()
-    const { isOpen, openModal, closeModal } = useModal()
-
-    const handleBecomeHostClick = (event) => {
-      if (!isAuthenticated) {
-        event.preventDefault()
-        openModal()
-      }
-    }
   return (
     <>
       <section
@@ -52,14 +39,13 @@ export default function HostHero() {
             </p>
 
             <div className="mt-6 flex flex-wrap items-center gap-3.5">
-              <Link
+              <AuthGatedLink
                 href="/post-weddings"
-                onClick={handleBecomeHostClick}
                 className="group inline-flex items-center gap-2.5 rounded-md bg-wine-700 px-5 py-3 text-[13.5px] font-medium text-cream-50 shadow-lg shadow-wine-900/20 transition-colors hover:bg-wine-600"
               >
                 Become a Host
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
+              </AuthGatedLink>
 
               <a
                 href="#process"
@@ -91,11 +77,6 @@ export default function HostHero() {
           />
         </div>
       </section>
-
-      {/* Rendered outside the isolated section so its fixed z-index isn't trapped behind the header */}
-      <Modal isOpen={isOpen} onClose={closeModal} size="3xl" noPadding>
-        <LoginForm onClose={closeModal} />
-      </Modal>
     </>
   )
 }

@@ -1,6 +1,6 @@
 import { HeroScene } from './Artwork'
 import { ArrowRight, Heart, Search } from './Icons'
-
+import Link from 'next/link'
 /**
  * Drop a photo at e.g. `public/images/hero.jpg` and set this to
  * '/images/hero.jpg' to replace the illustrated backdrop.
@@ -30,22 +30,22 @@ export default function Hero() {
           </p>
 
           <div className="mt-7 flex flex-wrap items-center gap-4">
-            <a
-              href="#weddings"
+            <Link
+              href="/weddings"
               className="group inline-flex items-center gap-2.5 rounded-md bg-wine-700 px-5 py-3 text-[13.5px] font-medium text-cream-50 shadow-lg shadow-wine-900/20 transition-all hover:bg-wine-600 hover:shadow-xl"
             >
               <Search className="h-[17px] w-[17px]" />
               Find a Wedding
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </a>
+            </Link>
 
-            <a
-              href="#host"
+            <Link
+              href="/host-wedding"
               className="group inline-flex items-center gap-2.5 rounded-md border border-wine-700/70 bg-white/70 px-5 py-3 text-[13.5px] font-medium text-wine-700 backdrop-blur-sm transition-all hover:bg-white"
             >
               <Heart className="h-[17px] w-[17px]" />
               Host Your Wedding
-            </a>
+            </Link>
           </div>
         </div>
       </div>

@@ -12,22 +12,11 @@ import SuccessMessage from '@/components/common/SuccessMessage';
 import { Modal } from '@/components/ui/modal';
 import { Plus } from '@/components/Icons';
 import { useProtectedRoute } from '@/hooks/useProtectedRoute';
+import BookingCardSkeleton from '@/components/myBooking/BookingCardSkeleton';
+import Pagination from '@/components/common/Pagination'
 import APIs from '@/lib/apis';
 
-function getWeddingList(response) {
-  const data = response?.weddings || response?.data?.weddings || response?.data || response;
-  return Array.isArray(data) ? data : [];
-}
-
-function formatDate(value) {
-  if (!value) return 'Recently';
-
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-
-  return new Intl.DateTimeFormat('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
-}
-
+const PER_PAGE = 10;
 
 export default function MyWeddingsPage() {
   const { isAuthorized } = useProtectedRoute('frontend');
@@ -39,6 +28,14 @@ export default function MyWeddingsPage() {
   const [successMessage, setSuccessMessage] = useState(searchParams.get('published') === 'true' ? 'Your wedding has been published successfully.' : '');
   const [weddingToDelete, setWeddingToDelete] = useState(null);
   const [deletingWeddingId, setDeletingWeddingId] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [pagination, setPagination] = useState({
+      current_page: 1,
+      last_page: 1,
+      per_page: PER_PAGE,
+      total: 0,
+    })
 
   useEffect(() => {
     if (!isAuthorized) return;
@@ -50,9 +47,15 @@ export default function MyWeddingsPage() {
       setErrorMessage('');
 
       try {
-        const response = await APIs.frontend.weddings.getMyWeddings();
-        console.log(response, 'getMyWeddings response---')
-        if (isActive) setWeddings(response.data || []);
+        const parms = {
+          page: currentPage,
+          per_page: PER_PAGE,
+        }
+        const response = await APIs.frontend.weddings.getMyWeddings(parms);
+        if (isActive) {
+          setWeddings(response.data || []);
+          setPagination(response?.pagination);
+        }
       } catch (error) {
         if (isActive) setErrorMessage('Unable to load your weddings. Please try again.');
       } finally {
@@ -65,7 +68,7 @@ export default function MyWeddingsPage() {
     return () => {
       isActive = false;
     };
-  }, [isAuthorized]);
+  }, [isAuthorized, currentPage]);
 
   const closeSuccessMessage = () => {
     setSuccessMessage('');
@@ -130,12 +133,19 @@ export default function MyWeddingsPage() {
               {errorMessage && <ErrorMessage message={errorMessage} onClose={() => setErrorMessage('')} className="mb-5" />}
               {successMessage && <SuccessMessage message={successMessage} onClose={closeSuccessMessage} className="mb-5" />}
               {isLoadingWeddings ? (
-                <div className="grid gap-4" aria-label="Loading weddings">
-                  {[1].map((index) => <div key={index} className="h-52 animate-pulse border border-gold-200 bg-white/65" />)}
+                <div >
+                  {[1, 2].map((index) => <BookingCardSkeleton key={index} />)}
                 </div>
               ) : (
                 <RegisteredWeddingList weddings={weddings} deletingWeddingId={deletingWeddingId} onEdit={editWedding} onDelete={setWeddingToDelete} />
               )}
+              {(pagination.total ?? 0) > (pagination.per_page ?? 0) && (
+                    <Pagination
+                      currentPage={pagination.current_page}
+                      totalPages={pagination.last_page || 1}
+                      onPageChange={setCurrentPage}
+                    />
+                  )}
             </section>
           </main>
         </div>

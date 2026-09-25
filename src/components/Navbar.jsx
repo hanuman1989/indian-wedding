@@ -9,11 +9,9 @@ import { useUserAuth } from '@/hooks/useUserAuth'
 const links = [
   { label: 'Home', href: '/' },
   { label: 'Browse Weddings', href: '/weddings' },
-  { label: 'About Us', href: '#about' },
-  { label: 'Blog', href: '#how-it-works' },
   { label: 'FAQ', href: '/faq' },
   { label: 'Host Wedding', href: '/host-wedding' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Contact', href: '/contact-us' },
 ]
 
 export default function Navbar() {

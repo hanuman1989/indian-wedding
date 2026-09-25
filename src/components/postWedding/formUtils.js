@@ -81,6 +81,8 @@ export function getInitialWeddingForm(user = {}) {
     lastName: user.last_name || user.lastName || remainingNames.join(' '),
     email: user.email || '',
     phone: user.phone || '',
+    fathersName: '',
+    mothersName: '',
     guideFullName: '',
     guidePhoneNumber: '',
     bride: { firstName: '', lastName: '', email: '', phone: '', fathersName: '', mothersName: '' },
@@ -150,6 +152,8 @@ export function normalizeWeddingForm(response, user = {}) {
     lastName: wedding.last_name || initial.lastName,
     email: wedding.email || initial.email,
     phone: wedding.phone || initial.phone,
+    fathersName: wedding.fathers_name || initial.fathersName,
+    mothersName: wedding.mothers_name || initial.mothersName,
     guideFullName: wedding.guide_full_name || wedding.guideFullName || initial.guideFullName,
     guidePhoneNumber: wedding.guide_phone_number || wedding.guidePhoneNumber || initial.guidePhoneNumber,
     bride: normalizePartnerContact(wedding.bride, 'bride'),
@@ -194,6 +198,11 @@ export function validateWeddingStep(step, form) {
     if (!phonePattern.test(form.guidePhoneNumber || '')) errors.guidePhoneNumber = "Guide phone number must start with '+' and contain at least 7 digits.";
     if (!emailPattern.test(form.email?.trim() || '')) errors.email = 'Enter a valid email address.';
     if (!phonePattern.test(form.phone || '')) errors.phone = "Phone number must start with '+' and contain at least 7 digits.";
+
+    if (form.creatorType === 'bride' || form.creatorType === 'groom') {
+      addRequiredError(errors, form.fathersName, 'fathersName', "Enter your father's name.");
+      addRequiredError(errors, form.mothersName, 'mothersName', "Enter your mother's name.");
+    }
   }
 
   if (step === 2) {
@@ -250,17 +259,26 @@ export function getStepPayload(step, form) {
     mothers_name: toTrimmedString(contact.mothersName),
   });
 
-  if (step === 1) return {
-    creator_type: form.creatorType,
-    creator_type_other: form.creatorType === 'other' ? toTrimmedString(form.creatorTypeOther) : null,
-    first_name: toTrimmedString(form.firstName),
-    last_name: toTrimmedString(form.lastName),
-    email: toTrimmedString(form.email),
-    phone: form.phone,
-    guide_full_name: toTrimmedString(form.guideFullName),
-    guide_phone_number: form.guidePhoneNumber,
-    status: 'draft',
-  };
+  if (step === 1) {
+    const payload = {
+      creator_type: form.creatorType,
+      creator_type_other: form.creatorType === 'other' ? toTrimmedString(form.creatorTypeOther) : null,
+      first_name: toTrimmedString(form.firstName),
+      last_name: toTrimmedString(form.lastName),
+      email: toTrimmedString(form.email),
+      phone: form.phone,
+      guide_full_name: toTrimmedString(form.guideFullName),
+      guide_phone_number: form.guidePhoneNumber,
+      status: 'draft',
+    };
+
+    if (form.creatorType === 'bride' || form.creatorType === 'groom') {
+      payload.fathers_name = toTrimmedString(form.fathersName);
+      payload.mothers_name = toTrimmedString(form.mothersName);
+    }
+
+    return payload;
+  }
 
   if (step === 2) {
     if (form.creatorType === 'bride') return { groom: contactPayload(form.groom) };

@@ -31,7 +31,7 @@ export default function WeddingSchedule({ weddingDays = [] }) {
               <WeddingDaySelector weddingDays={orderedDays} selectedIndex={resolvedIndex} onSelectDay={setSelectedIndex} />
               <WeddingDayDetails weddingDay={selectedDay} dayIndex={resolvedIndex} />
               {orderedDays.length > 1 && (
-                <p className="mt-5 flex items-center justify-center gap-2 border-t border-gold-200 pt-4 text-center text-xs text-ink-soft">
+                <p className="mt-10 flex items-center justify-center gap-2 text-center text-md text-ink-soft">
                   <Info className="h-4 w-4 shrink-0 text-wine-500" />
                   Select a day above to view details, events and location for that day.
                 </p>

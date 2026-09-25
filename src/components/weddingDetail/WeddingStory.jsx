@@ -34,11 +34,12 @@ export default function WeddingStory({ wedding }) {
           </div>
 
           <blockquote
-            className="relative border border-rose-100 bg-cover bg-center p-6 text-center"
-            style={{ backgroundImage: "url('/images/sectionbg.png')" }}
+            className="relative flex h-full flex-col items-center justify-center border border-rose-100 bg-cover bg-center p-6 text-center"
+            style={{ backgroundImage: "url('/images/quote-bg.png')", backgroundSize: "cover",
+              backgroundPosition: "center", }}
           >
             <Quote className="mx-auto h-7 w-7 text-wine-400" />
-            <p className="mt-3 font-display text-lg italic leading-7 text-wine-700">Every love story is beautiful, but ours is our favourite.</p>
+            <p className="mt-3 font-display text-2xl italic leading-7 text-wine-700">Every love story is beautiful, but ours is our favourite.</p>
             <div className="mt-4 flex items-center justify-center gap-2 text-gold-500">
               <span className="h-px w-8 bg-gold-300" />
               <HeartFilled className="h-3.5 w-3.5" />

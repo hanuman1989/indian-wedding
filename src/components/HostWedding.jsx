@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 import { ElephantScene, VenueScene } from './Artwork'
 import { ArrowRight, BookHeart, ClipboardUsers, Coins, Lock } from './Icons'
 import { Mandala } from './Ornaments'
@@ -48,14 +50,14 @@ export default function HostWedding() {
                 Set your per-person cost, share your story, and welcome guests
                 from around the world.
               </p>
-
-              <a
-                href="#contact"
-                className="group mt-5 inline-flex items-center gap-2.5 rounded-md bg-wine-700 px-4 py-2.5 text-[12.5px] font-medium text-cream-50 shadow-md shadow-wine-900/15 transition-colors hover:bg-wine-600"
-              >
-                Start Hosting Now
+            <Link
+            href="/host-wedding"
+            className="group mt-5 inline-flex items-center gap-2.5 rounded-md bg-wine-700 px-4 py-2.5 text-[12.5px] font-medium text-cream-50 shadow-md shadow-wine-900/15 transition-colors hover:bg-wine-600"
+          >
+            Start Hosting Now
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </a>
+          </Link>
+             
 
             </div>
 

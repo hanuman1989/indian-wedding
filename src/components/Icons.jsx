@@ -71,6 +71,20 @@ export const Upload = (p) => (
   </S>
 )
 
+export const Download = (p) => (
+  <S {...p}>
+    <path d="M12 4v12M7.5 11.5 12 16l4.5-4.5M5 19.5h14" />
+  </S>
+)
+
+export const FilePdf = (p) => (
+  <S {...p}>
+    <path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V8Z" />
+    <path d="M14 3v5h5" />
+    <path d="M9 13.5h9M9 16.5h6" />
+  </S>
+)
+
 export const Grip = (p) => (
   <S {...p}>
     <circle cx="8.5" cy="6.5" r=".7" fill="currentColor" />
@@ -86,6 +100,14 @@ export const X = (p) => (
   <S {...p}>
     <path d="m6 6 12 12M18 6 6 18" />
   </S>
+)
+
+export const MoreVertical = (p) => (
+  <F {...p}>
+    <circle cx="12" cy="5.5" r="1.8" />
+    <circle cx="12" cy="12" r="1.8" />
+    <circle cx="12" cy="18.5" r="1.8" />
+  </F>
 )
 
 export const Plus = (p) => (
@@ -158,10 +180,30 @@ export const MapPin = (p) => (
   </S>
 )
 
+// mdi:crosshairs-gps, used for the "use current location" action
+export const CrosshairsGps = ({ className = 'h-5 w-5', ...rest }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true" {...rest}>
+    <path d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M3.05,13H1V11H3.05C3.5,6.83 6.83,3.5 11,3.05V1H13V3.05C17.17,3.5 20.5,6.83 20.95,11H23V13H20.95C20.5,17.17 17.17,20.5 13,20.95V23H11V20.95C6.83,20.5 3.5,17.17 3.05,13M12,5A7,7 0 0,0 5,12A7,7 0 0,0 12,19A7,7 0 0,0 19,12A7,7 0 0,0 12,5Z" />
+  </svg>
+)
+
 export const Calendar = (p) => (
   <S {...p}>
     <rect x="3.5" y="5" width="17" height="15" rx="2.5" />
     <path d="M3.5 10h17M8.5 3.5v3M15.5 3.5v3" />
+  </S>
+)
+
+export const Clock = (p) => (
+  <S {...p}>
+    <circle cx="12" cy="12" r="8.5" />
+    <path d="M12 7.4V12l3.4 2" />
+  </S>
+)
+
+export const Navigation = (p) => (
+  <S {...p}>
+    <path d="M12 3 19 19 12 15.5 5 19 12 3Z" />
   </S>
 )
 
@@ -386,6 +428,35 @@ export const BadgeCheck = (p) => (
   <S {...p}>
     <path d="m12 2.8 2.3 1.7 2.8-.3 1 2.6 2.4 1.5-.9 2.7.9 2.7-2.4 1.5-1 2.6-2.8-.3L12 21.2l-2.3-1.7-2.8.3-1-2.6-2.4-1.5.9-2.7-.9-2.7 2.4-1.5 1-2.6 2.8.3L12 2.8Z" />
     <path d="m9.2 12.2 1.9 1.9 3.7-4" />
+  </S>
+)
+
+export const Music = (p) => (
+  <S {...p}>
+    <path d="M9 17V4.8l10-1.8v12" />
+    <circle cx="6.5" cy="17" r="2.5" />
+    <circle cx="16.5" cy="15" r="2.5" />
+  </S>
+)
+
+export const Shirt = (p) => (
+  <S {...p}>
+    <path d="M8 4 4 7.5 6.5 11 9 9v10.5A1.5 1.5 0 0 0 10.5 21h3A1.5 1.5 0 0 0 15 19.5V9l2.5 2 2.5-3.5L16 4l-2 2h-4L8 4Z" />
+  </S>
+)
+
+export const Dance = (p) => (
+  <S {...p}>
+    <circle cx="12" cy="5" r="1.6" fill="currentColor" stroke="none" />
+    <path d="M12 7.5v5.5M8 6.5 12 9l4-2.5M9 20l3-7 3 7" />
+  </S>
+)
+
+export const Teacup = (p) => (
+  <S {...p}>
+    <path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9Z" />
+    <path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17" />
+    <path d="M8 4c0 1-1 1-1 2M12 4c0 1-1 1-1 2" />
   </S>
 )
 

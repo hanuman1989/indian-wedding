@@ -883,12 +883,10 @@ footer#contact::after {
   background-image: url("/images/memory_right.webp");
 }
 
-.celeb_main {z-index: 1;}
 .celeb_main::before, .celeb_main::after {
     content: "";
     position: absolute;
     top: 0;
-    z-index: -1;
     width: 190px;
     height: 160px;
     background-repeat: no-repeat;
@@ -991,6 +989,9 @@ footer#contact::after {
   .herobanner .shell {
     min-height: 100%;
     padding-bottom: 90px;
+  }
+  .celeb_main::before, .celeb_main::after {
+    display: none;
   }
   .barstats::before, .barstats::after {display: none;}
 }
