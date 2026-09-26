@@ -1,4 +1,5 @@
 'use client'
+import Image from 'next/image';
 import { ArrowRight, Couple, Heart, Play, Users } from '@/components/Icons'
 import AuthGatedLink from '@/components/common/AuthGatedLink'
 
@@ -70,9 +71,11 @@ export default function HostHero() {
           </div>
         </div>
         <div className="pointer-events-none absolute bottom-0 right-65 hidden w-[25%] max-w-[560px] sm:block">
-          <img
+          <Image
             src="/images/couple.png"
             alt="Couple celebrating their wedding"
+            width={800}
+            height={600}
             className="h-auto w-full object-contain object-bottom"
           />
         </div>

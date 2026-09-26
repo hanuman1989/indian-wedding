@@ -43,7 +43,7 @@ function HighlightCard({ Icon, label, image }) {
           alt={label}
           width={400}
           height={112}
-          className="h-28 w-full object-cover"
+          className="h-auto w-full max-w-[300px] object-cover"
         />
       ) : (
         <span className="mx-auto mt-6 grid h-14 w-14 place-items-center rounded-full bg-cream-100 text-wine-700">
@@ -302,11 +302,13 @@ export default function IndianWeddingExperience() {
 
         {/* your invitation to india */}
         <section className="grid gap-8 bg-cream-50 lg:grid-cols-[300px_1fr] lg:items-center">
-          <img
-            src="/images/mandap.png"
-            alt="A decorated Indian wedding mandap and rituals"
-            className="h-[200px] w-full max-w-[300px] rounded-xl object-cover sm:h-[300px] lg:h-[360px]"
-          />
+         <Image
+          src="/images/mandap.png"
+          alt="A decorated Indian wedding mandap and rituals"
+          width={300}
+          height={360}
+          className="h-[200px] w-full max-w-[300px] rounded-xl object-cover sm:h-[300px] lg:h-[360px]"
+        />
 
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,0.8fr)] lg:items-start">
             <div>
