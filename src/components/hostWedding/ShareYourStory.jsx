@@ -1,4 +1,5 @@
 'use client'
+import Image from 'next/image';
 import { ArrowRight, Calendar, Globe, Gift, Heart, Photo, Plate } from '@/components/Icons'
 import AuthGatedLink from '@/components/common/AuthGatedLink'
 
@@ -17,10 +18,12 @@ export default function ShareYourStory() {
       <div className="shell grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
         <div className="relative">
           <div className="overflow-hidden">
-            <img
+            <Image
               src="/images/wedding_collage.webp"
               alt="Couple celebrating a wedding tradition"
-              className="h-[280px] w-full object-cover sm:h-[340px]"
+              width={420}
+              height={280}
+              className="object-cover"
             />
           </div>
           {/* <div className="absolute -bottom-4 left-4 rounded-lg border border-gold-300/70 bg-white px-3.5 py-2 text-[11px] font-medium text-wine-700 shadow-md">
