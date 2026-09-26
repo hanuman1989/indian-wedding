@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import AccountSidebar from '@/components/common/AccountSidebar';
@@ -83,7 +83,7 @@ function PasswordField({ error, id, label, onChange, placeholder, showPassword, 
   );
 }
 
-export default function ChangePasswordPage() {
+function ChangePasswordContent() {
   const { isAuthorized } = useProtectedRoute('frontend');
   const router = useRouter();
   const { logout } = useUserAuth();
@@ -164,7 +164,7 @@ export default function ChangePasswordPage() {
   }
 
   return (
-    <section className="relative isolate overflow-hidden bg-cream-50 py-8 sm:py-10 lg:py-12">
+    <section className="relative bg-cream-50 py-8 sm:py-10 lg:py-12">
       <Image
         src="/images/bg.png"
         alt=""
@@ -250,5 +250,16 @@ export default function ChangePasswordPage() {
         </div>
       </div>
     </section>
+  );
+}
+
+/*
+ * Suspense boundary required because useProtectedRoute()
+ */
+export default function ChangePasswordPage() {
+  return (
+    <Suspense fallback={<Loader />}>
+      <ChangePasswordContent />
+    </Suspense>
   );
 }

@@ -43,9 +43,6 @@ export default function MyWeddingsPage() {
     let isActive = true;
 
     const loadWeddings = async () => {
-      setIsLoadingWeddings(true);
-      setErrorMessage('');
-
       try {
         const parms = {
           page: currentPage,
@@ -69,6 +66,14 @@ export default function MyWeddingsPage() {
       isActive = false;
     };
   }, [isAuthorized, currentPage]);
+
+  const changePage = (page) => {
+    if (page === currentPage) return;
+
+    setErrorMessage('');
+    setIsLoadingWeddings(true);
+    setCurrentPage(page);
+  };
 
   const closeSuccessMessage = () => {
     setSuccessMessage('');
@@ -143,7 +148,7 @@ export default function MyWeddingsPage() {
                     <Pagination
                       currentPage={pagination.current_page}
                       totalPages={pagination.last_page || 1}
-                      onPageChange={setCurrentPage}
+                      onPageChange={changePage}
                     />
                   )}
             </section>

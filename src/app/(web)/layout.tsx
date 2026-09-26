@@ -3,7 +3,7 @@
 import { Provider } from 'react-redux';
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import store from '@/store/store';
+import { StoreProvider } from '@/app/providers/StoreProvider';
 import '../index.css'
 export default function WedbLayout({
   children,
@@ -11,7 +11,7 @@ export default function WedbLayout({
   children: React.ReactNode;
 }>) {
   return (
-      <Provider store={store}>
+      <StoreProvider>
         <div className="min-h-screen bg-white">
           <Navbar />
           <main>
@@ -19,6 +19,6 @@ export default function WedbLayout({
           </main>
           <Footer />
         </div>
-      </Provider>
+      </StoreProvider>
   );
 }
