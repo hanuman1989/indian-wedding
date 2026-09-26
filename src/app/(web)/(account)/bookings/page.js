@@ -1,18 +1,14 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { Suspense } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
 import AccountSidebar from '@/components/common/AccountSidebar';
 import Loader from '@/components/common/Loader';
-import { Plus } from '@/components/Icons';
 import { useProtectedRoute } from '@/hooks/useProtectedRoute';
 import MyBookingList from '@/components/myBooking/MyBookingList';
-import APIs from '@/lib/apis';
 import { useUserAuth } from '@/hooks/useUserAuth';
 
-export default function MyBookingsPage() {
+function MyBookingsContent() {
   const { user } = useUserAuth();
   const { isAuthorized } = useProtectedRoute('frontend');
 
@@ -51,5 +47,13 @@ export default function MyBookingsPage() {
         </div>
       </div>
     </section>
+  );
+}
+
+export default function MyBookingsPage() {
+  return (
+    <Suspense fallback={<Loader />}>
+      <MyBookingsContent />
+    </Suspense>
   );
 }
