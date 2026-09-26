@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image';
 
 import {
   ArrowRight,
@@ -37,15 +38,24 @@ function HighlightCard({ Icon, label, image }) {
   return (
     <div className="flex h-full flex-col items-center overflow-hidden rounded-xl border border-cream-300 bg-white text-center shadow-sm">
       {image ? (
-        <img src={image} alt={label} className="h-28 w-full object-cover" />
+        <Image
+          src={image}
+          alt={label}
+          width={400}
+          height={112}
+          className="h-28 w-full object-cover"
+        />
       ) : (
         <span className="mx-auto mt-6 grid h-14 w-14 place-items-center rounded-full bg-cream-100 text-wine-700">
           <Icon className="h-6 w-6" />
         </span>
       )}
-      <span className="px-3 py-4 text-[14px] font-semibold leading-snug text-wine-700">{label}</span>
+
+      <span className="px-3 py-4 text-[14px] font-semibold leading-snug text-wine-700">
+        {label}
+      </span>
     </div>
-  )
+  );
 }
 
 /* Small icon + label row used inside the "your invitation" cream box */
@@ -65,13 +75,27 @@ function RegionCard({ name, accentClass, description, image }) {
   return (
     <div className="overflow-hidden rounded-xl border border-cream-300 bg-white shadow-sm">
       <div className={`h-2 w-full ${accentClass}`} />
-      {image && <img src={image} alt={name} className="w-full object-cover" />}
+      {image && (
+        <Image
+          src={image}
+          alt={name}
+          width={600}
+          height={400}
+          className="w-full object-cover"
+        />
+      )}
+
       <div className="p-4">
-        <p className="text-[13px] font-bold uppercase tracking-wide text-wine-700">{name}</p>
-        <p className="mt-1.5 text-[11.5px] leading-relaxed text-ink-soft">{description}</p>
+        <p className="text-[13px] font-bold uppercase tracking-wide text-wine-700">
+          {name}
+        </p>
+
+        <p className="mt-1.5 text-[11.5px] leading-relaxed text-ink-soft">
+          {description}
+        </p>
       </div>
     </div>
-  )
+  );
 }
 
 const whyExperienceIcons = [
