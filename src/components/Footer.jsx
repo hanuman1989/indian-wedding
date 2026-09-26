@@ -1,5 +1,6 @@
 "use client";
 import { useState } from 'react'
+import Link from 'next/link'
 import {
   Facebook,
   HeartFilled,
@@ -13,19 +14,32 @@ import { Logo, Mandala } from './Ornaments'
 const columns = [
   {
     title: 'For Guests',
-    links: ['Browse Weddings', 'How It Works', 'Guest Guide', 'FAQs'],
+    links: [
+      { title: 'Browse Weddings', href: '/weddings' },
+      { title: 'How It Works', href: '/#how-it-works' },
+      { title: 'FAQs', href: '/faqs' },
+    ],
   },
   {
     title: 'For Hosts',
-    links: ['Host Your Wedding', 'Pricing Guide', 'Host Guide', 'Success Stories'],
+    links: [
+      { title: 'Host Your Wedding', href: '/host-wedding' },
+      { title: 'Host Guide', href: '/host-wedding#host-how-it-works' },
+    ],
   },
   {
     title: 'Company',
-    links: ['About Us', 'Blog', 'Privacy Policy', 'Terms & Conditions'],
+    links: [
+      { title: 'About Us', href: '/about' },
+      { title: 'Privacy Policy', href: '/privacy-policy' },
+      { title: 'Terms & Conditions', href: '/terms-and-conditions' },
+    ],
   },
   {
     title: 'Support',
-    links: ['Contact Us', 'Help Center', 'Safety & Trust'],
+    links: [
+      { title: 'Contact Us', href: '/contact' },
+    ],
   },
 ]
 
@@ -55,7 +69,7 @@ export default function Footer() {
     <footer id="contact" className="relative overflow-hidden bg-wine-700 z-1">
 
       <div className="shell relative pt-8 pb-5">
-        <div className="grid gap-7 lg:grid-cols-[1.25fr_repeat(4,0.75fr)_1.3fr] lg:gap-6">
+        <div className="grid gap-7 lg:grid-cols-[1.40fr_repeat(3,0.80fr)_1.3fr] lg:gap-6">
           {/* brand */}
           <div>
             <Logo />
@@ -88,13 +102,13 @@ export default function Footer() {
               </h3>
               <ul className="space-y-2">
                 {column.links.map((link) => (
-                  <li key={link}>
-                    <a
-                      href="#contact"
+                  <li key={link.title}>
+                    <Link
+                      href={link.href}
                       className="text-[11.5px] text-cream-100/80 transition-colors hover:text-gold-300"
                     >
-                      {link}
-                    </a>
+                      {link.title}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -102,52 +116,15 @@ export default function Footer() {
           ))}
 
           {/* newsletter */}
-          <div>
-            <h3 className="mb-3 text-[12px] font-semibold text-gold-300">
-              Stay Updated
-            </h3>
-            <p className="mb-3 text-[11.5px] leading-relaxed text-cream-100/75">
-              Get updates on new weddings and special celebrations.
-            </p>
-
-            <form onSubmit={onSubscribe} className="flex overflow-hidden rounded-md">
-              <input
-                type="email"
-                name="email"
-                required
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value)
-                  setSent(false)
-                }}
-                placeholder="Enter your email"
-                aria-label="Email address"
-                className="h-10 w-full bg-white px-3 text-[12px] text-ink placeholder:text-ink-soft/60 focus:outline-none"
-              />
-              <button
-                type="submit"
-                aria-label="Subscribe"
-                className="grid w-11 shrink-0 place-items-center bg-wine-500 text-cream-50 transition-colors hover:bg-wine-400"
-              >
-                <Send className="h-[17px] w-[17px]" />
-              </button>
-            </form>
-
-            {sent && (
-              <p className="mt-2 text-[11px] text-gold-300" role="status">
-                Thank you — you&apos;re on the list!
-              </p>
-            )}
-          </div>
         </div>
 
         {/* bottom bar */}
         <div className="mt-6 flex flex-col items-center justify-between gap-3 border-t border-gold-300/20 pt-4 text-[11px] text-cream-100/70 sm:flex-row">
-          <p>© 2024 Shaadi Invites. All rights reserved.</p>
+          <p>@ {new Date().getFullYear()} IWI. All rights reserved.</p>
           <p className="flex items-center gap-1.5">
             Made with
             <HeartFilled className="h-3.5 w-3.5 text-wine-300" />
-            for Indian Weddings
+            for Indian Wedding Invitation
           </p>
         </div>
       </div>
