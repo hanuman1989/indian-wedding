@@ -68,14 +68,28 @@ export default function LoginButtonSection() {
   return (
     <>
       {isAuthenticated ? (
-        <div ref={accountMenuRef} className="relative hidden sm:block">
+        <div ref={accountMenuRef} className="relative">
+          {/* Mobile: avatar circle with first initial */}
           <button
             type="button"
             onClick={() => setIsAccountMenuOpen((current) => !current)}
             aria-expanded={isAccountMenuOpen}
             aria-haspopup="menu"
             aria-controls="account-menu"
-            className="flex max-w-44 items-center gap-2 rounded-md border border-gold-300/70 px-5 py-2 text-[13px] font-medium text-cream-50 transition-colors hover:bg-gold-400/15"
+            aria-label="Account menu"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-gold-300/70 bg-gold-400/15 text-[13px] font-semibold uppercase text-cream-50 transition-colors hover:bg-gold-400/25 sm:hidden"
+          >
+            {user?.name?.trim()?.charAt(0) || 'A'}
+          </button>
+
+          {/* Desktop: name + chevron */}
+          <button
+            type="button"
+            onClick={() => setIsAccountMenuOpen((current) => !current)}
+            aria-expanded={isAccountMenuOpen}
+            aria-haspopup="menu"
+            aria-controls="account-menu"
+            className="hidden max-w-44 items-center gap-2 rounded-md border border-gold-300/70 px-5 py-2 text-[13px] font-medium text-cream-50 transition-colors hover:bg-gold-400/15 sm:flex"
           >
             <span className="truncate capitalize">{user?.name || 'Account'}</span>
             <ChevronDown className={`h-4 w-4 shrink-0 transition-transform ${isAccountMenuOpen ? 'rotate-180' : ''}`} />

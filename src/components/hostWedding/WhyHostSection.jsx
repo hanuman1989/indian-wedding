@@ -26,7 +26,7 @@ const perks = [
 
 export default function WhyHostSection() {
   return (
-    <section className="bg-white py-12 sm:py-14">
+    <section id="host-how-it-works" className="bg-white py-12 sm:py-14">
       <div className="shell">
         <SectionHeading
           title="Why Host Your Wedding?"
