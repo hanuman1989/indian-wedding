@@ -174,11 +174,13 @@ export default function IndianWeddingExperience() {
     <div>
       {/* hero: full-bleed, sits flush under the header, photo as a right-side backdrop */}
       <section className="relative isolate min-h-[380px] overflow-hidden bg-cream-100 sm:min-h-[440px] lg:min-h-[520px]">
-        <img
-          src="/images/phere.png"
-          alt="Guests celebrating together at a real Indian wedding"
-          className="absolute inset-0 -z-10 h-full w-full object-cover object-top"
-        />
+        <Image
+        src="/images/phere.png"
+        alt="Guests celebrating together at a real Indian wedding"
+        fill
+        priority
+        className="absolute inset-0 -z-10 object-cover object-top"
+      />
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-cream-100 via-cream-100/95 to-cream-100/10" />
 
         <div className="shell relative flex min-h-[380px] items-center sm:min-h-[400px] lg:min-h-[420px] ">
