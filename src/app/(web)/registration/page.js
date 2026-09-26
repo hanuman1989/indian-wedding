@@ -248,7 +248,7 @@ export default function RegistrationPage() {
 
           <p className="mt-6 text-center text-sm text-ink-soft">
             Already registered?{' '}
-            <Link href="/" className="font-semibold text-wine-600 hover:text-wine-500">Login</Link>
+            <Link href="/?login=true" className="font-semibold text-wine-600 hover:text-wine-500">Login</Link>
           </p>
         </div>
       </div>

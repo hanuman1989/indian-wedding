@@ -57,11 +57,11 @@ export default function Navbar() {
             <LoginButtonSection />
             {!isAuthenticated && (
               <Link
-                href="registration"
-                className="rounded-md border border-gold-300/40 bg-wine-500 px-5 py-2 text-[13px] font-medium text-cream-50 shadow-sm transition-colors hover:bg-wine-400"
-              >
-                Sign Up
-              </Link>
+                  href="registration"
+                  className="rounded border border-gold-300/40 bg-wine-500 px-3 py-1.5 text-[11px] font-medium text-cream-50 shadow-sm transition-colors hover:bg-wine-400 sm:rounded-md sm:px-5 sm:py-2 sm:text-[13px]"
+                >
+                  Sign Up
+                </Link>
             )}
 
             {/* mobile menu toggle */}
