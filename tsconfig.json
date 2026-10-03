@@ -29,6 +29,6 @@
     "**/*.mts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "src/components/admin/ecommerce/EcommerceMetrics.jsx"  ],
   "exclude": ["node_modules"]
 }

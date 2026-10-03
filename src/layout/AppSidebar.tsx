@@ -35,23 +35,18 @@ const navItems: NavItem[] = [
   },
   {
     icon: <GroupIcon />,
-    name: "Admin Users",
-    path: "/admin/admin-users",
+    name: "User Management",
+    path: "/admin/users",
   },
   {
-    icon: <UserCircleIcon />,
-    name: "Wedding Hosts (Organizer)",
-    path: "/admin/organizers",
-  },
-{
-    icon: <UserCircleIcon />,
-    name: "Wedding Guests (Attendee)",
-    path: "/admin/attendees",
-  },
-  {
-    name: "Weddings",
+    name: "Registered Weddings",
     icon: <ListIcon />,
     path: "/admin/weddings",
+  },
+  {
+    name: "Bookings",
+    icon: <ListIcon />,
+    path: "/admin/bookings",
   },
   
 ];
@@ -267,7 +262,44 @@ const AppSidebar: React.FC = () => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
-        className={`py-8 flex  ${
+  className={`w-full py-2 flex ${
+    !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
+  }`}
+>
+  <Link href="/" className="block w-full">
+    {isExpanded || isHovered || isMobileOpen ? (
+      <>
+        <Image
+          className="block h-auto w-full dark:hidden"
+          src="/images/logo/logo-main-bg.png"
+          alt="Logo"
+          width={160}
+          height={45}
+          priority
+        />
+        <Image
+          className="hidden h-auto w-full dark:block"
+          src="/images/logo/logo-main-bg.png"
+          alt="Logo"
+          width={160}
+          height={45}
+          priority
+        />
+      </>
+    ) : (
+      <Image
+        className="block h-auto w-full"
+        src="/images/logo/logo-icon.png"
+        alt="Logo"
+        width={44}
+        height={45}
+        priority
+      />
+    )}
+  </Link>
+</div>
+      {/* <div
+        className={`py-2 flex full-width ${
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
       >
@@ -276,35 +308,35 @@ const AppSidebar: React.FC = () => {
             <>
               <Image
                 className="dark:hidden"
-                src="/images/logo/logo.png"
+                src="/images/logo/logo-main-bg.png"
                 alt="Logo"
-                width={100}
-                height={40}
-                style={{ width: "auto", height: "auto" }}
+                width={120}
+                height={45}
+                style={{ width: "auto", height: "45px" }}
                 loading="eager"
               />
               <Image
                 className="hidden dark:block"
-                src="/images/logo/logo.png"
+                src="/images/logo/logo-main-bg.png"
                 alt="Logo"
-                width={100}
-                height={40}
-                style={{ width: "auto", height: "auto" }}
+                width={120}
+                height={45}
+                style={{ width: "auto", height: "45px" }}
                 loading="eager"
               />
             </>
           ) : (
             <Image
-              src="/images/logo/logo.png"
+              src="/images/logo/logo-icon.png"
               alt="Logo"
-              width={32}
-              height={32}
-              style={{ width: "auto", height: "auto" }}
+              width={100}
+                height={45}
+                style={{ width: "auto", height: "45px" }}
               loading="eager"
             />
           )}
         </Link>
-      </div>
+      </div> */}
       <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
         <nav className="mb-6">
           <div className="flex flex-col gap-4">

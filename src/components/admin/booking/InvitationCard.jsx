@@ -1,6 +1,6 @@
 import { BookHeart } from '@/components/Icons';
-import SectionHeader from './SectionHeader';
-import DownloadInvitationButton from '@/components/common/DownloadInvitationButton';
+import SectionHeader from '@/components/bookingDetail/SectionHeader';
+import DownloadInvitationButton from './DownloadInvitationButton';
 
 export default function InvitationCard({ wedding, bookingId, invoiceId }) {
   if (!wedding) return null;
@@ -20,8 +20,8 @@ export default function InvitationCard({ wedding, bookingId, invoiceId }) {
 
         <div className="min-w-0 flex-1 text-center sm:text-left pl-5">
           <h3 className="text-2xl font-bold text-wine-700">Download Wedding Invitation</h3>
-          <p className="mt-2 text-md leading-5 text-ink-soft">Share this beautiful invitation card with your family and friends.</p>
-          <DownloadInvitationButton bookingId={bookingId} invoiceId={invoiceId} className="mt-5 inline-flex min-h-10 items-center gap-2 rounded-md bg-wine-700 px-4 text-xs font-semibold text-white transition-colors hover:bg-wine-600 disabled:cursor-not-allowed disabled:opacity-60" />
+          <p className="mt-4 mb-4 text-md leading-5 text-ink-soft">Share this beautiful invitation card with your family and friends.</p>
+          <DownloadInvitationButton bookingId={bookingId} invoiceId={invoiceId} className="inline-flex items-center gap-2 rounded-lg bg-[#7A1F2E] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#5C1622]" />
         </div>
       </div>
     </div>

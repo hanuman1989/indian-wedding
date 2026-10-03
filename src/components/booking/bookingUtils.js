@@ -45,8 +45,10 @@ export function validateBookingForm(form, selectedDayIds) {
   if (!form.last_name.trim()) errors.last_name = 'Last name is required.'
   if (!form.email.trim()) errors.email = 'Email address is required.'
   if (!form.phone.trim()) errors.phone = 'Phone number is required.'
-  if (!form.visiting_from.trim()) errors.visiting_from = 'Please tell us where you are visiting from.'
-  if (!form.hear_about) errors.hear_about = 'Please select an option.'
+
+  // if (!form.visiting_from.trim()) errors.visiting_from = 'Please tell us where you are visiting from.'
+  // if (!form.hear_about) errors.hear_about = 'Please select an option.'
+
   if (!selectedDayIds.length) errors.weddingDays = 'Select at least one wedding day to attend.'
   if (form.number_of_travelers < 1) errors.number_of_travelers = 'At least one traveler is required.'
 

@@ -205,7 +205,6 @@ export default function ResetPasswordPage({ searchParams }) {
 
             {formError && <p role="alert" className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-center text-sm text-red-700">{formError}</p>}
             {successMessage && <p role="status" className="rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-center text-sm text-green-800">{successMessage}</p>}
-
             <button type="submit" disabled={isSubmitting || !hasValidResetLink} className="w-full rounded-lg bg-wine-700 py-3 text-sm font-semibold text-cream-50 shadow-sm transition hover:bg-wine-600 focus:outline-none focus:ring-2 focus:ring-wine-300 disabled:cursor-not-allowed disabled:opacity-60">
               {isSubmitting ? 'Resetting password...' : 'Reset Password'}
             </button>
