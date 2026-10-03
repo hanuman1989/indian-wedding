@@ -2,9 +2,9 @@ import { Couple, Lotus, Star, Users } from './Icons'
 import { Mandala } from './Ornaments'
 
 const stats = [
-  { Icon: Couple, value: '2500+', label: 'Weddings Hosted' },
-  { Icon: Users, value: '1,25,000+', label: 'Happy Guests' },
-  { Icon: Lotus, value: '50+', label: 'Cities Covered' },
+  { Icon: Couple, value: '500+', label: 'Weddings Hosted' },
+  { Icon: Users, value: '200+', label: 'Happy Guests' },
+  { Icon: Lotus, value: 'All major cities', label: 'Cities Covered' },
   { Icon: Star, value: '4.8/5', label: 'Guest Rating' },
 ]
 

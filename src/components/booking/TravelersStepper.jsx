@@ -7,7 +7,11 @@ export default function TravelersStepper({ error, travelerCount, onChange }) {
 
   return (
     <section className="space-y-5 border border-gold-200 bg-white p-5 sm:p-7">
-      <StepHeader number={3} title="Number of Travelers" description="Let us know how many people will be attending from your side." />
+      <StepHeader number={3} title="Number of Guests" description="Let us know how many people will be attending from your side." />
+     
+     <p className="font-display text-sm leading-5 text-ink-soft">
+      Children below 18 are welcomed. Please do not pay for them. Bring them to give them a rich cultural experience
+      </p> 
 
       <div className="flex items-center gap-3">
         <button type="button" onClick={decrease} aria-label="Decrease travelers" className="grid h-11 w-11 place-items-center border border-gold-200 bg-cream-50 text-wine-700 transition-colors hover:bg-cream-100 focus:outline-none focus:ring-2 focus:ring-wine-300">

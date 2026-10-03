@@ -9,6 +9,7 @@ import { useProtectedRoute } from '@/hooks/useProtectedRoute';
 import Loader from '@/components/common/Loader';
 import BookingDetail from '@/components/bookingDetail/BookingDetail';
 import APIs from '@/lib/apis';
+import { useUserAuth } from '@/hooks/useUserAuth';
 
 function getBookingFromResponse(response) {
   const payload = response?.data ?? response;
@@ -21,6 +22,8 @@ export default function BookingsPage() {
   const [booking, setBooking] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
+
+  const { user } = useUserAuth();
 
   useEffect(() => {
     if (!bookingId) return undefined;
@@ -86,7 +89,7 @@ export default function BookingsPage() {
               ) : errorMessage ? (
                 <ErrorMessage message={errorMessage} />
               ) : booking ? (
-                <BookingDetail booking={booking} />
+                <BookingDetail booking={booking} user={user} />
               ) : (
                 <p className="text-sm text-ink-soft">Booking not found.</p>
               )}

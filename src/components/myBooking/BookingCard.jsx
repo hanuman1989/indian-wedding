@@ -61,7 +61,7 @@ export default function BookingCard({ booking }) {
         <Link href={`/bookings/${booking.id}`} className="inline-flex min-h-10 items-center justify-center rounded-md bg-wine-700 px-4 text-xs font-semibold text-white transition-colors hover:bg-wine-600">
           View details
         </Link>
-        {booking.status === "confirmed" && (
+        {/* {booking.status === "confirmed" && (
           <DownloadInvitationButton
             bookingId={booking.id}
             invoiceId={booking.booking_number}
@@ -71,7 +71,7 @@ export default function BookingCard({ booking }) {
             icon={FilePdf}
             iconClassName="h-6 w-6"
           />
-        )}
+        )} */}
       </div>
     </article>
   );

@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import {
   Calendar,
@@ -60,8 +60,6 @@ const foodObservanceOptions = [
   'Vegetarian',
   'Non-Vegetarian',
   'Veg & Non-Veg',
-  'Jain',
-  'Other',
 ]
 
 const badges = [
@@ -83,6 +81,7 @@ const shellClasses =
 
 export default function SearchPanel({ className = 'relative z-1 -mt-12' }) {
   const router = useRouter()
+  const pathname = usePathname()
   const searchParams = useSearchParams()
 
   const [query, setQuery] = useState(() => {
@@ -104,6 +103,8 @@ export default function SearchPanel({ className = 'relative z-1 -mt-12' }) {
   const autocompleteContainerRef = useRef(null)
   const autocompleteElementRef = useRef(null)
   const dateInputRef = useRef(null)
+  const locationRequestRef = useRef(0)
+  const initialWhereRef = useRef(searchParams.get('where') || '')
   
   // Suppresses the "stale coordinates" clearing logic for the synthetic
   // input event that follows a valid gmp-select (or a programmatic fill).
@@ -136,12 +137,14 @@ const openDatePicker = () => {
 
     const handlePlaceSelect = async ({ placePrediction }) => {
       if (!placePrediction) return
+      const request = ++locationRequestRef.current
 
       try {
         const place = placePrediction.toPlace()
         await place.fetchFields({
           fields: ['displayName', 'formattedAddress', 'location', 'addressComponents'],
         })
+        if (cancelled || request !== locationRequestRef.current) return
 
         const countryComponent = place.addressComponents?.find((component) =>
           component.types?.includes('country'),
@@ -161,6 +164,7 @@ const openDatePicker = () => {
           longitude: place.location?.lng() ?? null,
         }))
       } catch (error) {
+        if (cancelled || request !== locationRequestRef.current) return
         console.error('Failed to resolve the selected place:', error)
         setLocationError('Unable to load details for the selected location. Please try again.')
       }
@@ -205,7 +209,7 @@ const openDatePicker = () => {
         setPlacesReady(true)
 
         // Pre-fill the widget's own input when the page loaded with a `where` query param.
-        const initialWhere = searchParams.get('where')
+        const initialWhere = initialWhereRef.current
         if (initialWhere) fillAutocompleteDisplay(element, initialWhere)
       })
       .catch((error) => {
@@ -216,6 +220,7 @@ const openDatePicker = () => {
 
     return () => {
       cancelled = true
+      locationRequestRef.current += 1
       const element = autocompleteElementRef.current
       if (element) {
         element.removeEventListener('gmp-select', handlePlaceSelect)
@@ -230,6 +235,7 @@ const openDatePicker = () => {
     setQuery((prev) => ({ ...prev, [key]: e.target.value }))
 
   const useCurrentLocation = () => {
+    const request = ++locationRequestRef.current
     if (!navigator.geolocation) {
       setLocationError('Geolocation is not supported by your browser.')
       return
@@ -239,12 +245,14 @@ const openDatePicker = () => {
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
+        if (request !== locationRequestRef.current) return
         const { latitude, longitude } = position.coords
 
         try {
           const maps = await loadGoogleGeocodingLibrary()
           const geocoder = new maps.Geocoder()
           const { results } = await geocoder.geocode({ location: { lat: latitude, lng: longitude } })
+          if (request !== locationRequestRef.current) return
           const result = results?.[0]
           const countryComponent = result?.address_components?.find((component) =>
             component.types?.includes('country'),
@@ -266,14 +274,33 @@ const openDatePicker = () => {
 
           fillAutocompleteDisplay(autocompleteElementRef.current, result.formatted_address)
         } catch (error) {
+          if (request !== locationRequestRef.current) return
           console.error('Reverse geocoding failed:', error)
           setLocationError('Unable to resolve your current location. Please try again.')
         }
       },
       () => {
+        if (request !== locationRequestRef.current) return
         setLocationError('Unable to access your location. Please allow location access or search manually.')
       },
     )
+  }
+
+  const resetSearch = () => {
+    locationRequestRef.current += 1
+    initialWhereRef.current = ''
+    justSelectedRef.current = false
+    setQuery({
+      where: '',
+      date: '',
+      end_date: '',
+      food_observance: foodObservanceOptions[0],
+      latitude: null,
+      longitude: null,
+    })
+    setLocationError('')
+    fillAutocompleteDisplay(autocompleteElementRef.current, '')
+    if (pathname === '/weddings') router.push('/weddings', { scroll: false })
   }
 
   const onSubmit = (e) => {
@@ -387,7 +414,16 @@ const openDatePicker = () => {
               </span>
             </Field>
 
-            <div className="flex items-end">
+            <div className="flex items-end gap-2">
+              <button
+                type="button"
+                onClick={resetSearch}
+                title="Reset search"
+                aria-label="Reset search"
+                className="grid h-[42px] w-[42px] shrink-0 place-items-center rounded-md border border-cream-300 bg-cream-50 text-wine-700 transition-colors hover:bg-cream-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wine-600 focus-visible:ring-offset-2"
+              >
+                <RefreshCw aria-hidden="true" className="h-[18px] w-[18px]" />
+              </button>
               <button
                 type="submit"
                 className="flex h-[42px] w-full items-center justify-center gap-2 rounded-md bg-wine-700 px-6 text-[13px] font-medium text-cream-50 transition-colors hover:bg-wine-600 lg:w-auto"

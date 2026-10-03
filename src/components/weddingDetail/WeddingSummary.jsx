@@ -79,7 +79,7 @@ export default function WeddingSummary({ wedding }) {
             guard={guardJoinWedding}
             className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-wine-700 px-6 text-sm font-semibold text-cream-50 shadow-sm transition-colors hover:bg-wine-600 focus:outline-none focus:ring-2 focus:ring-wine-300">
             <Users className="h-4 w-4" />
-            Join Our Wedding
+             Get Your Invitation
             <span aria-hidden="true">&rarr;</span>
           </AuthGatedLink>
         <p className="font-display text-sm italic leading-5 text-wine-400">Celebrating Love<br />Culture &amp; Togetherness</p>
