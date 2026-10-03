@@ -26,7 +26,7 @@ export default function YourInformationForm({ errors, form, onChange }) {
           <InputWithIcon id="phone" Icon={Phone} type="tel" inputMode="tel" value={form.phone} placeholder="e.g., +919876543210" autoComplete="tel" onChange={(event) => onChange('phone', event.target.value)} error={errors.phone} />
         </FormField>
       </div>
-
+    {false && (
       <div className="grid gap-4 sm:grid-cols-2">
         <FormField htmlFor="visiting-from" label="Where are you visiting from?" error={errors.visiting_from} required>
           <InputWithIcon id="visiting-from" Icon={Globe} value={form.visiting_from} onChange={updateField('visiting_from')} placeholder="e.g., Jaipur, Rajasthan" error={errors.visiting_from} />
@@ -49,6 +49,7 @@ export default function YourInformationForm({ errors, form, onChange }) {
           </div>
         </FormField>
       </div>
+      )}
     </section>
   )
 }

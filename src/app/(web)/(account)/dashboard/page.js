@@ -75,9 +75,9 @@ export default function DashboardPage() {
               </div>
 
             </div>
-            {user.is_host && (<DashboardWidgets />)}
+            {user?.is_host && (<DashboardWidgets />)}
 
-            <MyBookingList isHost={user.is_host} limit={3} />
+            <MyBookingList isHost={user?.is_host} limit={3} />
 
             <section aria-labelledby="quick-actions-heading" className="mt-8">
               <div id="quick-actions-heading">

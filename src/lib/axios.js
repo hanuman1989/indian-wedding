@@ -45,8 +45,7 @@ axiosInstance.interceptors.response.use(
   (error) => {
     if (typeof window !== 'undefined') {
       const status = error?.response?.status;
-
-      if (status === 401) {
+      if (status === 403) {
         const requestUrl =
           `${error?.config?.baseURL || ''}${error?.config?.url || ''}`;
 
