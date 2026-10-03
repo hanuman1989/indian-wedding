@@ -7,12 +7,12 @@ export const languageOptions = [
 ];
 
 export const eventTimes = [
-  ...Array.from({ length: 48 }, (_, index) => {
-    const hour24 = Math.floor(index / 2);
+  ...Array.from({ length: 25 }, (_, index) => {
+    const hour24 = 9 + Math.floor(index / 2);
     const hour = hour24 % 12 || 12;
     const minutes = index % 2 ? '30' : '00';
     return {
-      text: `${hour}:${minutes} ${hour24 < 12 ? 'AM' : 'PM'}${index === 0 ? ' (midnight)' : index === 24 ? ' (noon)' : ''}`,
+      text: `${hour}:${minutes} ${hour24 < 12 ? 'AM' : 'PM'}${hour24 === 12 && minutes === '00' ? ' (noon)' : ''}`,
       value: `${String(hour24).padStart(2, '0')}:${minutes}`,
     };
   }),

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from 'react'
-import { usePathname } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { ChevronDown, Globe } from '@/components/Icons'
 import { Logo, Mandala, PaisleyBand } from './Ornaments'
 import LoginButtonSection from '@/components/login/LoginButtonSection'
@@ -18,6 +18,9 @@ export default function Navbar() {
   const { isAuthenticated } = useUserAuth()
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const loginParams = new URLSearchParams(searchParams.toString())
+  loginParams.set('login', 'true')
 
   return (
     <header id="top" className="relative z-2">
@@ -55,14 +58,14 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
 
             <LoginButtonSection />
-            {!isAuthenticated && (
+            {/* {!isAuthenticated && (
               <Link
                   href="registration"
                   className="rounded border border-gold-300/40 bg-wine-500 px-3 py-1.5 text-[11px] font-medium text-cream-50 shadow-sm transition-colors hover:bg-wine-400 sm:rounded-md sm:px-5 sm:py-2 sm:text-[13px]"
                 >
                   Sign Up
                 </Link>
-            )}
+            )} */}
 
             {/* mobile menu toggle */}
             <button
@@ -98,6 +101,18 @@ export default function Navbar() {
                 </Link>
               </li>
             ))}
+            {!isAuthenticated && (
+              <li className="mt-2 border-t border-gold-300/20 pt-3">
+                <Link
+                  href={`${pathname}?${loginParams.toString()}`}
+                  scroll={false}
+                  onClick={() => setOpen(false)}
+                  className="block rounded-md border border-gold-300/70 px-4 py-2 text-center text-sm font-medium text-cream-50 transition-colors hover:bg-gold-400/15"
+                >
+                  Login
+                </Link>
+              </li>
+            )}
           </ul>
         )}
       </nav>

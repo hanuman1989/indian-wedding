@@ -89,10 +89,10 @@ function RegisteredWeddingCard({ deletingWeddingId, onDelete, onEdit, wedding })
               <Pencil className="h-3.5 w-3.5" />
               Edit
             </button>
-            <button type="button" onClick={() => onDelete(wedding)} disabled={deletingWeddingId === wedding.id} className="inline-flex min-h-9 items-center gap-1.5 rounded-md border border-rose-300 px-3 text-xs font-semibold text-rose-700 transition-colors hover:border-rose-500 hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-60">
+            {/* <button type="button" onClick={() => onDelete(wedding)} disabled={deletingWeddingId === wedding.id} className="inline-flex min-h-9 items-center gap-1.5 rounded-md border border-rose-300 px-3 text-xs font-semibold text-rose-700 transition-colors hover:border-rose-500 hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-60">
               <Trash className="h-3.5 w-3.5" />
               {deletingWeddingId === wedding.id ? 'Deleting...' : 'Delete'}
-            </button>
+            </button> */}
             <Link
               href={`/wedding-detail/${wedding.id}`}
               className="inline-flex min-h-9 items-center gap-1.5 rounded-md bg-wine-700 px-3.5 text-xs font-semibold text-cream-50 transition-colors hover:bg-wine-600"

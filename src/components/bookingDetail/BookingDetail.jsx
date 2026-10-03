@@ -6,19 +6,21 @@ import AboutWeddingCard from './AboutWeddingCard';
 import WeddingScheduleCard from './WeddingScheduleCard';
 import InvitationCard from './InvitationCard';
 
-export default function BookingDetail({ booking }) {
+export default function BookingDetail({ booking, user }) {
   if (!booking) return null;
   const wedding = booking.wedding;
+ const isHost = user?.is_host === true;
 
   return (
     <div className="grid gap-6">
       <BookingHeroCard booking={booking} />
       <BookingGuestInfo booking={booking} />
-
+    {!isHost && (
       <div className="grid gap-6 lg:grid-cols-2">
         <PaymentInformationCard booking={booking} />
         <PaymentDetailsCard booking={booking} />
       </div>
+    )}
 
       <AboutWeddingCard booking={booking} />
       <WeddingScheduleCard weddingDays={booking?.wedding_days} />

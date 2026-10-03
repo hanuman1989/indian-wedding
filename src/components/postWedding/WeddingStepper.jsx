@@ -2,7 +2,7 @@ import { Check } from '@/components/Icons';
 
 const steps = [
   'Your Details',
-  "Partner's Details",
+  "Couple's Details",
   'Your Story',
   'Wedding Details',
   'Wedding Photos',

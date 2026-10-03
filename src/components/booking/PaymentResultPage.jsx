@@ -343,7 +343,7 @@ function SuccessCard({
           </h2>
 
           <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#70575C]">
-            Your payment has been verified and your wedding booking is confirmed.
+            The payment has been verified and your invitation card has been sent to you on your email.
           </p>
 
           {booking?.booking_number && (

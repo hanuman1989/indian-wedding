@@ -2,7 +2,7 @@ import WeddingDayAccordion from './WeddingDayAccordion';
 import { FormField, getInputClassName } from './PostWeddingField';
 import { languageOptions } from './formUtils';
 
-const foodOptions = ['Vegetarian', 'Non-Vegetarian', 'Veg & Non-Veg', 'Jain', 'Other'];
+const foodOptions = ['Vegetarian', 'Non-Vegetarian', 'Veg & Non-Veg'];
 
 export default function WeddingDetails({ deletingEventKey, errors, form, onBlur, onChange, onEventChange, onRemoveEvent, onWeddingDaysChange }) {
   return (
