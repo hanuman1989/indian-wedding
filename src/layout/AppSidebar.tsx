@@ -271,7 +271,7 @@ const AppSidebar: React.FC = () => {
       <>
         <Image
           className="block h-auto w-full dark:hidden"
-          src="/images/logo/logo-main-bg.png"
+          src="/images/logo/logo-theme.png"
           alt="Logo"
           width={160}
           height={45}
@@ -279,7 +279,7 @@ const AppSidebar: React.FC = () => {
         />
         <Image
           className="hidden h-auto w-full dark:block"
-          src="/images/logo/logo-main-bg.png"
+          src="/images/logo/logo-theme.png"
           alt="Logo"
           width={160}
           height={45}

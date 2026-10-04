@@ -11,7 +11,6 @@ const links = [
   { label: 'Browse Weddings', href: '/weddings' },
   { label: 'FAQ', href: '/faq' },
   { label: 'Host Wedding', href: '/host-wedding' },
-  { label: 'Contact', href: '/contact-us' },
 ]
 
 export default function Navbar() {

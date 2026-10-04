@@ -232,11 +232,11 @@ export const BrandMark = ({ className = 'h-11 w-11' }) => (
 export const Logo = ({ tone = 'light' }) => (
   <Link href="/" className="flex items-center gap-3" aria-label="Shaadi Invites home">
     <Image
-      src="/images/logo/logo-main.png"
+      src="/images/logo/gold-logo.png"
       alt="Shaadi Invites logo"
-      width={180}
-      height={120}
-      className="h-16 w-auto object-contain"
+      width={220}
+      height={110}
+      className="h-18 w-auto object-contain"
     />
   </Link>
 )

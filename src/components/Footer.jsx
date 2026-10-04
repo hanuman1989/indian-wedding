@@ -32,7 +32,7 @@ const columns = [
     links: [
       { title: 'About Us', href: '/about' },
       { title: 'Privacy Policy', href: '/privacy-policy' },
-      { title: 'Terms & Conditions', href: '/terms-and-conditions' },
+      { title: 'Terms & Conditions', href: '/terms-of-use' },
     ],
   },
   {
