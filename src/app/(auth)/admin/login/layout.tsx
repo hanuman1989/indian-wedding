@@ -34,7 +34,7 @@ export default function AuthLayout({
                   <Image
                     width={231}
                     height={100}
-                    src="/images/logo/logo-main.png"
+                    src="/images/logo/logo-theme.png"
                     alt="Logo"
                     className="h-auto w-auto"
                   />

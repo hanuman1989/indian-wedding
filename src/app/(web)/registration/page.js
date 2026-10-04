@@ -176,7 +176,7 @@ export default function RegistrationPage() {
 
         <div className="w-full max-w-[560px] justify-self-center rounded-[24px] border border-gold-300 bg-cream-50/95 p-6 shadow-[0_20px_55px_rgba(108,10,34,0.16)] backdrop-blur-sm sm:p-9 lg:p-10">
           <div className="text-center">
-            <div className="mx-auto h-12 w-48 bg-[url('/images/logo/logo.png')] bg-contain bg-center bg-no-repeat" />
+            <div className="mx-auto h-12 w-48 bg-[url('/images/logo/logo-theme.png')] bg-contain bg-center bg-no-repeat" />
             <h2 className="mt-2 font-display text-3xl font-semibold text-wine-700">Create Your Account</h2>
             <div className="mx-auto mt-3 h-px w-28 bg-gold-400" />
           </div>
